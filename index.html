@@ -34,15 +34,114 @@
         <h3>
 <a name="welcome-to-mizar" class="anchor" href="#welcome-to-mizar"><span class="octicon octicon-link"></span></a>Welcome to MIZAR</h3>
 
-<p>MIZAR is a sky browser showing a realistic sky in 3D by providing the possibility to access and mix data from different scientific laboratories</p>
+<p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/logo.png" alt="">
+Most of scientific archives in astronomy provide an access to their data from a web interface. The way to search for users is usually a query form. The response is then a tabular format. MIZAR (Module for Interactive visualiZation from Astronomical Repositories) provides an alternative access to data based on a spatial distribution.<br><br>
+The benefits of this representation are many. First there is the abability to superimpose all observations coming from various scientific archives on a single map. Then, for each layer is possible to tune the layer transparency to check that data on other layers coincide. Finally, it is easier using this representation to give inputs on services based on a selection on the map.<br><br>
+MIZAR is also a JavaScript API that makes able its control by developers from a simple web page. However, in this distribution, we bring out the client for end users.</p>
 
 <h4>
-<a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h4>
+<a name="1---architecture" class="anchor" href="#1---architecture"><span class="octicon octicon-link"></span></a>1 - Architecture</h4>
 
-<p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture.png" alt=""></p>
+<p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture.png" alt="">
+MIZAR is based on a client/server architecture using SITools2. The data exchange format between the client and the server is the GeoJSON format. The server has several responsabilities :</p>
+
+<ul>
+<li>publishing the API so that the client discovers the parameters to request</li>
+<li>wrapping the GeoJSON request into another protocol (Simple Image Access Protocol, ...) for querying an external server </li>
+<li>Filtering the response from the external server so that the response only returns the spatial query that is asked by the client</li>
+<li>Caching the result</li>
+</ul><h4>
+<a name="2---javascript-api" class="anchor" href="#2---javascript-api"><span class="octicon octicon-link"></span></a>2 - JavaScript API</h4>
+
+<h5>
+<a name="21---architecture" class="anchor" href="#21---architecture"><span class="octicon octicon-link"></span></a>2.1 - Architecture</h5>
+
+<p>MIZAR can also be controled by its JavaScript API thanks to <a href="http://github.com/TPZF/GlobWeb">GlobeWeb</a>. Here is the global architecture of GlobeWeb:
+<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb.png" alt=""><br>
+In addition, GlobeWeb can be also used for displaying data on the Earth :
+<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb_2.png" alt=""></p>
+
+<h5>
+<a name="22---example" class="anchor" href="#22---example"><span class="octicon octicon-link"></span></a>2.2 - Example</h5>
+
+<p>As below, an example to embed MIZAR in a <a href="http://voparis-sitools.obspm.fr/sitools/client-user/js/modules/mizarModule/app/examples/SiTools.html">web page</a> :
+`
+    require(['../externals/GlobWeb/src/AstroWeb'], function (AstroWeb) 
+    {<br>
+        // Init globe
+        // - canvas: Id of canvas HTML element
+        // - continuousRendering: Boolean defining that rendering will be done continuously
+        var globe = new AstroWeb.Globe({
+            canvas: "GlobWebCanvas",
+            continuousRendering: true
+        });</p>
+
+<pre><code>    // Create the navigation object to contol the camera
+            var optionsNav = {
+                    inertia: true
+            };
+
+    var astroNavigator = new AstroWeb.AstroNavigation(globe, optionsNav);
+
+    // Create the object to show the statistic of AstroWeb
+    // - element: Id of statistic HTML element
+    // - verbose: If true, detailed information will be shown
+    new AstroWeb.Stats(globe,{element: "fps", verbose: true});
+
+    // Set background layer
+    // - baseUrl: Url to background images provider in HEALPix format
+    //      Note: must pass by proxy due to Cross-domain resource sharing issue
+    //            For more details see: https://developer.mozilla.org/en-US/docs/HTTP_access_control
+    var cdsLayer = new AstroWeb.HEALPixLayer( { baseUrl: "http://alasky.u-strasbg.fr/DssColor/"} );///sitools/Alasky
+    globe.setBaseImagery( cdsLayer );
+
+    // Define rendering options for OpenSearch layer
+    // - fillColor: Color of features
+    // - iconUrl: Url of image for texture
+    var layerStyle = new AstroWeb.FeatureStyle({ 
+        fillColor: [255, 204, 0,06, 1.],
+        iconUrl: "../css/images/star.png"
+    });
+
+    // OpenSearch options
+    // - serviceUrl: Url of the service providing OpenSearch data(necessary option)
+    // - minOrder: Starting HEALPix order for OpenSearch requests
+    // - visible: Visibility of layer
+    // - style: Rendering style of layer
+    var options = {
+        serviceUrl: "/sitools/exoplanet",
+        minOrder: 3,
+        visible: false,
+        style: layerStyle,
+        coordSystemRequired: true
+    };
+
+    // Create OpenSearch layer with choosen options
+    var openSearchLayer = new AstroWeb.OpenSearchLayer( options );
+
+    // Add layer to the globe
+    globe.addLayer( openSearchLayer );
+
+    // Zoom to point of interest event
+    $('li.poi').click( function(event) {
+        var ra = parseFloat($(this).attr('data-ra'));
+        var dec = parseFloat($(this).attr('data-dec'));
+        // Call zoomTo animation function
+        // with arguments: equatorialPosition in degrees, zooming field of view in degrees, duration in ms
+        astroNavigator.zoomTo( [ra, dec], 2., 3000 );
+    });
+
+    // OpenSearch layer visibility checkbox event
+    $('#openSearchLayer').click( function(event) {
+        openSearchLayer.visible( $(this).is(':checked') );
+    });
+});
+</code></pre>
+
+<p>`</p>
 
 <h4>
-<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h4>
+<a name="3---download" class="anchor" href="#3---download"><span class="octicon octicon-link"></span></a>3 - Download</h4>
 
 <p><a href="https://github.com/SITools2/RTWeb3D/releases/download/1.0/MIZAR-1.0-install.jar">Installeur de MIZAR-1.0</a></p>
       </section>
