@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="MIZAR (Module for Interactive visualiZation from Astronomical Repositories) : Contains the module for Sitools2 using GlobWeb" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="MIZAR (Module for Interactive visualiZation from Astronomical Repositories) : Contains the module for Sitools2 using GlobWeb">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -32,7 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a name="welcome-to-mizar" class="anchor" href="#welcome-to-mizar"><span class="octicon octicon-link"></span></a>Welcome to MIZAR</h3>
+<a id="welcome-to-mizar" class="anchor" href="#welcome-to-mizar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to MIZAR</h3>
 
 <p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/logo.png" alt="">
 Most of scientific archives in astronomy provide an access to their data from a web interface. The way to search for users is usually a query form. The response is then a tabular format. MIZAR (Module for Interactive visualiZation from Astronomical Repositories) provides an alternative access to data based on a spatial distribution.<br><br>
@@ -40,7 +40,7 @@ The benefits of this representation are many. First there is the ability to supe
 MIZAR is also a JavaScript API that makes able its control by developers from a simple web page. However, in this distribution, we bring out the client for end users.</p>
 
 <h4>
-<a name="1---architecture" class="anchor" href="#1---architecture"><span class="octicon octicon-link"></span></a>1 - Architecture</h4>
+<a id="1---architecture" class="anchor" href="#1---architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 - Architecture</h4>
 
 <p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture.png" alt="">
 MIZAR is based on a client/server architecture using SITools2. The data exchange format between the client and the server is the GeoJSON format. The server has several responsibilities :</p>
@@ -50,19 +50,22 @@ MIZAR is based on a client/server architecture using SITools2. The data exchange
 <li>wrapping the GeoJSON request into another protocol (Simple Image Access Protocol, ...) for querying an external server </li>
 <li>Filtering the response from the external server so that the response only returns the spatial query that is asked by the client</li>
 <li>Caching the result</li>
-</ul><h4>
-<a name="2---javascript-api" class="anchor" href="#2---javascript-api"><span class="octicon octicon-link"></span></a>2 - JavaScript API</h4>
+</ul>
+
+<h4>
+<a id="2---javascript-api" class="anchor" href="#2---javascript-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 - JavaScript API</h4>
 
 <h5>
-<a name="21---architecture" class="anchor" href="#21---architecture"><span class="octicon octicon-link"></span></a>2.1 - Architecture</h5>
+<a id="21---architecture" class="anchor" href="#21---architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 - Architecture</h5>
 
 <p>MIZAR can also be controlled by its JavaScript API thanks to <a href="http://github.com/TPZF/GlobWeb">GlobWeb</a>. Here is the global architecture of GlobWeb:
-<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb.png" alt=""><br>
+<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb.png" alt="">
+<br>
 In addition, GlobWeb can be also used for displaying data on the Earth :
-<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb_2.png" alt=""></p>
+<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb_2.png" alt=""> </p>
 
 <h5>
-<a name="22---example" class="anchor" href="#22---example"><span class="octicon octicon-link"></span></a>2.2 - Example</h5>
+<a id="22---example" class="anchor" href="#22---example" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 - Example</h5>
 
 <p>As below, an example to embed MIZAR in a <a href="http://voparis-sitools.obspm.fr/sitools/client-user/js/modules/mizarModule/app/examples/SiTools.html">web page</a> :
 `
@@ -141,12 +144,12 @@ In addition, GlobWeb can be also used for displaying data on the Earth :
 <p>`</p>
 
 <h4>
-<a name="3---documentation" class="anchor" href="#3---documentation"><span class="octicon octicon-link"></span></a>3 - Documentation</h4>
+<a id="3---documentation" class="anchor" href="#3---documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 - Documentation</h4>
 
 <p>Other resources for the documentation are available on the <a href="http://github.com/SITools2/RTWeb3D/wiki">wiki</a></p>
 
 <h4>
-<a name="4---download" class="anchor" href="#4---download"><span class="octicon octicon-link"></span></a>4 - Download</h4>
+<a id="4---download" class="anchor" href="#4---download" aria-hidden="true"><span class="octicon octicon-link"></span></a>4 - Download</h4>
 
 <p><a href="https://github.com/SITools2/RTWeb3D/releases/download/1.0/MIZAR-1.0-install.jar">Installeur de MIZAR-1.0</a></p>
       </section>
@@ -156,7 +159,7 @@ In addition, GlobWeb can be also used for displaying data on the Earth :
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">MIZAR (Module for Interactive visualiZation from Astronomical Repositories) maintained by <a href="https://github.com/SITools2">SITools2</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
