@@ -1,179 +1,418 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>MIZAR</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="http://cdn.datatables.net/1.10.1/css/jquery.dataTables.css" />
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://demonstrator.telespazio.com/sitools/mizar/app/css/style.min.css">
+		<link href="css/style.css">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<!--<link rel="stylesheet" href="http://demonstrator.telespazio.com/sitools/mizar/app/css/style.min.css"/>-->
+		<link href="css/styles.css" rel="stylesheet"/>
+		<script type="text/javascript" charset="UTF-8" src="http://demonstrator.telespazio.com/mizar/MizarWidget.min.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="http://cdn.datatables.net/1.10.1/js/jquery.dataTables.min.js"></script>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="MIZAR (Module for Interactive visualiZation from Astronomical Repositories) : Contains the module for Sitools2 using GlobWeb">
+	</head>
+	<body>
+<!-- Wrap all page content here -->
+<div id="wrap">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+ 
+<header class="masthead">
 
-    <title>MIZAR (Module for Interactive visualiZation from Astronomical Repositories)</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/SITools2/RTWeb3D">View on GitHub</a>
-
-          <h1 id="project_title">MIZAR (Module for Interactive visualiZation from Astronomical Repositories)</h1>
-          <h2 id="project_tagline">Contains the module for Sitools2 using GlobWeb</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/SITools2/RTWeb3D/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/SITools2/RTWeb3D/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+  	<!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="css/images/Mizar.png">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>Sky map</h2>
+              <p></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="css/images/Viking.png">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>Planet map</h2>
+              <p></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="css/images/Themis.png">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>Topographic map with elevation</h2>
+              <p></p>
+            </div>
+          </div>
+        </div>       
+      </div><!-- /.carousel-inner -->
+      <div class="logo">MIZAR<img src="css/images/mizarLogo.png" id="mizarLogo"/></div> 
+      <!-- Controls -->
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </a>  
     </div>
+    <!-- /.carousel -->
+  
+</header>
+  
+  
+<!-- Fixed navbar -->
+<div class="navbar navbar-custom navbar-inverse navbar-static-top" id="nav">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav nav-justified">
+          <li><a href="#section1">Home</a></li>
+          <li><a href="#section2">Data Visualization</a></li>
+          <li><a href="#section3">Web processing</a></li>
+          <li class="dropdown">
+            <a href="#section4" class="dropdown-toggle" data-toggle="dropdown">Screenshots and examples</a>
+          </li>
+          <li><a href="#section5">Mizar-lite</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/.container -->
+</div><!--/.navbar -->
+  
+<!-- Begin page content -->
+<div class="divider" id="section1"></div>
+  
+<div class="container">
+  <div class="col-sm-10 col-sm-offset-1">
+    <div class="page-header text-center">
+      <img src="css/images/mizarLogo.png"/><h1>Module for Interactive visualiZation from Astronomical Repositories</h1>
+    </div>
+    
+    <p class="lead text-center"> 
+      MIZAR is a web client, developed by CNES with the support of <a href="http://www.ias.fr/">IAS</a> for scientific requirements and <a href="http://cdsweb.u-strasbg.fr/index-fr.gml">CDS</a> as data provider. The main asset of Mizar is to provide a high performance 3D application for discovering and visualizing geospatial data on both sky and planets.
+    </p> 
+    
+    <hr>
+    
+    <div class="divider"></div>
+    
+  </div>
+</div>
+    
+<div class="divider"></div>
+  
+<section class="bg-1">
+  <div class="col-sm-6 col-sm-offset-3 text-center"></div>
+</section>
+  
+<div class="divider" id="section2"></div>
+   
+<div class="row">
+  	<div class="col-sm-10 col-sm-offset-1">
+      <h1>Data Visualization</h1>
+      
+      <hr>
+     
+      <p>
+	  MIZAR can be deployed alone or with its own server. According to the deployment, the data visualization capabilities are differents.
+	</p> 
+      <p>
+	  What can be visualized with MIZAR, deployed as standalone ?
+	  <ul>
+	    <li>A Simple FITS file</li>
+	    <li>A geoJson format (point or polygons)</li>
+	    <li>a MOC format as JSON</li>
+	    <li>a HIPS format</li>
+	  </ul>	 
+      </p> 
+      <p>
+	  What can be visualized with MIZAR, deployed along its server ?
+	  <ul>
+	    <li>A Simple FITS file</li>
+	    <li>A geoJson format (point or polygons)</li>
+	    <li>a MOC format as JSON</li>
+	    <li>a HIPS format (with cache)</li>
+	    <li>data from SIAP server (with cache and large data volume)</li>
+	    <li>data from CSP server (with cache and large data volume)</li>
+	    <li>data from anywhere with the appropriate plugin</li>
+	  </ul>		
+	  </p> 
+      
+      <hr>
+      
+      <div class="divider"></div>
+      
+  	</div><!--/col-->
+</div><!--/container-->
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a id="welcome-to-mizar" class="anchor" href="#welcome-to-mizar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to MIZAR</h3>
+<div class="divider" id="section3"></div>
+   
+<div class="row">
+  	<div class="col-sm-10 col-sm-offset-1">
+      <h1>Web processing</h1>
+      
+      <hr>
+     
+      <p>
+	  MIZAR has some processing task on displayed information
 
-<p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/logo.png" alt="">
-Most of scientific archives in astronomy provide an access to their data from a web interface. The way to search for users is usually a query form. The response is then a tabular format. MIZAR (Module for Interactive visualiZation from Astronomical Repositories) provides an alternative access to data based on a spatial distribution.<br><br>
-The benefits of this representation are many. First there is the ability to superimpose all observations coming from various scientific archives on a single map. Then, for each layer is possible to tune the layer transparency to check that data on other layers coincide. Finally, it is easier using this representation to give inputs on services based on a selection on the map.<br><br>
-MIZAR is also a JavaScript API that makes able its control by developers from a simple web page. However, in this distribution, we bring out the client for end users.</p>
+	  </p> 
+      <p>
+	  What can be processed with MIZAR, deployed as standalone ?
+	  <ul>
+	    <li>The cuts and the color scale on a FITS file, which is displayed</li>
+	  </ul>	 
+      </p> 
+      <p>
+	  What can be visualized with MIZAR, deployed along its server ?
+	  <ul>
+	    <li>The cuts and the color scale on a FITS file, which is displayed</li>
+	    <li>Exporting information as VOTable</li>
+	    <li>Cut out Service</li>
+	    <li>Zscale Service</li>
+	    <li>SAMP</li>
+	  </ul>		
+	  </p> 
+      
+      <hr>
+      
+      <div class="divider"></div>
+      
+  	</div><!--/col-->
+</div><!--/container-->
 
-<h4>
-<a id="1---architecture" class="anchor" href="#1---architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 - Architecture</h4>
+<div class="divider"></div>
+  
+<section class="bg-3">
+  <div class="col-sm-6 col-sm-offset-3 text-center"><h2 style="padding:20px;background-color:rgba(5,5,5,.8)">Screenshots and examples</h2></div>
+</section>
+  
+<div class="divider" id="section4"></div>
+  
+<div class="bg-4">
+  <div class="container">
+	<div class="row">
+	   <div class="col-sm-4 col-xs-6">
+      
+        <div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="GUI"><img src="css/images/GUI.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>Ergonomic GUI</p>
+            <p></p>
 
-<p><img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture.png" alt="">
-MIZAR is based on a client/server architecture using SITools2. The data exchange format between the client and the server is the GeoJSON format. The server has several responsibilities :</p>
+          </div>
+        </div><!--/panel-->
+      </div><!--/col-->
+      
+      <div class="col-sm-4 col-xs-6">
+      
+      	<div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="Images"><img src="css/images/m31.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>Raster and Overlay representation</p>
+            <p></p>
+            
+          </div>
+        </div><!--/panel--> 
+      </div><!--/col-->
+      
+      <div class="col-sm-4 col-xs-6">
+      
+      	<div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="Opacity"><img src="css/images/opacity.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>Opacity handling</p>
+            <p></p>
+            
+          </div>
+        </div><!--/panel--> 
 
-<ul>
-<li>publishing the API so that the client discovers the parameters to request</li>
-<li>wrapping the GeoJSON request into another protocol (Simple Image Access Protocol, ...) for querying an external server </li>
-<li>Filtering the response from the external server so that the response only returns the spatial query that is asked by the client</li>
-<li>Caching the result</li>
+      </div><!--/col--> 
+      
+      <div class="col-sm-4 col-xs-6">
+      
+      	<div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="navigation"><img src="css/images/navigation.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>Navigation and communication</p>
+            <p></p>
+            
+          </div>
+        </div><!--/panel--> 
+
+      </div><!--/col--> 
+      
+      <div class="col-sm-4 col-xs-6">
+      
+      	<div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="Mars"><img src="css/images/mars.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>Raster and overlays on Planets</p>
+            <p></p>
+            
+          </div>
+        </div><!--/panel--> 
+
+      </div><!--/col--> 
+      
+      <div class="col-sm-4 col-xs-6">
+      
+      	<div class="panel panel-default">
+          <div class="panel-thumbnail"><a href="#" title="JSAPI"><img src="css/images/jsAPI.png" class="img-responsive"></a></div>
+          <div class="panel-body">
+            <p>JS API to embed MIZAR in an external web page</p>
+            <p></p>
+            
+          </div>
+        </div><!--/panel--> 
+
+      </div><!--/col--> 
+      
+	</div><!--/row-->
+  </div><!--/container-->
+</div>
+
+<div class="divider" id="section5"></div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-1">
+  </div>
+</div>
+  
+<div class="row">
+  
+  <div class="col-sm-10 col-sm-offset-1">
+      <h1>MIZAR-lite</h1>
+  
+
+	<p>
+	You can also embedded MIZAR in your own web page which is called Mizar-lite. Then, you can pilot it by handling its JavaScript API. As below, an example of a embedded MIZAR
+	</p>
+
+<div class="row">
+	<div id="options">
+		<table id="poiTable" class="stylizedTable" summary="POI">
+		<thead>
+			<tr>
+				<th scope="col">POIs</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>Mizar</td>
+		</tr>
+		<tr>
+			<td>Atlas</td>
+		</tr>
+		<tr>
+			<td>m31</td>
+		</tr>
+		<tr>
+			<td>m42</td>
+		</tr>
+		<tr>
+			<td>Polaris</td>
+		</tr>
+		</tbody>
+		</table>
+
+			<table class="display" id="featureResults">
+			<thead>
+				<tr>
+					<th scope="col"><span class="header">ID</span></th>
+					<th scope="col"><span class="header">Ra</span></th>
+					<th scope="col"><span class="header">Dec</span></th>
+					<th scope="col"><span class="header">Download</span></th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+	</div>
+    	<div id="mizarWidget-div" style="border: none;" width="400" height="400"></div> 
+</div>  
+</div><!--/row-->
+  
+  <!--
+<div class="container">
+  	<div class="col-sm-8 col-sm-offset-2 text-center">
+
+      <ul class="list-inline center-block">
+        <li><a href="http://facebook.com/bootply"><img src="css/images/soc_fb.png"></a></li>
+        <li><a href="http://twitter.com/bootply"><img src="css/images/soc_tw.png"></a></li>
+        <li><a href="http://google.com/+bootply"><img src="css/images/soc_gplus.png"></a></li>
+        <li><a href="http://pinterest.com/in1"><img src="css/images/soc_pin.png"></a></li>
+      </ul>
+      
+  	</div>--><!--/col-->
+<!--</div>--><!--/container-->
+  
+</div><!--/wrap-->
+
+<div id="footer">
+  <div class="container">
+    <p class="text-muted">Copyright 2014 ACME, Inc.</p>
+  </div>
+</div>
+
+<ul class="nav pull-right scroll-top">
+  <li><a href="#" title="Scroll to top"><i class="glyphicon glyphicon-chevron-up"></i></a></li>
 </ul>
 
-<h4>
-<a id="2---javascript-api" class="anchor" href="#2---javascript-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 - JavaScript API</h4>
 
-<h5>
-<a id="21---architecture" class="anchor" href="#21---architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 - Architecture</h5>
-
-<p>MIZAR can also be controlled by its JavaScript API thanks to <a href="http://github.com/TPZF/GlobWeb">GlobWeb</a>. Here is the global architecture of GlobWeb:
-<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb.png" alt="">
-<br>
-In addition, GlobWeb can be also used for displaying data on the Earth :
-<img src="http://raw.githubusercontent.com/SITools2/RTWeb3D/gh-pages/images/architecture_globeweb_2.png" alt=""> </p>
-
-<h5>
-<a id="22---example" class="anchor" href="#22---example" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 - Example</h5>
-
-<p>As below, an example to embed MIZAR in a <a href="http://voparis-sitools.obspm.fr/sitools/client-user/js/modules/mizarModule/app/examples/SiTools.html">web page</a> :
-`
-    require(['../externals/GlobWeb/src/AstroWeb'], function (AstroWeb) 
-    {<br>
-        // Init globe
-        // - canvas: Id of canvas HTML element
-        // - continuousRendering: Boolean defining that rendering will be done continuously
-        var globe = new AstroWeb.Globe({
-            canvas: "GlobWebCanvas",
-            continuousRendering: true
-        });</p>
-
-<pre><code>    // Create the navigation object to contol the camera
-            var optionsNav = {
-                    inertia: true
-            };
-
-    var astroNavigator = new AstroWeb.AstroNavigation(globe, optionsNav);
-
-    // Create the object to show the statistic of AstroWeb
-    // - element: Id of statistic HTML element
-    // - verbose: If true, detailed information will be shown
-    new AstroWeb.Stats(globe,{element: "fps", verbose: true});
-
-    // Set background layer
-    // - baseUrl: Url to background images provider in HEALPix format
-    //      Note: must pass by proxy due to Cross-domain resource sharing issue
-    //            For more details see: https://developer.mozilla.org/en-US/docs/HTTP_access_control
-    var cdsLayer = new AstroWeb.HEALPixLayer( { baseUrl: "http://alasky.u-strasbg.fr/DssColor/"} );///sitools/Alasky
-    globe.setBaseImagery( cdsLayer );
-
-    // Define rendering options for OpenSearch layer
-    // - fillColor: Color of features
-    // - iconUrl: Url of image for texture
-    var layerStyle = new AstroWeb.FeatureStyle({ 
-        fillColor: [255, 204, 0,06, 1.],
-        iconUrl: "../css/images/star.png"
-    });
-
-    // OpenSearch options
-    // - serviceUrl: Url of the service providing OpenSearch data(necessary option)
-    // - minOrder: Starting HEALPix order for OpenSearch requests
-    // - visible: Visibility of layer
-    // - style: Rendering style of layer
-    var options = {
-        serviceUrl: "/sitools/exoplanet",
-        minOrder: 3,
-        visible: false,
-        style: layerStyle,
-        coordSystemRequired: true
-    };
-
-    // Create OpenSearch layer with choosen options
-    var openSearchLayer = new AstroWeb.OpenSearchLayer( options );
-
-    // Add layer to the globe
-    globe.addLayer( openSearchLayer );
-
-    // Zoom to point of interest event
-    $('li.poi').click( function(event) {
-        var ra = parseFloat($(this).attr('data-ra'));
-        var dec = parseFloat($(this).attr('data-dec'));
-        // Call zoomTo animation function
-        // with arguments: equatorialPosition in degrees, zooming field of view in degrees, duration in ms
-        astroNavigator.zoomTo( [ra, dec], 2., 3000 );
-    });
-
-    // OpenSearch layer visibility checkbox event
-    $('#openSearchLayer').click( function(event) {
-        openSearchLayer.visible( $(this).is(':checked') );
-    });
-});
-</code></pre>
-
-<p>`</p>
-
-<h4>
-<a id="3---documentation" class="anchor" href="#3---documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 - Documentation</h4>
-
-<p>Other resources for the documentation are available on the <a href="http://github.com/SITools2/RTWeb3D/wiki">wiki</a></p>
-
-<h4>
-<a id="4---download" class="anchor" href="#4---download" aria-hidden="true"><span class="octicon octicon-link"></span></a>4 - Download</h4>
-
-<p><a href="https://github.com/SITools2/RTWeb3D/releases/download/1.0/MIZAR-1.0-install.jar">Installeur de MIZAR-1.0</a></p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">MIZAR (Module for Interactive visualiZation from Astronomical Repositories) maintained by <a href="https://github.com/SITools2">SITools2</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-49385757-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+<div class="modal" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+	<div class="modal-header">
+		<button class="close" type="button" data-dismiss="modal">×</button>
+		<h3 class="modal-title"></h3>
+	</div>
+	<div class="modal-body">
+		<div id="modalCarousel" class="carousel">
+ 
+          <div class="carousel-inner">
+           
+          </div>
+          
+          <a class="carousel-control left" href="#modaCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          <a class="carousel-control right" href="#modalCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          
+        </div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+   </div>
+  </div>
+</div>
 
 
-  </body>
+	<!-- script references -->
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/scripts.js"></script>
+
+	</body>
 </html>
