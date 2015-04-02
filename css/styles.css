@@ -209,7 +209,7 @@ section {
 }
 
 .bg-1 {
-	background: url('/mizar-web-site/assets/example/imageProcessing.png') no-repeat center center fixed; 
+	background: url('images/imageProcessing.png') no-repeat center center fixed; 
     -webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
@@ -217,7 +217,7 @@ section {
 }
 
 .bg-2 {
-	background: url('/mizar-web-site/assets/example/Earth.png') no-repeat center center fixed; 
+	background: url('images/Earth.png') no-repeat center center fixed; 
     -webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
@@ -225,7 +225,7 @@ section {
 }
 
 .bg-3 {
-	background: url('/mizar-web-site/assets/example/Earth.png') no-repeat center center fixed; 
+	background: url('images/Earth.png') no-repeat center center fixed; 
     -webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
