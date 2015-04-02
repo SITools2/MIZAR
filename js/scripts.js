@@ -77,6 +77,7 @@ window.onload = function(){
 	};
 	var mizar = new MizarWidget("#mizarWidget-div", options);
 	mizar.setCompassGui(true);
+	mizar.setShowCredits(false);
 	var hstLayer = mizar.getLayer("HST");
 	var color = hstLayer.style.strokeColor;
 	var previousFeatureData;
