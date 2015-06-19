@@ -1,0 +1,67 @@
+<html>
+
+<head>
+<title>GlobWeb example</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="GlobWeb.css">
+
+<script  src="require.min.js"></script>
+<script type="text/javascript">
+	
+require(['../src/GlobWeb'], function (GlobWeb) 
+{	
+	var globe = new GlobWeb.Globe( { canvas: "GlobWebCanvas" } );
+
+	var navigation = new GlobWeb.Navigation(globe);
+
+	//var blueMarbleLayer = new GlobWeb.WMSLayer({ baseUrl: "http://demonstrator.telespazio.com/wmspub", layers: "BlueMarble,esat" });
+	//globe.setBaseImagery( blueMarbleLayer );
+	var bingLayer = new GlobWeb.BingLayer({imageSet:"AerialWithLabels", key: "Ar7-_U1iwNtChqq64tAQsOfO8G7FwF3DabvgkQ1rziC4Z9zzaKZlRDWJTKTOPBPV"});
+	globe.setBaseImagery( bingLayer );
+	
+	var vectorLayer = new GlobWeb.VectorLayer();
+	var feature = { type: "Feature",
+					geometry: { type: "Polygon",
+							coordinates: [ [ [179.34, 70.2],
+											[-178.72, 70.06],
+											[179.47, 67.02],
+											[177.79, 63.52],
+											[176.52, 60.4],
+											[175.18, 60.52],
+											[176.3, 63.64],
+											[177.78, 67.15],
+											[179.34, 70.2] ] ]
+							}
+				};
+
+	var feature2 = { type: "Feature",
+					geometry: { type: "Polygon",
+							coordinates: [ [ 	
+[125.57222222222222,70.60583333333332],
+[134.93055555555554,73.66194444444444],
+[-45.76305555555555,70.09138888888889],
+[4.3075,67.63944444444445],
+[125.57222222222222,70.60583333333332] ] ]
+							}
+				};
+
+	vectorLayer.addFeature( feature2 );
+
+	globe.addLayer( vectorLayer );
+});
+
+
+</script>
+
+</head>
+
+
+<body>
+	<h1>Glob Web</h1>
+    <canvas id="GlobWebCanvas" style="border: none;" width="800" height="450"></canvas> 
+  	<br/>
+	<div id="fps"><span style="font-weight:bold">FPS : 0</span></div>
+</body>
+
+</html>
+
