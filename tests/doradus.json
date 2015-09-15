@@ -16,7 +16,7 @@
 	    "identifier":"30doradus",    
             "object": "30 doradus",                    	  
             "title": "30doradus",
-	    "quicklook": "upload/ADP_WFI_30DOR_RGB_V1.0_degraded.jpg"
+	    "quicklook": "https://raw.githubusercontent.com/SITools2/MIZAR/master/tests/ADP_WFI_30DOR_RGB_V1.0_degraded.jpg"
          },
          "type": "Feature"
       }
