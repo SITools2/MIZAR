@@ -54,7 +54,7 @@ var MocLayer = function(options)
 	}
 
 	this.featuresSet = null;
-}
+};
 
 /**************************************************************************************************************/
 
@@ -87,7 +87,7 @@ MocLayer.prototype._attach = function( g )
 	
 	// As post renderer, moc layer will regenerate data on tiles in case of base imagery change
 	g.tileManager.addPostRenderer(this);
-}
+};
 
 /**************************************************************************************************************/
 
@@ -107,7 +107,7 @@ MocLayer.prototype.generate = function(tile)
 			}
 		}
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -117,7 +117,7 @@ MocLayer.prototype.generate = function(tile)
 MocLayer.prototype.render = function()
 {
 	// No rendering
-}
+};
 
 /**************************************************************************************************************/
 
@@ -138,7 +138,7 @@ MocLayer.prototype._detach = function()
 	this.globe.tileManager.removePostRenderer(this);
 
 	BaseLayer.prototype._detach.call(this);
-}
+};
 
 /**************************************************************************************************************/
 
@@ -160,7 +160,7 @@ MocLayer.prototype.findChildIndices = function(index, order)
 	}
 
 	return indices;
-}
+};
 
 /**************************************************************************************************************/
 
@@ -173,9 +173,8 @@ MocLayer.prototype.findParentIndex = function(index, order)
 {
 	var parentOrder = this.startOrder;
 	var orderDepth = order - parentOrder;
-	var parentIndex = Math.floor( index / (Math.pow(4,orderDepth)) );
-	return parentIndex;
-}
+	return Math.floor( index / (Math.pow(4,orderDepth)) );
+};
 
 /**************************************************************************************************************/
 
@@ -282,7 +281,7 @@ MocLayer.prototype.handleDistribution = function(response)
 			this.globe.vectorRendererManager.addGeometryToTile( this, geometry, this.style, parentTile );
 		}
 	}
-}
+};
 
 return MocLayer;
 

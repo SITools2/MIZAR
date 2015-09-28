@@ -33,7 +33,7 @@ var iframe =
 			<span class="defaultImg"></span>\
 			<span style="opacity: 0" class="hoverImg"></span>\
 		</div>\
-		<iframe src=""><p>Your browser does not support iframes.</p></iframe>\
+		<iframe src="">Your browser does not support iframes.</iframe>\
 	</div>';
 	
 /**
@@ -111,9 +111,8 @@ function _init() {
 		history.pile.push($iframeDiv.find('iframe')[0].attributes.src.nodeValue);
 		history.index++;
 	});
-};
-
-return {
+}
+	return {
 	/**
 	 *	Hide iframe
 	 */

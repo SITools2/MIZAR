@@ -30,7 +30,7 @@ define( [ "jquery", "./LayerManager", "./JsonProcessor" ], function($, LayerMana
  * 	Load JSON file, transform it in GeoJSON format and add to the layer
  *
  *	@param gwLayer GlobWeb layer
- *	@param url Url to JSON containing feature collection in equatorial coordinates
+ *	@param configuration Url to JSON containing feature collection in equatorial coordinates
  *
  */
 function handleJSONFeature( gwLayer, configuration )

@@ -179,9 +179,9 @@ return {
 	/**
 	 *	Init
 	 *
-	 *	@param mizar
+	 *	@param m
 	 *		Mizar API object
-	 *	@param configuration
+	 *	@param conf
 	 *		Mizar configuration 
  	 */
 	init: function(m, conf) {

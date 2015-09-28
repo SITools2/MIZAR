@@ -84,7 +84,7 @@ function updateWidth()
 	var minWidth = 600; // arbitrary value
 	var nameResolverLeftOffset = $('#searchDiv').offset().left;
 	var serviceBarRightOffset = $('#serviceBar').offset().left + $('#serviceBar').width();
-	var difference = serviceBarRightOffset - nameResolverLeftOffset
+	var difference = serviceBarRightOffset - nameResolverLeftOffset;
 
 	// Update width if it overlaps name resolver or fit it to min width for better OpenSearch service form layout
 	if ( serviceBarRightOffset > nameResolverLeftOffset )
@@ -107,7 +107,7 @@ return {
 		$(window).resize(function()
 		{
 			updateWidth();
-		})
+		});
 		updateWidth();
 	},
 
@@ -116,7 +116,7 @@ return {
 	 */
 	addLayer: function(layer){
 
-		var layerServices = serviceMapping[layer.type]
+		var layerServices = serviceMapping[layer.type];
 		if ( layerServices )
 		{
 			$('#serviceManager > p').slideUp(function(){

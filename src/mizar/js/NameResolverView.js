@@ -143,8 +143,7 @@ function _showResults(data)
 		for ( var i=0; i<response.features.length; i++)
 		{
 			var astro = Utils.formatCoordinates([ response.features[i].geometry.coordinates[0], response.features[i].geometry.coordinates[1] ]);
-			var result = nameResolverResultTemplate( { properties: response.features[i].properties, lon: astro[0], lat: astro[1], type: mizar.activatedContext.globe.coordinateSystem.type } );
-			output+=result;
+			output+= nameResolverResultTemplate( { properties: response.features[i].properties, lon: astro[0], lat: astro[1], type: mizar.activatedContext.globe.coordinateSystem.type } );
 		}
 		
 		// Show it
@@ -166,7 +165,7 @@ function _showError() {
 		.html("Bad input or object not found")
 		.fadeIn(animationDuration);
 
-	$nameResolver.find("#searchSpinner").fadeOut(animationDuration).end()
+	$nameResolver.find("#searchSpinner").fadeOut(animationDuration).end();
 	$clear.fadeIn(animationDuration);
 }
 

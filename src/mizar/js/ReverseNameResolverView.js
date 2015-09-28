@@ -188,6 +188,7 @@ function showError( xhr ) {
 				break;
 			case 400:
 				ErrorDialog.open("Bad input");
+				break;
 			default:
 				break;
 		}

@@ -105,7 +105,7 @@ return {
 			collapsible: true,
 			hide: { effect: "slideUp", duration: 300 },
 			show: { effect: "slideDown", duration: 300 }
-		})
+		});
 
 		MocService.init(mizar.sky, configuration);
 		XMatchService.init(mizar.sky, configuration);
@@ -129,7 +129,7 @@ return {
 		{
 			for ( var i=0; i<currentLayer.availableServices.length; i++)
 			{
-				service = getServiceFromConf(currentLayer.availableServices[i])
+				service = getServiceFromConf(currentLayer.availableServices[i]);
 				if ( service.removeLayer )
 					service.removeLayer(currentLayer);
 				service.removeService(tabs, currentLayer.availableServices[i]);

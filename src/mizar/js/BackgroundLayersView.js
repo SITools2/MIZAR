@@ -299,7 +299,7 @@ return {
 			});
 
 			backgroundDiv = new DynamicImageView(dialogId, {
-				id : 'backgroundFitsView',
+				id : 'backgroundFitsView'
 			});
 
 			$el.find('#fitsType')

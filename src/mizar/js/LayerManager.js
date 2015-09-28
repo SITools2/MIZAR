@@ -110,14 +110,13 @@ function createLayerFromConf(layerDesc) {
 
 	// Create style if needed
 	if ( !layerDesc.style ) {
-		var defaultVectorStyle = new FeatureStyle({ 
-			rendererHint: "Basic", 
+		layerDesc.style = new FeatureStyle({
+			rendererHint: "Basic",
 			opacity: layerDesc.opacity,
 			iconUrl: layerDesc.icon ? layerDesc.icon : configuration.mizarBaseUrl + "css/images/star.png",
 			fillColor: layerDesc.color,
 			strokeColor: layerDesc.color
 		});
-		layerDesc.style = defaultVectorStyle;
 	}
 
 	// Depending on type of layer, create layer

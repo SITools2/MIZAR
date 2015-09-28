@@ -107,12 +107,14 @@ AtmosphereLayer.prototype._attach = function( g )
 	
 	var nbEl = 72;
 	var nbAz = 144;
-	
+
 	// Create the vertices
-	for (var el=-nbEl; el <= nbEl; el++)
+	var el;
+	var az;
+	for (el=-nbEl; el <= nbEl; el++)
 	{
 		var elevation = el * (Math.PI * 0.5) / nbEl;
-		for (var az=-nbAz; az <= nbAz; az++)
+		for (az=-nbAz; az <= nbAz; az++)
 		{
 			var azimuth = az * Math.PI / nbAz;
 
@@ -127,9 +129,9 @@ AtmosphereLayer.prototype._attach = function( g )
 	}
 
 	// build the sphere triangles
-	for (var el=0; el < 2*nbEl; el++)
+	for (el=0; el < 2*nbEl; el++)
 	{
-		for (var az=0; az < 2*nbAz; az++)
+		for (az=0; az < 2*nbAz; az++)
 		{
 			indices.push( el * (2*nbAz+1) + az );
 			indices.push( (el+1) * (2*nbAz+1) + az+1 );

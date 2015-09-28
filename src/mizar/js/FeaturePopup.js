@@ -65,8 +65,8 @@ var pileStashHelp = '<div id="pileStashHelp"> Some observations are overlapped. 
 /**
  * 	Selected feature div position calculations
  * 
- * 	@param x event.clientX
- * 	@param y event.clientY
+ * 	@param clientX event.clientX
+ * 	@param clientY event.clientY
  */
 function computeDivPosition(clientX, clientY)
 {

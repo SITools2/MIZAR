@@ -78,7 +78,7 @@ function onVisibilityChange(layer)
 	$layerVisibility.button("option", {
 		icons: {
 			primary: layer.visible() ? "ui-icon-check" : ""
-		},
+		}
 	}).button('refresh');
 
 	// TODO: still tiny bug with label "ui-state-active" class toggling
@@ -220,7 +220,7 @@ return {
 	/**
 	 *	Add progress bar
 	 *
-	 *	@param data
+	 *	@param featureData
 	 *		Contains feature data(layer, feature) and its XMLHttpRequest
 	 */
 	addProgressBar: function(featureData)

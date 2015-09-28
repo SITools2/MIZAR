@@ -65,7 +65,7 @@ var Point = function(options) {
     {
         this[x] = options[x];
     }
-}
+};
 
 /*************************************************************************/
 
@@ -116,7 +116,7 @@ var MollweideViewer = function(options) {
     {
 	var coordinateSystem = self.globe.coordinateSystem;
         var geoPos = coordinateSystem.from3DToEquatorial(pos,null,false);
-        geoPos = coordinateSystem.convert(geoPos, 'EQ', coordinateSystem.type)
+        geoPos = coordinateSystem.convert(geoPos, 'EQ', coordinateSystem.type);
 	geoPos = coordinateSystem.fromEquatorialToGeo(geoPos,null,false);
         
         var lambda = geoPos[0] * Math.PI/180 ; // longitude
@@ -250,7 +250,7 @@ var MollweideViewer = function(options) {
 
     canvas.addEventListener('mouseup', function(){
         dragging = false;
-    })
+    });
 
     /**********************************************************************************************/
 
@@ -279,7 +279,7 @@ var MollweideViewer = function(options) {
 
 	// Fix for Google Chrome : avoid dragging
     canvas.addEventListener("dragstart", function(event){event.preventDefault(); return false;});
-}
+};
 
 /**********************************************************************************************/
 
@@ -296,7 +296,7 @@ MollweideViewer.prototype.setCoordSystem = function(coordSystem)
 {
     // Update mollweideViewer background image
     $(this.imageObj).attr("src", mizarBaseUrl + "css/images/MollweideSky_"+coordSystem+".png");
-}
+};
 
 /**********************************************************************************************/
 

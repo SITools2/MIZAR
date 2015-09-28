@@ -51,7 +51,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 		this.aboutShown = false;
 		this.credits = true;
 		this.configuration = options;
-	}
+	};
 	
 	/**************************************************************************************************************/
 
@@ -69,7 +69,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 		window.addEventListener("orientationchange", function() {				
 			self.globe.refresh();
 		}, false);
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -114,7 +114,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 				canvas.height = window.innerHeight;
 			}
 			self.globe.refresh();
-		}
+		};
 
 		// Take into account window resize 1s after resizing stopped
 		var timer;
@@ -131,7 +131,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 			document.getElementById('loading').style.display = "none";
 			document.getElementById('webGLContextLost').style.display = "block";
 		}, false);
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -141,7 +141,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 
 	MizarContext.prototype.showCredits = function(visible) {
 		this.credits = visible;
-	}
+	};
 	/**************************************************************************************************************/
 
 	/**
@@ -157,7 +157,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 		}
 
 		$(this.parentElement).find('#loading').hide(300);
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -178,7 +178,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 			ErrorDialog.open("<p>The"+ layerType + "<span style='color: orange'>"+layer.name+"</span> can not be displayed.</p>\
 			 <p>First check if data source related to this layer is still accessible. Otherwise, check your Sitools2 configuration.</p>");
 		});
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -196,7 +196,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 				$(this.parentElement).find("#"+componentId).fadeIn(1000);
 			}
 		}
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -212,7 +212,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 		{
 			$(this.parentElement).find("#"+componentId).fadeOut();
 		}
-	}
+	};
 
 	/**************************************************************************************************************/
 
@@ -230,7 +230,7 @@ define( [ "jquery", "underscore-min", "./ErrorDialog", "./AboutDialog", "jquery.
 			$(this.parentElement).find("#"+componentId).hide();
 		}
 		this.components[componentId] = isVisible;
-	}
+	};
 
 	/**************************************************************************************************************/
 

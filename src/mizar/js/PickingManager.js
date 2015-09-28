@@ -123,7 +123,7 @@ function _handleMouseUp(event)
 					}
 					var offset = $(globe.renderContext.canvas).offset();
 					FeaturePopup.show(offset.left + globe.renderContext.canvas.width/2, offset.top + globe.renderContext.canvas.height/2);
-				}
+				};
 
 				// TODO: harmonize astro&globe navigations
 				if ( navigation.moveTo )

@@ -37,7 +37,9 @@ var sitoolsBaseUrl;
  */
 function computeFits(featureData, url, preprocessing)
 {
-	var xhr = FitsLoader.loadFits(url, function(fits){
+
+	// Store xhr on feature data object to cancel it if needed
+	featureData.xhr = FitsLoader.loadFits(url, function(fits){
 		delete featureData.xhr;
 
 		var fitsData = fits.getHDU().data;
@@ -48,9 +50,6 @@ function computeFits(featureData, url, preprocessing)
 
 		handleFits(fitsData, featureData);
 	});
-
-	// Store xhr on feature data object to cancel it if needed
-	featureData.xhr = xhr;
 	this.mizar.publish("image:download", featureData);
 }
 
@@ -232,7 +231,7 @@ return {
 	
 	computeFits: computeFits,
 	handleFits: handleFits
-}
+};
 
 /**********************************************************************************************/
 

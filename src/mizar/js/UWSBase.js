@@ -37,7 +37,7 @@ var UWSBase = function(name, baseUrl, options)
 	this.checkFn = null; // Interval function
 	this.checkDelay = options && options.hasOwnProperty('checkDelay') ? options.checkDelay : 2000;
 	this.currentJob;
-}
+};
 
 /**************************************************************************************************************/
 
@@ -59,7 +59,7 @@ UWSBase.prototype.getJobResults = function()
 				self.failCallback('Internal server error');
 		}
 	});
-}
+};
 
 /**************************************************************************************************************/
 
@@ -96,7 +96,7 @@ UWSBase.prototype.checkPhase = function()
 			console.error( xhr.responseText );
 		}
 	});
-}
+};
 
 /**************************************************************************************************************/
 
@@ -141,7 +141,7 @@ UWSBase.prototype.post = function(parameters, options)
 			}
 		});
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -176,7 +176,7 @@ UWSBase.prototype.delete = function(jobId, options)
 			}
 		});
 	}
-}
+};
 
 /**************************************************************************************************************/
 

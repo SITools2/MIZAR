@@ -178,7 +178,7 @@ function handleFeatures()
 				coordinates: [current.coord]
 			},
 			properties: {
-				name: current.name,
+				name: current.name
 			}
 		};
 		

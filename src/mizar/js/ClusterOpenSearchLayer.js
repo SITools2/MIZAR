@@ -153,7 +153,7 @@ ClusterOpenSearchLayer.prototype.updateDistributions = function(layer)
 	};
 	xhr.open("GET", url );
 	xhr.send();
-}
+};
 
 /**************************************************************************************************************/
 
@@ -161,7 +161,6 @@ ClusterOpenSearchLayer.prototype.updateDistributions = function(layer)
  *	Handle SOLR distribution response
  *
  *	@param response SOLR response
- *	@param distributions Distributions ClusterManager variable
  */
 ClusterOpenSearchLayer.prototype.handleDistribution = function(response)
 {
@@ -346,12 +345,20 @@ ClusterOpenSearchLayer.prototype.buildUrl = function( tile )
 			}
 			indices+=pixelIndicesToRequest[i];
 
-			var url = this.serviceUrl + "/search?order=" + childOrder + "&healpix=" + indices;
-
-			return url;
+			return this.serviceUrl + "/search?order=" + childOrder + "&healpix=" + indices;
 		}
 		else 
+		{FitsLoader.loadFits(url, function(fits){
+		delete featureData.xhr;
+
+		var fitsData = fits.getHDU().data;
+		if ( preprocessing )
 		{
+			preprocessing(featureData, fits);
+		}
+
+		handleFits(fitsData, featureData);
+	});
 			if ( !tile.extension[this.extId].containsCluster )
 			{
 				// Empty tile

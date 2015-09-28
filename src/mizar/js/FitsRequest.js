@@ -70,7 +70,7 @@ ImageRequest.prototype.send = function(url)
 				self.abortCallback(self);
 			}
 			self.xhr = null;
-		}
+		};
 
 		xhr.open("GET", url);
 		xhr.responseType = 'arraybuffer';
@@ -89,7 +89,7 @@ ImageRequest.prototype.send = function(url)
 			{
 				self.successCallback.call(self);
 			}
-		}
+		};
 		this.image.onerror = function(){
 			if ( self.failCallback && !this.aborted )
 				self.failCallback(self);

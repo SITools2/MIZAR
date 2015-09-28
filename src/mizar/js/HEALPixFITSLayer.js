@@ -106,7 +106,7 @@ var HEALPixFITSLayer = function(options)
 				gl.uniform1f(program.uniforms["opacity"], self.opacity() );
 			}
 		}
-	}
+	};
 
 	var self = this;
 	// Request for level zero image
@@ -182,7 +182,7 @@ var HEALPixFITSLayer = function(options)
 			console.log("Background image request has been aborted");
 		}
 	});
-}
+};
 
 /**************************************************************************************************************/
 
@@ -209,7 +209,7 @@ HEALPixFITSLayer.prototype._attach = function( g )
 		this.fitsSupported = false;
 		//return;
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -228,7 +228,7 @@ HEALPixFITSLayer.prototype._detach = function()
 
 	RasterLayer.prototype._detach.call( this );
 
-}
+};
 
 /**************************************************************************************************************/
 
@@ -243,15 +243,14 @@ HEALPixFITSLayer.prototype.getUrl = function(tile)
 	url += tile.order;
 	
 	url += "/Dir";
-	var indexDirectory = Math.floor(tile.pixelIndex/10000) * 10000;
-	url += indexDirectory;
+	url += Math.floor(tile.pixelIndex/10000) * 10000;
 	
 	url += "/Npix";
 	url += tile.pixelIndex;
 	url += "."+this.format;
 	
 	return url;
-}
+};
 
 /**************************************************************************************************************/
 
@@ -279,7 +278,7 @@ HEALPixFITSLayer.prototype.extractFitsData = function( pi, fitsPixel, sx, sy )
 		typedLine = pixels.subarray( startIndex + i*width, startIndex + i*width + size );
 		fitsPixel.set(typedLine, sy + i*128 + sx);
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -360,13 +359,13 @@ HEALPixFITSLayer.prototype.generateLevel0Textures = function(tiles,tilePool)
 				width : 128,
 				height : 128,
 				dataType : 'float'
-			}
+			};
 			
 			tile.texture = tilePool.createGLTexture( imgData );
 			tile.imageSize = 128;
 		}
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -424,7 +423,7 @@ HEALPixFITSLayer.prototype.handleImage = function(imgRequest)
 		};
 		
 	}
-}
+};
 
 /**************************************************************************************************************/
 
@@ -452,7 +451,7 @@ HEALPixFITSLayer.prototype.requestLevelZeroImage = function()
 
 	var url = this.baseUrl + "/Norder3/Allsky."+this.format;
 	this.imageRequest.send(url);
-}
+};
 
 /**************************************************************************************************************/
 
@@ -469,7 +468,7 @@ HEALPixFITSLayer.prototype.disposeResources = function()
 	
 	this.levelZeroImage = null;
 	this.levelZeroTexture = null;
-}
+};
 
 /**************************************************************************************************************/
 
@@ -491,7 +490,7 @@ HEALPixFITSLayer.prototype.setFormat = function(format)
 
 	this.format = (isFits) ? 'fits' : 'jpg';
 	//this.requestLevelZeroImage();
-}
+};
 
 /**************************************************************************************************************/
 

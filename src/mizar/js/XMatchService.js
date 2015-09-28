@@ -160,7 +160,7 @@ return {
 				.button("option", {
 					icons: {
 						primary: "ui-icon-check"
-					},
+					}
 				}).button('refresh');
 		}
 

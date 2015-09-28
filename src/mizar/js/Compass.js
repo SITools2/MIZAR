@@ -202,7 +202,7 @@ var Compass = function(options){
 			var coordinateSystem = globe.coordinateSystem;
 			var temp = [];
 			coordinateSystem.from3DToEquatorial(up, temp, false);
-			temp = coordinateSystem.convert(temp, coordinateSystem.type, 'EQ')
+			temp = coordinateSystem.convert(temp, coordinateSystem.type, 'EQ');
 			coordinateSystem.fromEquatorialTo3D(temp, up, false);
 			navigation.moveUpTo(up);
 		};
@@ -228,7 +228,7 @@ var Compass = function(options){
 Compass.prototype.remove = function() {
 	navigation.unsubscribe("modified", updateNorth);
 	document.getElementById(parentElement).innerHTML = '';
-}
+};
 
 return Compass;
 

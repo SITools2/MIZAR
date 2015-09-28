@@ -215,7 +215,7 @@ return {
 					layer.modifyFeatureStyle( feature, targetStyle );
 				}
 			}
-		})
+		});
 		cutOutElement = CutOutViewFactory.addView("cutOutView");
 	},
 

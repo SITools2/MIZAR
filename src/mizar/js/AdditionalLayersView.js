@@ -377,16 +377,17 @@ function manageLayerVisibility($layerDiv, gwLayer, categoryId)
  */
 function setSublayersVisibility(gwLayer, isOn)
 {
+	var i;
 	if ( isOn )
 	{
-		for ( var i=0; i<gwLayer.subLayers.length; i++ )
+		for ( i=0; i<gwLayer.subLayers.length; i++ )
 		{
 			sky.addLayer( gwLayer.subLayers[i] );
 		}
 	}
 	else
 	{
-		for ( var i=0; i<gwLayer.subLayers.length; i++ )
+		for ( i=0; i<gwLayer.subLayers.length; i++ )
 		{
 			sky.removeLayer( gwLayer.subLayers[i] );
 		}

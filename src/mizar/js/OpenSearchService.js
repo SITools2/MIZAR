@@ -40,7 +40,7 @@ function handleSubmit(event)
 	// Get array of changed inputs
 	var notEmptyInputs = $(this).find(':input[value!=""]').serializeArray();
 	// Create new properties
-	var properties = {}
+	var properties = {};
 	for(var i=0; i<notEmptyInputs.length; i++)
 	{
 		properties[notEmptyInputs[i].name.toString()] = notEmptyInputs[i].value.toString();

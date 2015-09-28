@@ -230,7 +230,7 @@ function intersectLayers( layersToIntersect )
 		url += layer.describeUrl;
 		if ( i != layersToIntersect.length-1 )
 		{
-			url += ';'
+			url += ';';
 			layerNames += ' x ';
 		}
 	}

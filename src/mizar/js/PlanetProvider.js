@@ -66,8 +66,7 @@ var pname = new Array("Mercury", "Venus", "Sun",
 function day_number( y, m, d, hour, mins )
 {
     var h = hour + mins/60;
-    var rv = 367*y - Math.floor(7*(y + Math.floor((m + 9)/12))/4) + Math.floor(275*m/9) + d - 730531.5 + h/24;
-    return rv;
+    return 367*y - Math.floor(7*(y + Math.floor((m + 9)/12))/4) + Math.floor(275*m/9) + d - 730531.5 + h/24;
 }
 
 
@@ -498,7 +497,7 @@ function poiDesc(gwLayer, type, name, obj) {
 				fillColor: FeatureStyle.fromStringToColor(obj.color)
 			});
 	}
-	var poi = {
+	return {
 		geometry: {
 			type: "Point",
 			gid: "planet"+type+"_"+name,
@@ -510,7 +509,6 @@ function poiDesc(gwLayer, type, name, obj) {
 			style: style
 		}
 	};
-	return poi;
 }
 
 

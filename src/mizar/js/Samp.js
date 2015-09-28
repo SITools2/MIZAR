@@ -133,7 +133,7 @@ function createClientTracker()
 		{
 			return { text: "ping to you, " + clientTracker.getName(senderId) };
 		}
-	}
+	};
 
 	callHandler["table.load.votable"] = function(senderId, message, isCall) {
 
@@ -237,7 +237,7 @@ function createClientTracker()
 		$('#registerSamp').removeAttr('disabled').button("refresh");
 		$("#unregisterSamp").attr('disabled','disabled').button("refresh");
 		$('#sampInvoker').toggleClass('selected');
-	}
+	};
 
 	return clientTracker;
 }

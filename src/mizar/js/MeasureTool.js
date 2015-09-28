@@ -295,7 +295,7 @@ MeasureTool.prototype.updateMeasure = function()
 		"geometry": {
 			"gid": "measureShape",
 			"coordinates": [coordinates],
-			"type": "Polygon",
+			"type": "Polygon"
 		},
 		"properties": {
 			"style": new FeatureStyle({

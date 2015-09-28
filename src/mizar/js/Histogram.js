@@ -151,17 +151,9 @@ function _sameSide(p1,p2,a,b)
 	var cp2 = [];
 	vec3.cross( vec3.subtract(b,a, temp1), vec3.subtract(p1,a,temp2), cp1 );
 	vec3.cross( temp1, vec3.subtract(p2,a,temp3), cp2 );
-	if ( vec3.dot( cp1,cp2 ) >= 0 )
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-};
-
-/**************************************************************************************************************/
+	return vec3.dot(cp1, cp2) >= 0;
+}
+	/**************************************************************************************************************/
 
 /**
  *	Private function to check if point is inside the given triangle
@@ -169,14 +161,7 @@ function _sameSide(p1,p2,a,b)
  */
 function _pointInTriangle(p,a,b,c)
 {
-	if ( _sameSide(p,a,b,c) && _sameSide(p,b,a,c) && _sameSide(p,c,a,b) )
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (_sameSide(p, a, b, c) && _sameSide(p, b, a, c) && _sameSide(p, c, a, b));
 }
 
 /**************************************************************************************************************/
@@ -226,23 +211,9 @@ var Histogram = function(options)
 
 		self.ctx.clearRect(0., originY, canvas.width, paddingBottom);			
 
-		if ( self.minThreshold.contains( [mousePos.x, mousePos.y, 0] ) )
-		{
-			self.minThreshold.hover = true;
-		}
-		else
-		{
-			self.minThreshold.hover = false;
-		}
+		self.minThreshold.hover = self.minThreshold.contains([mousePos.x, mousePos.y, 0]);
 
-		if ( self.maxThreshold.contains( [mousePos.x, mousePos.y, 0] ) )
-		{
-			self.maxThreshold.hover = true;
-		}
-		else
-		{
-			self.maxThreshold.hover = false;
-		}
+		self.maxThreshold.hover = self.maxThreshold.contains([mousePos.x, mousePos.y, 0]);
 
 		// Draw threshold controls
 		if ( self.minThreshold.dragging && mousePos.x >= self.minThreshold.initA[0] && mousePos.x < self.maxThreshold.a[0] )
@@ -316,7 +287,7 @@ var Histogram = function(options)
 Histogram.prototype.getHistValue = function( position )
 {
 	return Math.floor((((position[0]-originX)/256.)*(this.image.tmax-this.image.tmin) + this.image.tmin)*Math.pow(10,this.accuracy))/Math.pow(10, this.accuracy);
-}
+};
 
 /**************************************************************************************************************/
 

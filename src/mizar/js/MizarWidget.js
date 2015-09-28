@@ -160,7 +160,7 @@ define( [ "jquery", "underscore-min", "./PlanetContext", "./SkyContext", "gw/Til
 				"duration": 3000
 			},
 			"reverseNameResolver" : {
-				"baseUrl" : sitoolsBaseUrl + '/project/mizar/plugin/reverseNameResolver',
+				"baseUrl" : sitoolsBaseUrl + '/project/mizar/plugin/reverseNameResolver'
 			},
 			"coverageService": {
 				"baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/coverage?moc="
