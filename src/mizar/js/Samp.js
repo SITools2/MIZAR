@@ -21,20 +21,20 @@
 /**
  * Samp module : performing communication between applications using SAMP protocol
  */
-define(["jquery", "underscore-min", "gw/FeatureStyle", "gw/VectorLayer", "./Utils", "./JsonProcessor", "samp", "jquery.ui"],
+define(["jquery", "underscore-min", "gw/FeatureStyle", "gw/VectorLayer", "./Utils", "./JsonProcessor", "jquery.ui"],
 	function($, _, FeatureStyle, VectorLayer, Utils, JsonProcessor) {
 
 var mizar;
 var sky;
 var navigation;
-var additionalLayersView;
+//var additionalLayersView;
 var imageManager;
-var tables = {};
-var highlightStyle = new FeatureStyle( {
-	strokeColor: [1., 1., 1., 1.],
-	fillColor: [1., 1., 1., 1.]
-} );
-var highlightedData;
+//var tables = {};
+//var highlightStyle = new FeatureStyle( {
+//	strokeColor: [1., 1., 1., 1.],
+//	fillColor: [1., 1., 1., 1.]
+//} );
+//var highlightedData;
 
 var connector;	// SAMP connector
 var sampLayer;	// SAMP vector layer containing all incoming fits images
