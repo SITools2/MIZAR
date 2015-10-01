@@ -201,10 +201,13 @@ define( [ "jquery", "underscore-min", "./PlanetContext", "./SkyContext", "gw/Til
 			"positionTracker": {
 				"position": "bottom"
 			},
+			"elevationTracker": {
+				"position": "bottom"
+			},
 			"isMobile" : this.isMobile
 		};
 
-		var extendableOptions = [ "navigation", "nameResolver", "stats", "positionTracker" ];
+		var extendableOptions = [ "navigation", "nameResolver", "stats", "positionTracker", "elevationTracker" ];
 		// Merge default options with user ones
 		for ( var i=0; i<extendableOptions.length; i++ ) {
 			var option = extendableOptions[i];
@@ -901,7 +904,8 @@ define( [ "jquery", "underscore-min", "./PlanetContext", "./SkyContext", "gw/Til
 			planetContext.setComponentVisibility("categoryDiv", true);
 			planetContext.setComponentVisibility("searchDiv", true);
 			planetContext.setComponentVisibility("posTracker",this.activatedContext.components.posTracker);
-                        planetContext.setComponentVisibility("compassDiv",false);
+			planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
+			planetContext.setComponentVisibility("compassDiv",false);
 			// Propagate user-defined wish for displaying credits window			
 			planetContext.credits = skyContext.credits;
 

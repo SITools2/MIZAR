@@ -21,8 +21,8 @@
 /**
  * Planet context
  */
-define( [ "jquery", "gw/Globe", "gw/AttributionHandler", "gw/Navigation", "gw/Utils", "./MizarContext", "./PositionTracker","jquery.ui"],
-	function($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker) {
+define( [ "jquery", "gw/Globe", "gw/AttributionHandler", "gw/Navigation", "gw/Utils", "./MizarContext", "./PositionTracker","./ElevationTracker","jquery.ui"],
+	function($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker) {
 
 	/**************************************************************************************************************/
 
@@ -41,7 +41,7 @@ define( [ "jquery", "gw/Globe", "gw/AttributionHandler", "gw/Navigation", "gw/Ut
 	var PlanetContext = function(parentElement, options) {
 
 		MizarContext.prototype.constructor.call( this, parentElement, options );
-			
+
 		// Initialize globe
 		try
 		{
@@ -76,8 +76,9 @@ define( [ "jquery", "gw/Globe", "gw/AttributionHandler", "gw/Navigation", "gw/Ut
 		// Don't update view matrix on creation, since we want to use animation on context change
 		options.navigation.updateViewMatrix = false;
                 // Eye position tracker initialization
-  		PositionTracker.init({ element: "posTracker", globe: this.globe, navigation : this.navigation, isMobile: this.isMobile, positionTracker: options.positionTracker });
- 
+  		PositionTracker.init({ element: "posTracker", globe: this.globe, positionTracker: options.positionTracker });
+		ElevationTracker.init({ element: "elevTracker", globe: this.globe, elevationTracker: options.elevationTracker, elevationLayer: options.planetLayer.elevationLayer });
+
 		this.navigation = new Navigation(this.globe, options.navigation);
 		this.navigation.zoomTo(options.initTarget,18000000);
 	};

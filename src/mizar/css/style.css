@@ -222,12 +222,25 @@ body
 	cursor: pointer;
 }
 
-/*** Position tracker on bottom ***/
-#posTracker
+/*** tracker on bottom ***/
+#tracker
 {
 	position: absolute;
 	left: 45%;
 	color: white;
+	bottom:0;
+}
+
+/*** Position tracker on bottom ***/
+#posTracker
+{
+	position: relative;
+}
+
+/*** Elevation tracker on bottom ***/
+#elevTracker
+{
+	position: relative;
 }
 
 /*** Stylized fade on hover effect ***/
