@@ -27,7 +27,6 @@
     "jquery-ui": "1.11.0",
     "jquery.nicescroll": "~3.6.0",
     "jquery.ui.timepicker": "~0.3.3",
-    "lodash": "~3.10.1",
     "requirejs": "~2.1.20"
   }
 }

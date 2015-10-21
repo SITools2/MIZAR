@@ -24,7 +24,7 @@ require.config({
     paths: {
         "jquery": "../../../bower_components/jquery/dist/jquery.min",
         "jquery.ui": "../../../bower_components/jquery-ui/jquery-ui.min",
-        "underscore-min": "../externals/underscore-1.6.0.min",
+        "underscore-min": "../../../bower_components/underscore/underscore",
         "jquery.nicescroll.min": "../../../bower_components/jquery.nicescroll/dist/jquery.nicescroll.min",
         "fits": "../externals/fits",
         "samp": "../externals/samp",
