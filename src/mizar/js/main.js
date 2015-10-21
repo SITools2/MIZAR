@@ -22,10 +22,10 @@
  */
 require.config({
     paths: {
-        "jquery": "../externals/jquery-1.11.1.min",
-        "jquery.ui": "../externals/jquery-ui-1.11.0.min",
+        "jquery": "../../../bower_components/jquery/dist/jquery.min",
+        "jquery.ui": "../../../bower_components/jquery-ui/jquery-ui.min",
         "underscore-min": "../externals/underscore-1.6.0.min",
-        "jquery.nicescroll.min": "../externals/jquery.nicescroll-3.5.4.min",
+        "jquery.nicescroll.min": "../../../bower_components/jquery.nicescroll/dist/jquery.nicescroll.min",
         "fits": "../externals/fits",
         "samp": "../externals/samp",
         "gzip": "../externals/gzip",
@@ -33,7 +33,7 @@ require.config({
         "deflate-js": "../externals/deflate",
         "inflate-js": "../externals/inflate",
         "wcs": "../externals/wcs",
-        "jquery.ui.timepicker": "../externals/jquery.ui.timepicker",
+        "jquery.ui.timepicker": "../../../bower_components/jquery.ui.timepicker/jquery.ui.timepicker",
         "gw": "../externals/GlobWeb/src"
     },
     shim: {

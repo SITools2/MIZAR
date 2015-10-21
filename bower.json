@@ -1,0 +1,33 @@
+{
+  "name": "MIZAR",
+  "version": "1.0.0",
+  "authors": [
+    "jc.malapert <jc.malapert@cnes.fr>"
+  ],
+  "description": "3D application in a browser for discovering and visualizing geospatial data for sky and planets",
+  "main": "src/mizar/js/main.js",
+  "moduleType": [],
+  "keywords": [
+    "webgl",
+    "mizar"
+  ],
+  "license": "GPLv3",
+  "homepage": "https://github.com/SITools2/MIZAR",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "underscore": "1.6.0",
+    "jquery": "1.11.1",
+    "jquery-ui": "1.11.0",
+    "jquery.nicescroll": "~3.6.0",
+    "jquery.ui.timepicker": "~0.3.3",
+    "lodash": "~3.10.1",
+    "requirejs": "~2.1.20"
+  }
+}
