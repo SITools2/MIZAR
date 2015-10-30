@@ -219,10 +219,10 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
          *        HIPS service URL
          */
         function checkHipsServiceIsAvailable(hipsServiceUrlArray, callback) {
-            if (hipsServiceUrlArray.length <= 0) {
-                return;
+            if (hipsServiceUrlArray.length == 0) {
+                return callback(undefined);
             }
-            var url = hipsServiceUrlArray[0];
+            var url = hipsServiceUrlArray.shift();
             $.ajax({
                 type: 'GET',
                 url: url,
@@ -231,17 +231,10 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                 //timeout: 10000
             }).done(function (data, status, xhr) {
                 if (xhr.status == 200) {
-                    callback(url);
+                    return callback(url);
                 }
             }).error(function () {
-                hipsServiceUrlArray.shift();
                 checkHipsServiceIsAvailable(hipsServiceUrlArray, callback);
-
-            }).always(function (data, status, xhr) {
-                //if (status == "success") {
-                //    callback(hipsServiceUrlArray[0]);
-                //} else if (status == "error") {
-                //}
             });
         }
 
@@ -254,48 +247,72 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
             $.ajax({
                 type: 'GET',
                 url: hipsServiceUrl,
-                context: layerManager
+                context: layerManager,
+                dataType : 'json'
 
-            }).done(function (hipsLayers) {
-                var hipsLayersJSON = jQuery.parseJSON(hipsLayers);
+            }).done(function (hipsLayersJSON) {
                 _.each(hipsLayersJSON, function (hipsLayer) {
-
-                    //var hipsServiceUrlArray = [hipsLayer.hips_service_url, hipsLayer.hips_service_url_1, hipsLayer.hips_service_url_2];
-                    //var hipsUrl = this.checkHipsServiceIsAvailable(hipsServiceUrlArray, function (hipsServiceUrl) {
-
-                        var imageFormat = (hipsLayer.hips_tile_format.match("png")) ? "png" : "jpg";
-                        var coordSystem;
-                        if (hipsLayer.hips_frame === "equatorial")
-                            coordSystem = "EQ";
-                        else if (hipsLayer.hips_frame === "galactic")
-                            coordSystem = "GAL";
-
-                        var layerToAdd = {
-                            category: "Image",
-                            type: "healpix",
-                            name: hipsLayer.obs_collection,
-                            description: hipsLayer.obs_description,
-                            baseUrl: hipsLayer.hips_service_url,
-                            //baseUrl: hipsServiceUrl,
-                            numberOfLevels: hipsLayer.hips_order,
-                            copyright: hipsLayer.obs_copyright,
-                            copyrightUrl: hipsLayer.obs_copyright_url,
-                            describeUrl: hipsLayer.moc_access_url,
-                            serviceUrl: hipsLayer.moc_access_url,
-                            format: imageFormat,
-                            coordSystem : coordSystem,
-                            availableServices: ["Moc"],
-                            background: false,
-                            visible: false
-                        };
-                        var healpixLayer = this.mizar.addLayer(layerToAdd);
-                        healpixLayer.serviceUrl = hipsLayer.moc_access_url;
-
-                    //});
-
-
+                    var hipsServiceUrlArray = getHipsServiceUrlArray(hipsLayer);
+                    var hipsUrl = this.checkHipsServiceIsAvailable(hipsServiceUrlArray, function (hipsServiceUrl) {
+                       if(hipsServiceUrl == undefined){
+                           console.log("Cannot add layer " + hipsLayer.obs_title + " no mirror available");
+                           return;
+                       }
+                        addHIPSLayer(hipsLayer, hipsServiceUrl);
+                    });
                 }, layerManager);
             });
+        }
+
+        function getHipsServiceUrlArray(hipsLayer){
+            var hipsServiceUrlArray = [];
+            if(hipsLayer.hips_service_url) {
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url+"/");
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url);
+            }
+            if(hipsLayer.hips_service_url_1) {
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1+"/");
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1);
+            }
+            if(hipsLayer.hips_service_url_2) {
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2+"/");
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2);
+            }
+            return hipsServiceUrlArray;
+        }
+
+        function addHIPSLayer(hipsLayer, hipsServiceUrl) {
+            var imageFormat;
+            if(hipsLayer.hips_tile_format) {
+                 imageFormat = (hipsLayer.hips_tile_format.match("png")) ? "png" : "jpg";
+            } else {
+                console.log("No hips_tile_format defined for layer  : " + hipsLayer.obs_title );
+                imageFormat = "png";
+            }
+            var coordSystem;
+            if (hipsLayer.hips_frame === "equatorial")
+                coordSystem = "EQ";
+            else if (hipsLayer.hips_frame === "galactic")
+                coordSystem = "GAL";
+
+            var layerToAdd = {
+                category: "Image",
+                type: "healpix",
+                name: hipsLayer.obs_collection,
+                description: hipsLayer.obs_description,
+                baseUrl: hipsServiceUrl,
+                numberOfLevels: hipsLayer.hips_order,
+                copyright: hipsLayer.obs_copyright,
+                copyrightUrl: hipsLayer.obs_copyright_url,
+                serviceUrl: hipsLayer.moc_access_url,
+                format: imageFormat,
+                coordSystem : coordSystem,
+                availableServices: ["Moc"],
+                background: false,
+                visible: false
+            };
+            var healpixLayer = this.mizar.addLayer(layerToAdd);
+            healpixLayer.serviceUrl = hipsLayer.moc_access_url;
         }
 
         /**************************************************************************************************************/
