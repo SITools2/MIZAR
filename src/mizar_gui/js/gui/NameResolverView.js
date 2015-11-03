@@ -21,8 +21,8 @@
 /**
  * Name resolver module : search object name and zoom to them
  */
-define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min", "text!../../templates/nameResolverResult.html", "../jquery.ui"],
-    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate) {
+define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min", "text!../../templates/nameResolverResult.html", "../layer/LayerManager", "../layer/PlanetLayer", "../gui/BackgroundLayersView", "../jquery.ui", "../jquery.once"],
+    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager, PlanetLayer, BackgroundLayersView) {
 
 
         var nameResolverHTML = '<form id="searchForm">\
@@ -132,19 +132,32 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                 response = data;
                 // Fill search result field
                 var output = "";
+                var layers = false;
                 for (var i = 0; i < response.features.length; i++) {
-                    var astro = Utils.formatCoordinates([response.features[i].geometry.coordinates[0], response.features[i].geometry.coordinates[1]]);
-                    output += nameResolverResultTemplate({
-                        properties: response.features[i].properties,
-                        lon: astro[0],
-                        lat: astro[1],
-                        type: mizar.activatedContext.globe.coordinateSystem.type
-                    });
+                    if(response.features[i].properties.type == "layer") {
+                        layers = true;
+                        output += nameResolverResultTemplate({
+                            properties: response.features[i].properties,
+                            lon: 0,
+                            lat: 0,
+                            type: mizar.activatedContext.globe.coordinateSystem.type
+                        });
+                    } else {
+                        var astro = Utils.formatCoordinates([response.features[i].geometry.coordinates[0], response.features[i].geometry.coordinates[1]]);
+                        output += nameResolverResultTemplate({
+                            properties: response.features[i].properties,
+                            lon: astro[0],
+                            lat: astro[1],
+                            type: mizar.activatedContext.globe.coordinateSystem.type
+                        });
+                    }
                 }
 
                 // Show it
                 $resolverSearchResult.html(output).fadeIn(animationDuration);
-                $resolverSearchResult.find('div:first-child').addClass('selected');
+                if(!layers) {
+                    $resolverSearchResult.find('div:first-child').addClass('selected');
+                }
 
                 $nameResolver.find("#searchSpinner").fadeOut(animationDuration);
                 $clear.fadeIn(animationDuration);
@@ -244,7 +257,8 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
             // Clear search result field when pan
             $('canvas').on('click', _clearResults);
 
-            $('#searchDiv').find('#resolverSearchResult').on("click", '.nameResolverResult', _zoomToResult);
+            $('#searchDiv').find('#resolverSearchResult').on("click", '.nameResolverResult.coordinatesResolverResult', _zoomToResult);
+            $('#searchDiv').find('#resolverSearchResult').on("click", '.layerResolverResult .nameResolverResult', _selectLayer);
             $nameResolver.find('#searchClear').on('click', _clearInput);
         }
 
@@ -257,6 +271,66 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
             if (targetFeature) {
                 targetLayer.removeFeature(targetFeature);
                 targetFeature = null;
+            }
+        }
+
+        /**************************************************************************************************************/
+
+        function _selectLayer(event) {
+            var current = $(this).parent();
+            if(current.hasClass("selected")) {
+                return;
+            }
+            $('#resolverSearchResult').find('.selected').removeClass('selected');
+            $('#resolverSearchResult').find('button').removeAttr('style');
+
+            current.addClass('selected');
+
+            var index = $(current).index();
+            var selectedFeature = response.features[index];
+            var layerName = selectedFeature.properties.name;
+            var layer = LayerManager.getLayerByName(layerName);
+
+            var visible = layer._visible;
+            var button = $(current).find('.show_or_hide');
+
+            toggleButtonVisibility(layer, button);
+            button.button().once().click(function(event) {
+                toggleLayer(layer);
+                toggleButtonVisibility(layer, button);
+            });
+        }
+
+        function toggleLayer (layer) {
+            if(layer.category == "background") {
+                $('#backgroundLayersSelect').val(layer.name).iconselectmenu("refresh");
+                //BackgroundLayersView.selectLayer(layer);
+            }
+            else if(layer instanceof PlanetLayer) {
+                // Temporary use visiblity button to change mizar context to "planet"
+                // TODO: change button,
+                mizar.toggleMode(layer);
+            }
+            else {
+                var visible = layer._visible;
+                layer.visible(!visible);
+            }
+            return;
+        }
+
+        function toggleButtonVisibility(layer, button) {
+            var visible = layer._visible;
+            if(layer.category == "background") {
+                if(visible) {
+                    button.hide();
+                }
+                else {
+                    button.show();
+                    $("span", button).text("Show");
+                }
+            }
+            else {
+                $("span", button).text(visible ? "Hide" : "Show");
             }
         }
 
@@ -302,7 +376,8 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                     // Clear search result field when pan
                     $('canvas').off('click', _clearResults);
 
-                    $resolverSearchResult.off("click", '.nameResolverResult', _zoomToResult);
+                    $resolverSearchResult.off("click", '.nameResolverResult.coordinatesResolverResult', _zoomToResult);
+                    $resolverSearchResult.off("click", '.nameResolverResult.layerResolverResult', _selectLayer);
                     $nameResolver.find('#searchClear').off('click', _clearInput);
                     $nameResolver.remove();
                     $nameResolver = null;

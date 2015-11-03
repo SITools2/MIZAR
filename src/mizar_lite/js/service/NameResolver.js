@@ -20,8 +20,8 @@
 /**
  * Name resolver module : API allowing to search object name and zoom to it
  */
-define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLayer", "../gw/HEALPixBase", "text!../../data/mars_resolver.json", "../jquery.ui"],
-    function ($, _, FeatureStyle, VectorLayer, HEALPixBase, marsResolverJSON) {
+define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLayer", "../gw/HEALPixBase", "text!../../data/mars_resolver.json", "../layer/LayerManager", "../jquery.ui"],
+    function ($, _, FeatureStyle, VectorLayer, HEALPixBase, marsResolverJSON, layerManager) {
 
 // Name resolver globals
         var mizar;
@@ -76,8 +76,10 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLay
             var coordinatesExp = new RegExp("\\d{1,2}[h|:]\\d{1,2}[m|:]\\d{1,2}([\\.]\\d+)?s?\\s[-+]?[\\d]+[°|:]\\d{1,2}['|:]\\d{1,2}([\\.]\\d+)?\"?", "g");
             var healpixRE = /^healpix\((\d)+,(\d+)\)/;
             var degRE = /^(\d+(\.\d+)?),?\s(-?\d+(\.\d+)?)/;
+            var layerRE = /^layer:(.)*?/;
             var matchHealpix = healpixRE.exec(objectName);
             var matchDegree = degRE.exec(objectName);
+            var matchLayer = layerRE.exec(objectName);
             if (matchHealpix) {
                 var order = parseInt(matchHealpix[1]);
                 var pixelIndex = parseInt(matchHealpix[2]);
@@ -124,6 +126,42 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLay
                 }
 
                 zoomTo(geo[0], geo[1], onSuccess);
+            }
+            else if (matchLayer) {
+                var layerSearch = objectName.substr("layer:".length);
+                var layers =[];
+                if(mizar.mode == "planet") {
+                    layers = layerManager.searchPlanetLayer(layerSearch);
+                }
+                else {
+                    layers = layerManager.searchGlobeLayer(layerSearch);
+                }
+
+                layers = _.sortBy(layers, function(layer) {
+                    return (layer.category=="background") ? 0 : 1;
+                });
+
+                var results = {};
+                results.type = "FeatureCollection";
+                results.features = [];
+                _.each(layers, function (layer) {
+                    results.features.push(
+                        {
+                            type : 'Feature',
+                            properties : {
+                                type : 'layer',
+                                name: layer.name,
+                                description : layer.description,
+                                layerType : layer.type,
+                                visible : layer._visible,
+                                background : layer.category=="background"
+                            }
+                        }
+                    )
+                });
+
+                onSuccess(results);
+
             }
             else {
                 if (dictionary) {

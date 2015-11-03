@@ -43,6 +43,7 @@ define(["../jquery", "../underscore-min", "../gw/BaseLayer", "../gw/WMSLayer", "
                 var gwLayer = new WMSLayer(planetDesc);
                 gwLayer.background = true;
                 gwLayer.category = "background";
+                gwLayer.type = "WMS";
                 this.baseImageries.push(gwLayer);
             }
             if (options.elevation) {

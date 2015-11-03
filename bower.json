@@ -24,9 +24,11 @@
   "dependencies": {
     "underscore": "1.6.0",
     "jquery": "1.11.1",
-    "jquery-ui": "1.11.0",
+    "jquery-ui": "1.11.4",
     "jquery.nicescroll": "~3.6.0",
     "jquery.ui.timepicker": "~0.3.3",
-    "requirejs": "~2.1.20"
+    "requirejs": "~2.1.20",
+    "string": "~3.3.1",
+    "jquery-once": "~2.1.1"
   }
 }

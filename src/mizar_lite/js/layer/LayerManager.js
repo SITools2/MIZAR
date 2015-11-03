@@ -21,9 +21,9 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLayer", "../gw/VectorLayer", "../gw/CoordinateGridLayer", "../gw/TileWireframeLayer", "../gw/OpenSearchLayer", "../gw/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../jquery.ui"],
+define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLayer", "../gw/VectorLayer", "../gw/CoordinateGridLayer", "../gw/TileWireframeLayer", "../gw/OpenSearchLayer", "../gw/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer) {
+              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
 
         /**
          * Private variables
@@ -355,13 +355,34 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
             },
 
             /**
+             *    Get current layers
+             */
+            getAllLayers: function () {
+                return _.union(this.getLayers(), this.getPlanetLayers());
+            },
+
+            getPlanetLayers: function() {
+                var layers = planetLayers;
+                var planetLayer = _.filter(gwLayers, function (layer) {
+                    return (layer instanceof PlanetLayer);
+                });
+
+                if (planetLayer && planetLayer.length > 0) {
+                    for (var i = 0; i < planetLayer.length; i++) {
+                        layers = _.union(layers, planetLayer[i].layers);
+                    }
+                }
+                return layers;
+            },
+
+            /**
              *    Get current layer by ID
              *
              *    @param layerId
              *          The layer ID
              */
             getLayerById: function (layerId) {
-                _.find(gwLayers, function (layer) {
+                _.find(_.union(this.getAllLayers()), function (layer) {
                     return (layer.layerId === layerId);
                 });
             },
@@ -374,13 +395,7 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
              *    @return an array of layers
              */
             getLayerByName: function (layerName) {
-                var layersFound = [];
-                _.each(gwLayers, function (layer) {
-                    if (layer.layerName === layerName) {
-                        layersFound.push(layer);
-                    }
-                });
-                return layersFound;
+                return _.findWhere(this.getAllLayers(), {name: layerName});
             },
 
             /**
@@ -419,7 +434,7 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
             },
 
             /**
-             *    Add layer to glbe depending on Mizar's mode
+             *    Add layer to globe depending on Mizar's mode
              *
              *    @param gwLayer
              *        GlobWeb layer
@@ -600,6 +615,34 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                 this.addLayer(gwLayer, mizar.activatedContext.planetLayer);
                 return gwLayer;
             },
+
+            /**
+             *    Get one or several layers corresponding to the given query string
+             *
+             *    @param queryString
+             *          The query string
+             *    @return an array of layers
+             */
+            searchGlobeLayer: function (query) {
+                var results = [];
+                var layers = this.getLayers();
+                //Search by name
+                results = _.filter(layers, function(layer) {
+                    return (String(layer.name).contains(query) || String(layer.description||"").contains(query));
+                });
+                return results;
+            },
+
+            searchPlanetLayer: function (query) {
+                var results = [];
+                var layers = this.getPlanetLayers();
+                //Search by name
+                results = _.filter(layers, function(layer) {
+                    return (String(layer.name).contains(query) || String(layer.description||"").contains(query));
+                });
+                return results;
+            },
+
 
             createSimpleLayer: createSimpleLayer,
             checkHipsServiceIsAvailable : checkHipsServiceIsAvailable

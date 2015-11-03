@@ -99,3 +99,18 @@ input#searchClear {
 	top: 15px;
 	right: 21px;
 }
+
+.layerResolverResult {
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+}
+
+.layerResolverResult button {
+    display: none;
+}
+
+.layerResolverResult.selected button {
+    display: inline-block;
+}
+
+

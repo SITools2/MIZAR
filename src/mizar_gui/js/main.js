@@ -26,7 +26,8 @@ require.config({
         "jquery.ui": "../../../bower_components/jquery-ui/jquery-ui.min",
         "underscore-min": "../../../bower_components/underscore/underscore",
         "jquery.nicescroll.min": "../../../bower_components/jquery.nicescroll/dist/jquery.nicescroll.min",
-        "fits": "../../mizar_lite/externals/fits",
+		"string": "../../../bower_components/string/dist/string.min",        
+		"fits": "../../mizar_lite/externals/fits",
         "samp": "../../mizar_lite/externals/samp",
         "gzip": "../../mizar_lite/externals/gzip",
         "crc32": "../../mizar_lite/externals/crc32",
@@ -35,6 +36,7 @@ require.config({
         "wcs": "../../mizar_lite/externals/wcs",
         "jquery.ui.timepicker": "../../../bower_components/jquery.ui.timepicker/jquery.ui.timepicker",
         "gw": "../../mizar_lite/externals/GlobWeb/src",
+		"jquery.once": "../../../bower_components/jquery-once/jquery.once.min",
 
         // requirements Mizar_Lite
         "context" : "../../mizar_lite/js/context",
