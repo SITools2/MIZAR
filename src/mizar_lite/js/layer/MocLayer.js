@@ -21,8 +21,8 @@
 /**
  * Moc renderer/layer module
  */
-define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "../gw/HEALPixBase"],
-    function ($, BaseLayer, FeatureStyle, Utils, HEALPixBase) {
+define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "../gw/HEALPixBase", "../layer/FitsLoader"],
+    function ($, BaseLayer, FeatureStyle, Utils, HEALPixBase, FitsLoader) {
 
         /**
          *    @constructor
@@ -68,18 +68,44 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
             BaseLayer.prototype._attach.call(this, g);
 
             var self = this;
-            $.ajax({
-                type: "GET",
-                url: self.serviceUrl,
-                dataType: 'json',
-                success: function (response) {
-                    self.handleDistribution(response);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    $('#addLayer_' + self.id).find('label').css("color", "red");
-                    console.error(xhr.responseText);
-                }
-            });
+
+            if (self.serviceUrl.search(/[/.fits]+$/g) != 1) {
+                FitsLoader.loadFits(self.serviceUrl, function (fits) {
+                    var healpixMoc = {};
+                    var binaryTable = fits.getHDU(1).data;
+
+                    // setting startOrder with first order in dataTable
+                    //self.startOrder = uniq2hpix(binaryTable.getRow(0)[binaryTable.columns[0]])[0];
+
+                    for(var i = 0; i < binaryTable.rows; i++) {
+                        var uniq = binaryTable.getRow(i);
+                        var hpix = uniq2hpix(uniq[binaryTable.columns[0]]);
+
+                        var order = hpix[0];
+                        if (healpixMoc[order] == undefined) {
+                            healpixMoc[order] = [];
+                        }
+                        healpixMoc[order].push(hpix[1]);
+                    }
+                    console.dir(healpixMoc);
+                    self.handleDistribution(healpixMoc);
+                });
+
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: self.serviceUrl,
+                    dataType: 'json',
+                    success: function (response) {
+                        self.handleDistribution(response);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $('#addLayer_' + self.id).find('label').css("color", "red");
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
 
             // As post renderer, moc layer will regenerate data on tiles in case of base imagery change
             g.tileManager.addPostRenderer(this);
@@ -186,7 +212,12 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
                     else {
                         // Handle low orders(< 3) by creating children polygons of order 3
                         var indices = this.findChildIndices(pixelIndex, order);
-                        response[this.startOrder.toString()] = response[this.startOrder.toString()].concat(indices);
+                        if (response[this.startOrder.toString()] == undefined) {
+                            response[this.startOrder.toString()] = response[0].concat(indices);
+                        } else {
+                            response[this.startOrder.toString()] = response[this.startOrder.toString()].concat(indices);
+
+                        }
                         continue;
                     }
 
@@ -254,6 +285,26 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
                     this.globe.vectorRendererManager.addGeometryToTile(this, geometry, this.style, parentTile);
                 }
             }
+        };
+
+        function uniq2hpix(uniq, hpix) {
+            if (hpix == null)
+                hpix = [];
+            hpix[0] = log2(uniq / 4) / 2;
+            var nside = pow2(hpix[0]);
+            hpix[1] = uniq - 4 * nside * nside;
+            hpix[0] = parseInt(hpix[0]);
+            return hpix;
+        };
+
+        function log2(nside) {
+            var i = 0;
+            while ((nside >>> (++i)) > 0);
+            return --i;
+        };
+
+        function pow2(order) {
+            return 1 << order;
         };
 
         return MocLayer;

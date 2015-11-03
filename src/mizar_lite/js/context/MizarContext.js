@@ -22,7 +22,7 @@
  *    Abstract class for mizar context
  *    Implemented by SkyContext and PlanetContext
  */
-define(["../jquery", "../underscore-min", "../gui/ErrorDialog", "../gui/AboutDialog", "../jquery.ui"],
+define(["../jquery", "../underscore-min", "../gui_core/ErrorDialog", "../gui_core/AboutDialog", "../jquery.ui"],
     function ($, _, ErrorDialog, AboutDialog) {
 
         /**************************************************************************************************************/

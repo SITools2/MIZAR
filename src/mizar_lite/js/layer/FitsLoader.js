@@ -39,7 +39,12 @@ define(["../fits"], function () {
         var uintPixels;
         var swapPixels = new Uint8Array(data.view.buffer, data.begin, data.length); // with gl.UNSIGNED_byte
 
-        var bpe = data.arrayType.BYTES_PER_ELEMENT;
+        var bpe;
+        if (data.arrayType) {
+            bpe = data.arrayType.BYTES_PER_ELEMENT;
+        } else {
+            bpe = Math.abs(hdu.header.BITPIX) / 8;
+        }
         for (var i = 0; i < swapPixels.length; i += bpe) {
             var temp;
             // Swap to little-endian

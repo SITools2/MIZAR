@@ -877,7 +877,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                         "baseUrl": gwLayer.revereseNameResolverURL	// TODO: define protocol for reverse name resolver
                     }
                 };
-                planetConfiguration.renderContext['shadersPath'] = "externals/GlobWeb/shaders/";
+                planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
                 planetConfiguration = $.extend({}, options, planetConfiguration);
                 planetContext = new PlanetContext(parentElement, planetConfiguration);
                 planetContext.setComponentVisibility("categoryDiv", true);

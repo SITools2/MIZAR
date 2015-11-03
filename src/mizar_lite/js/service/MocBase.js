@@ -34,38 +34,44 @@ define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils"],
          */
         function requestMocDesc(layer, successCallback, errorCallback) {
             // Get moc template
-            $.ajax({
-                type: "GET",
-                url: layer.serviceUrl,
-                dataType: "xml",
-                success: function (xml) {
-                    var mocdesc = $(xml).find('Url[rel="mocdesc"]');
-                    var describeUrl = $(mocdesc).attr("template");
-                    if (describeUrl) {
-                        // Cut request parameters if exists
-                        var splitIndex = describeUrl.indexOf("?q=");
-                        if (splitIndex != -1) {
-                            describeUrl = describeUrl.substring(0, splitIndex);
-                        }
-                        layer.describeUrl = describeUrl;
-                        successCallback(layer);
 
-                    }
-                    else {
+            // case moc url service return a fits file
+            if (layer.serviceUrl && layer.serviceUrl.search(/[/.fits]+$/g) != 1) {
+                layer.describeUrl = layer.serviceUrl;
+                successCallback(layer);
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: layer.serviceUrl,
+                    //dataType: "xml",
+                    success: function (xml) {
+                        var mocdesc = $(xml).find('Url[rel="mocdesc"]');
+                        var describeUrl = $(mocdesc).attr("template");
+                        if (describeUrl) {
+                            // Cut request parameters if exists
+                            var splitIndex = describeUrl.indexOf("?q=");
+                            if (splitIndex != -1) {
+                                describeUrl = describeUrl.substring(0, splitIndex);
+                            }
+                            layer.describeUrl = describeUrl;
+                            successCallback(layer);
+
+                        }
+                        else {
+                            layer.describeUrl = "Not available";
+                            layer.coverage = "Not available";
+                            if (errorCallback)
+                                errorCallback(layer);
+                        }
+                    },
+                    error: function (xhr) {
                         layer.describeUrl = "Not available";
                         layer.coverage = "Not available";
                         if (errorCallback)
                             errorCallback(layer);
                     }
-                },
-                error: function (xhr) {
-                    layer.describeUrl = "Not available";
-                    layer.coverage = "Not available";
-                    if (errorCallback)
-                        errorCallback(layer);
-                }
-            });
-
+                });
+            }
         }
 
         /**************************************************************************************************************/

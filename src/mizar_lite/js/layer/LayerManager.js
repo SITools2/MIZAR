@@ -54,6 +54,7 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
             // Create style
             var options = {
                 name: name,
+                id: _.uniqueId(name + '_'),
                 style: new FeatureStyle({
                     iconUrl: configuration.mizarBaseUrl + "css/images/star.png",
                     fillColor: rgba,
@@ -211,6 +212,94 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
 
         /**************************************************************************************************************/
 
+        /**
+         *    Load HIPS layers from passed service url
+         *
+         *    @param hipsServiceUrl
+         *        HIPS service URL
+         */
+        function checkHipsServiceIsAvailable(hipsServiceUrlArray, callback) {
+            if (hipsServiceUrlArray.length <= 0) {
+                return;
+            }
+            var url = hipsServiceUrlArray[0];
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType : 'text'
+                //context: layerManager,
+                //timeout: 10000
+            }).done(function (data, status, xhr) {
+                if (xhr.status == 200) {
+                    callback(url);
+                }
+            }).error(function () {
+                hipsServiceUrlArray.shift();
+                checkHipsServiceIsAvailable(hipsServiceUrlArray, callback);
+
+            }).always(function (data, status, xhr) {
+                //if (status == "success") {
+                //    callback(hipsServiceUrlArray[0]);
+                //} else if (status == "error") {
+                //}
+            });
+        }
+
+        /**************************************************************************************************************/
+
+        /**
+         *    load HIPS layers from passed service url
+         */
+        function loadHIPSLayers(layerManager, hipsServiceUrl) {
+            $.ajax({
+                type: 'GET',
+                url: hipsServiceUrl,
+                context: layerManager
+
+            }).done(function (hipsLayers) {
+                var hipsLayersJSON = jQuery.parseJSON(hipsLayers);
+                _.each(hipsLayersJSON, function (hipsLayer) {
+
+                    //var hipsServiceUrlArray = [hipsLayer.hips_service_url, hipsLayer.hips_service_url_1, hipsLayer.hips_service_url_2];
+                    //var hipsUrl = this.checkHipsServiceIsAvailable(hipsServiceUrlArray, function (hipsServiceUrl) {
+
+                        var imageFormat = (hipsLayer.hips_tile_format.match("png")) ? "png" : "jpg";
+                        var coordSystem;
+                        if (hipsLayer.hips_frame === "equatorial")
+                            coordSystem = "EQ";
+                        else if (hipsLayer.hips_frame === "galactic")
+                            coordSystem = "GAL";
+
+                        var layerToAdd = {
+                            category: "Image",
+                            type: "healpix",
+                            name: hipsLayer.obs_collection,
+                            description: hipsLayer.obs_description,
+                            baseUrl: hipsLayer.hips_service_url,
+                            //baseUrl: hipsServiceUrl,
+                            numberOfLevels: hipsLayer.hips_order,
+                            copyright: hipsLayer.obs_copyright,
+                            copyrightUrl: hipsLayer.obs_copyright_url,
+                            describeUrl: hipsLayer.moc_access_url,
+                            serviceUrl: hipsLayer.moc_access_url,
+                            format: imageFormat,
+                            coordSystem : coordSystem,
+                            availableServices: ["Moc"],
+                            background: false,
+                            visible: false
+                        };
+                        var healpixLayer = this.mizar.addLayer(layerToAdd);
+                        healpixLayer.serviceUrl = hipsLayer.moc_access_url;
+
+                    //});
+
+
+                }, layerManager);
+            });
+        }
+
+        /**************************************************************************************************************/
+
         return {
             /**
              *    Init
@@ -228,6 +317,7 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
 
                 // TODO : Call init layers
                 //initLayers(configuration.layers);
+                loadHIPSLayers(this, conf.hipsServiceUrl);
             },
 
             /**
@@ -245,6 +335,35 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
              */
             getLayers: function () {
                 return gwLayers;
+            },
+
+            /**
+             *    Get current layer by ID
+             *
+             *    @param layerId
+             *          The layer ID
+             */
+            getLayerById: function (layerId) {
+                _.find(gwLayers, function (layer) {
+                    return (layer.layerId === layerId);
+                });
+            },
+
+            /**
+             *    Get one or several layers having the same name
+             *
+             *    @param layerName
+             *          The layer name
+             *    @return an array of layers
+             */
+            getLayerByName: function (layerName) {
+                var layersFound = [];
+                _.each(gwLayers, function (layer) {
+                    if (layer.layerName === layerName) {
+                        layersFound.push(layer);
+                    }
+                });
+                return layersFound;
             },
 
             /**
@@ -465,7 +584,8 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                 return gwLayer;
             },
 
-            createSimpleLayer: createSimpleLayer
+            createSimpleLayer: createSimpleLayer,
+            checkHipsServiceIsAvailable : checkHipsServiceIsAvailable
         };
 
     });

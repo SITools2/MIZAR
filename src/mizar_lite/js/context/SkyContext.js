@@ -22,7 +22,7 @@
  * Sky context
  */
 define(["../jquery", "../underscore-min", "../gw/Sky", "../gw/AstroNavigation", "../gw/Utils",
-        "./MizarContext", "../layer/LayerManager", "../gui/PositionTracker", "../jquery.ui"],
+        "./MizarContext", "../layer/LayerManager", "../gui_core/PositionTracker", "../jquery.ui"],
     function ($, _, Sky, AstroNavigation, Utils,
               MizarContext, LayerManager, PositionTracker) {
 

@@ -21,7 +21,7 @@
 /**
  * Planet context
  */
-define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigation", "../gw/Utils", "./MizarContext", "../gui/PositionTracker", "../gui/ElevationTracker", "../jquery.ui"],
+define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigation", "../gw/Utils", "./MizarContext", "../gui_core/PositionTracker", "../gui_core/ElevationTracker", "../jquery.ui"],
     function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker) {
 
         /**************************************************************************************************************/
