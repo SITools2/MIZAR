@@ -22,7 +22,7 @@
  *    Layer service view
  *    The view representing the services for each layer
  */
-define(["../jquery", "../service/OpenSearchService", "../service/MocService", "../service/XMatchService", "../uws/HEALPixCutService", "../jquery.ui"],
+define(["../jquery", "../service_gui/OpenSearchService", "../service_gui/MocService", "../service_gui/XMatchService", "../uws_gui/HEALPixCutService", "../jquery.ui"],
     function ($, OpenSearchService, MocService, XMatchService, HEALPixCutService) {
 
         var layerServiceView = '<div id="layerServiceView" title="Available services">\

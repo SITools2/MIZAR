@@ -51,6 +51,8 @@ define(["../jquery", "../gw/VectorLayer", "../gw/Ray", "../gw/Numeric", "../gw/F
 
             this.measureFeature = null;
 
+            this.mode = options.mode;
+
             // Measure attributes
             this.distance;
             this.pickPoint; // Window pick point
@@ -140,7 +142,12 @@ define(["../jquery", "../gw/VectorLayer", "../gw/Ray", "../gw/Numeric", "../gw/F
                 self.updateMeasure();
             };
 
-            this.renderContext.canvas.addEventListener("mousedown", $.proxy(_handleMouseDown, this));
+            if (self.mode == "planet") {
+                this.renderContext.canvas.addEventListener("contextmenu", $.proxy(_handleMouseDown, this));
+            } else {
+                this.renderContext.canvas.addEventListener("mousedown", $.proxy(_handleMouseDown, this));
+            }
+
             this.renderContext.canvas.addEventListener("mousemove", $.proxy(_handleMouseMove, this));
             this.renderContext.canvas.addEventListener("mouseup", $.proxy(_handleMouseUp, this));
 

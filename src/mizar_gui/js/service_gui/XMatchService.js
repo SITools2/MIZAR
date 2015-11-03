@@ -21,7 +21,7 @@
 /**
  *    Moc xMatch service
  */
-define(["../jquery", "../layer/LayerManager", "../gw/FeatureStyle", "../layer/MocLayer", "./MocBase", "../gw/OpenSearchLayer", "../gui/ErrorDialog", "../underscore-min", "text!../../templates/mocServiceItem.html", "../jquery.ui"],
+define(["../jquery", "../layer/LayerManager", "../gw/FeatureStyle", "../layer/MocLayer", "../service/MocBase", "../gw/OpenSearchLayer", "../gui_core/ErrorDialog", "../underscore-min", "text!../templates/mocServiceItem.html", "../jquery.ui"],
     function ($, LayerManager, FeatureStyle, MocLayer, MocBase, OpenSearchLayer, ErrorDialog, _, mocServiceHTMLTemplate) {
 
 // Template generating the services html

@@ -34,7 +34,20 @@ require.config({
         "inflate-js": "../externals/inflate",
         "wcs": "../externals/wcs",
         "jquery.ui.timepicker": "../../../bower_components/jquery.ui.timepicker/jquery.ui.timepicker",
-        "gw": "../externals/GlobWeb/src"
+        "gw": "../../mizar_lite/externals/GlobWeb/src",
+
+        // requirements Mizar_Lite
+        "context" : "../../mizar_lite/js/context",
+        "layer" : "../../mizar_lite/js/layer",
+        "provider" : "../../mizar_lite/js/provider",
+        "service" : "../../mizar_lite/js/service",
+        "service_gui" : "./service_gui",
+        "uws" : "../../mizar_lite/js/uws",
+        "uws_gui" : "./uws",
+        "templates" : "../templates",
+        "gui_core" : "../../mizar_lite/js/gui",
+        "data" : "../data",
+
     },
     shim: {
         'jquery': {
@@ -113,6 +126,4 @@ require(["./MizarWidget"], function (MizarWidget) {
     var marsLayer = mizar.getLayer("Mars");
     mizar.addLayer(atmosMarsLayer, marsLayer);
     mizar.addLayer(coordLayer, marsLayer);
-
-
 });

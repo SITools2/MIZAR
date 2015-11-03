@@ -21,8 +21,8 @@
 /**
  * Mizar widget
  */
-define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/TileWireframeLayer", "gw/Stats", "gw/AttributionHandler", "gw/Event", "gw/TouchNavigationHandler", "gw/MouseNavigationHandler", "gw/KeyboardNavigationHandler", "text!../templates/mizarCore.html", "text!../data/backgroundSurveys.json",
-        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui/ErrorDialog", "./gui/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
+define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/TileWireframeLayer", "gw/Stats", "gw/AttributionHandler", "gw/Event", "gw/TouchNavigationHandler", "gw/MouseNavigationHandler", "gw/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
+        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
         "gw/ConvexPolygonRenderer", "gw/PointSpriteRenderer", "gw/LineStringRenderable", "gw/PointRenderer", "jquery.ui"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
               LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureTool) {
@@ -195,7 +195,8 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 "elevationTracker": {
                     "position": "bottom"
                 },
-                "isMobile": this.isMobile
+                "isMobile": this.isMobile,
+                "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
             };
 
             var extendableOptions = ["navigation", "nameResolver", "stats", "positionTracker", "elevationTracker"];
@@ -514,12 +515,14 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
          */
         MizarWidget.prototype.setAngleDistanceGui = function (visible) {
             if (visible) {
+
                 // Distance measure tool lazy initialization
                 if (!this.measureTool) {
                     this.measureTool = new MeasureTool({
                         globe: this.sky,
                         navigation: this.navigation,
-                        isMobile: this.isMobile
+                        isMobile: this.isMobile,
+                        mode: this.mode
                     });
                 }
             }
@@ -767,6 +770,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
          */
         MizarWidget.prototype.requestMoc = function (layer, callback) {
             var mocLayer = MocBase.findMocSublayer(layer);
+            layer.globe = this.sky;
 
             // Create if doesn't exist
             if (!mocLayer) {
@@ -881,6 +885,8 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 planetContext.setComponentVisibility("posTracker", this.activatedContext.components.posTracker);
                 planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
                 planetContext.setComponentVisibility("compassDiv", false);
+                planetContext.setComponentVisibility("measureContainer", true);
+
                 // Propagate user-defined wish for displaying credits window
                 planetContext.credits = skyContext.credits;
 
@@ -903,6 +909,14 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     planetContext.show();
                     planetContext.globe.refresh();
                     self.publish("mizarMode:toggle", gwLayer);
+
+                    console.log('new Measure Tool for Planet');
+                    //this.measureTool = new MeasureTool({
+                    //    globe: planetContext.globe,
+                    //    navigation: planetContext.navigation,
+                    //    isMobile: self.isMobile,
+                    //    mode : self.mode
+                    //});
                 });
             }
         };

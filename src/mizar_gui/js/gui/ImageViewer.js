@@ -18,7 +18,7 @@
  ******************************************************************************/
 /*global define: false */
 
-define(["require", "../jquery", "../gw/FeatureStyle", "./PickingManager", "./ImageManager", "./ImageProcessing", "./SimpleProgressBar", "../Utils", "../service/Samp", "./ErrorDialog", "../underscore-min", "text!../../templates/imageViewer.html", "text!../../templates/imageViewerLayerItem.html", "text!../../templates/imageViewerImageItem.html", "../jquery.ui"],
+define(["require", "../jquery", "../gw/FeatureStyle", "./PickingManager", "./ImageManager", "./ImageProcessing", "./SimpleProgressBar", "../Utils", "../service/Samp", "../gui_core/ErrorDialog", "../underscore-min", "text!../../templates/imageViewer.html", "text!../../templates/imageViewerLayerItem.html", "text!../../templates/imageViewerImageItem.html", "../jquery.ui"],
     function (require, $, FeatureStyle, PickingManager, ImageManager, ImageProcessing, SimpleProgressBar, Utils, Samp, ErrorDialog, _, imageViewerHTML, imageViewerLayerItemHTMLTemplate, imageViewerImageItemHTMLTemplate) {
 
         var mizar;

@@ -21,7 +21,7 @@
 /**
  * AdditionalLayersView module
  */
-define(["../jquery", "../gw/FeatureStyle", "../gw/OpenSearchLayer", "../layer/LayerManager", "../layer/HEALPixFITSLayer", "../layer/MocLayer", "../layer/PlanetLayer", "../gw/VectorLayer", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "./ErrorDialog", "../Utils", "../underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "../jquery.nicescroll.min", "../jquery.ui"],
+define(["../jquery", "../gw/FeatureStyle", "../gw/OpenSearchLayer", "../layer/LayerManager", "../layer/HEALPixFITSLayer", "../layer/MocLayer", "../layer/PlanetLayer", "../gw/VectorLayer", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "../gui_core/ErrorDialog", "../Utils", "../underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "../jquery.nicescroll.min", "../jquery.ui"],
     function ($, FeatureStyle, OpenSearchLayer, LayerManager, HEALPixFITSLayer, MocLayer, PlanetLayer, VectorLayer, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
 
         var mizar;
