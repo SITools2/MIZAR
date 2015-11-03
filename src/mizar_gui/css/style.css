@@ -170,7 +170,8 @@ body
 	margin-top: 5px;
 	top: 10px;
 	pointer-events: none;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
 	width: 275px;
 	max-height: 95%;
 }

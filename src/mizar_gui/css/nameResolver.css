@@ -72,7 +72,7 @@ input#searchClear {
 }
 
 /*** Result field ***/
-#resolverSearchResult {
+#resolverSearchResult-container {
 	text-align: center;
 	width: 210px;
 	margin-left: 40px;

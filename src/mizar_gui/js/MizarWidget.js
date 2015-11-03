@@ -197,6 +197,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 },
                 "isMobile": this.isMobile,
                 "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
+				//hipsServiceUrl : '/mizar/tests/hips_registry.json'
             };
 
             var extendableOptions = ["navigation", "nameResolver", "stats", "positionTracker", "elevationTracker"];
@@ -813,13 +814,13 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
         /**
          *    View planet with the given name
          */
-        MizarWidget.prototype.viewPlanet = function (planetName) {
+        MizarWidget.prototype.viewPlanet = function (planetName, planetDimension) {
             var planetLayer = this.getLayer(planetName);
             if (planetLayer) {
                 // HACK : mizar must be in sky mode to be toggled to earth mode
                 // TODO: think about better mode management..
                 this.mode = "sky";
-                this.toggleMode(planetLayer);
+                this.toggleMode(planetLayer, planetDimension);
             }
             else {
                 console.error("No planet with name : " + planetName + " has been found");
@@ -832,7 +833,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
         /**
          *    Toggle between planet/sky mode
          */
-        MizarWidget.prototype.toggleMode = function (gwLayer) {
+        MizarWidget.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
             this.mode = (this.mode === "sky") ? "planet" : "sky";
             var self = this;
             if (this.mode === "sky") {
@@ -854,6 +855,9 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     // Show sky
                     skyContext.show();
                     self.sky.refresh();
+                    if(callback) {
+                        callback.call(this);
+                    }
                 });
 
             } else {
@@ -879,6 +883,10 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 };
                 planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
                 planetConfiguration = $.extend({}, options, planetConfiguration);
+                if(!planetDimension) {
+                    planetDimension = "3d";
+                }
+                planetConfiguration.mode = planetDimension;
                 planetContext = new PlanetContext(parentElement, planetConfiguration);
                 planetContext.setComponentVisibility("categoryDiv", true);
                 planetContext.setComponentVisibility("searchDiv", true);
@@ -899,13 +907,21 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 this.oldVM = this.sky.renderContext.viewMatrix;
                 this.oldFov = this.sky.renderContext.fov;
 
-                // Compute planet view matrix
-                var planetVM = mat4.create();
-                planetContext.navigation.computeInverseViewMatrix();
-                mat4.inverse(planetContext.navigation.inverseViewMatrix, planetVM);
 
-                // Add smooth animation from sky context to planet context
-                this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
+                if(planetContext.mode == planetContext.THREE_DIMENSION_MODE) {
+                    //Compute planet view matrix
+                    var planetVM = mat4.create();
+                    planetContext.navigation.computeInverseViewMatrix();
+                    mat4.inverse(planetContext.navigation.inverseViewMatrix, planetVM);
+
+                    // Add smooth animation from sky context to planet context
+                    this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
+                        planetContext.show();
+                        planetContext.globe.refresh();
+                        self.publish("mizarMode:toggle", gwLayer);
+                    });
+                }
+                else {
                     planetContext.show();
                     planetContext.globe.refresh();
                     self.publish("mizarMode:toggle", gwLayer);
@@ -917,9 +933,36 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     //    isMobile: self.isMobile,
                     //    mode : self.mode
                     //});
-                });
+                };
             }
         };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Toggle between planet/sky mode
+         */
+        MizarWidget.prototype.toggleDimension = function (gwLayer) {
+            if (this.mode === "sky") {
+                return;
+            }
+
+            var dimension = planetContext.toggleDimension();
+            var callback = function() {
+                this.viewPlanet("Mars", dimension);
+            }.bind(this);
+
+            this.toggleMode(undefined, undefined, callback);
+
+            //// Hide planet
+            //planetContext.hide();
+            //// Destroy planet context
+            //planetContext.destroy();
+            //planetContext = null;
+
+
+            //this.viewPlanet("Mars", dimension);
+        }
 
         return MizarWidget;
 

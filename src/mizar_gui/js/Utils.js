@@ -219,6 +219,16 @@ define(["wcs"], function () {
                     sLonBarycenter = sLon / nbPoints;
                     sLatBarycenter = sLat / nbPoints;
                     break;
+                case "LineString":
+                    //TODO check avec JCM
+                    _.each(geometry.coordinates, function(value, i) {
+                        sLon += value[0];
+                        sLat += value[1];
+                        nbPoints++;
+                    });
+                    sLonBarycenter = sLon / nbPoints;
+                    sLatBarycenter = sLat / nbPoints;
+                    break;
                 default:
                     return;
             }

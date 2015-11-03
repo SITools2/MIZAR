@@ -203,12 +203,16 @@ define(["../jquery", "../underscore-min", "../layer/LayerManager", "./DynamicIma
                     $el.find('.backToSky').button().click(function (event) {
                         self.mizar.toggleMode();
                     });
+                    $el.find('.2d3dswitch').button().click(function (event) {
+                        self.mizar.toggleDimension();
+                    });
 
                     $el.find("#backgroundOptions").hide();
                 }
                 else {
                     // Already in sky mode
                     $el.find('.backToSky').hide();
+                    $el.find('.2d3dswitch').hide();
 
                     $el.find('.layerServices').button({
                         text: false,

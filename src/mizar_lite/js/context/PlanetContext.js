@@ -21,8 +21,8 @@
 /**
  * Planet context
  */
-define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigation", "../gw/Utils", "./MizarContext", "../gui_core/PositionTracker", "../gui_core/ElevationTracker", "../jquery.ui"],
-    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker) {
+define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigation", "../gw/Utils", "./MizarContext", "../gui_core/PositionTracker", "../gui_core/ElevationTracker", "../gw/FlatNavigation", "../gw/MercatorCoordinateSystem", "../jquery.ui"],
+    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem) {
 
         /**************************************************************************************************************/
 
@@ -41,6 +41,7 @@ define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigatio
         var PlanetContext = function (parentElement, options) {
 
             MizarContext.prototype.constructor.call(this, parentElement, options);
+            this.mode = options.mode;
 
             // Initialize globe
             try {
@@ -73,15 +74,22 @@ define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigatio
             options.navigation.updateViewMatrix = false;
             // Eye position tracker initialization
             PositionTracker.init({element: "posTracker", globe: this.globe, positionTracker: options.positionTracker});
-            ElevationTracker.init({
-                element: "elevTracker",
-                globe: this.globe,
-                elevationTracker: options.elevationTracker,
-                elevationLayer: options.planetLayer.elevationLayer
-            });
 
-            this.navigation = new Navigation(this.globe, options.navigation);
-            this.navigation.zoomTo(options.initTarget, 18000000);
+            if(this.mode == "3d") {
+                ElevationTracker.init({
+                    element: "elevTracker",
+                    globe: this.globe,
+                    elevationTracker: options.elevationTracker,
+                    elevationLayer: options.planetLayer.elevationLayer
+                });
+                this.navigation = new Navigation(this.globe, options.navigation);
+                this.navigation.zoomTo(options.initTarget, 18000000);
+            } else {
+                this.navigation = new FlatNavigation(this.globe, options.navigation);
+                this.globe.setCoordinateSystem(new MercatorCoordinateSystem());
+                this.navigation.pan(options.initTarget);
+            }
+
         };
 
         /**************************************************************************************************************/
@@ -106,6 +114,15 @@ define(["../jquery", "../gw/Globe", "../gw/AttributionHandler", "../gw/Navigatio
             this.hide();
             this.globe.destroy();
             this.globe = null;
+        };
+
+        PlanetContext.prototype.toggleDimension = function (gwLayer) {
+            if(this.mode == "2d") {
+                this.mode = "3d";
+            }else {
+                this.mode = "2d";
+            }
+            return this.mode;
         };
 
         return PlanetContext;

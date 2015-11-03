@@ -122,10 +122,27 @@ require(["./MizarWidget"], function (MizarWidget) {
         "type": "tileWireframe",
         "name": "Coordinates Grid",
         "outline": true,
-        "visible": false
+        "visible": true
     };
 
     var marsLayer = mizar.getLayer("Mars");
     mizar.addLayer(atmosMarsLayer, marsLayer);
     mizar.addLayer(coordLayer, marsLayer);
+    //
+    mizar.addLayer({
+        "category": "Other",
+        "type": "GeoJSON",
+        "name": "MultiPoint_mars",
+        "icon": "css/images/toto.png",
+        "data": {
+            "type": "JSON",
+            "url": "http://localhost/mizar/tests/simple_geometry/linestring.json"
+        },
+        "visible": false,
+        "pickable" : true,
+        "color": "rgb(237, 67, 53)",
+        "dataType": "line"
+    }, marsLayer);
+
+
 });

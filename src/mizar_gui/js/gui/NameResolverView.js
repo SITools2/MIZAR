@@ -21,8 +21,8 @@
 /**
  * Name resolver module : search object name and zoom to them
  */
-define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min", "text!../../templates/nameResolverResult.html", "../layer/LayerManager", "../layer/PlanetLayer", "../gui/BackgroundLayersView", "../jquery.ui", "../jquery.once"],
-    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager, PlanetLayer, BackgroundLayersView) {
+define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min", "text!../../templates/nameResolverResult.html", "../layer/LayerManager", "../layer/PlanetLayer", "../jquery.ui", "../jquery.once"],
+    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager, PlanetLayer) {
 
 
         var nameResolverHTML = '<form id="searchForm">\
