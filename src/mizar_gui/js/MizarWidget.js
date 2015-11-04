@@ -908,7 +908,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 this.oldFov = this.sky.renderContext.fov;
 
 
-                if(planetContext.mode == planetContext.THREE_DIMENSION_MODE) {
+                if(planetContext.mode == "3d") {
                     //Compute planet view matrix
                     var planetVM = mat4.create();
                     planetContext.navigation.computeInverseViewMatrix();
