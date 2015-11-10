@@ -21,9 +21,9 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLayer", "../gw/VectorLayer", "../gw/CoordinateGridLayer", "../gw/TileWireframeLayer", "../gw/OpenSearchLayer", "../gw/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
+define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLayer", "../gw/VectorLayer", "../gw/CoordinateGridLayer", "../gw/TileWireframeLayer", "../gw/OpenSearchLayer", "../gw/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string", "../transformer/TransformerManager"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
+              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String, TransformerManager) {
 
         /**
          * Private variables
@@ -132,6 +132,12 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                     else {
                         gwLayer = new HEALPixLayer(layerDesc);
                     }
+
+                    if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
+                        var transformerFunction = require(layerDesc.transformer.jsObject);
+                        gwLayer.transformer = transformerFunction(layerDesc.serviceUrl);
+                    }
+
                     if (layerDesc.availableServices) {
                         gwLayer.availableServices = layerDesc.availableServices;
                         gwLayer.healpixCutFileName = layerDesc.healpixCutFileName;
@@ -162,10 +168,18 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                         gwLayer = new OpenSearchLayer(layerDesc);
                     }
 
+                    if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
+                        var transformerFunction = require(layerDesc.transformer.jsObject);
+                        var options = {
+                            url : layerDesc.serviceUrl
+                        };
+                        gwLayer.transformer = new transformerFunction(options);
+                    }
+
                     if (layerDesc.displayProperties) {
                         gwLayer.displayProperties = layerDesc.displayProperties;
                     }
-                    gwLayer.pickable = layerDesc.hasOwnProperty('pickable') ? layer.pickable : true;
+                    gwLayer.pickable = layerDesc.hasOwnProperty('pickable') ? layerDesc.pickable : true;
                     gwLayer.availableServices = layerDesc.availableServices;
                     break;
 
@@ -642,7 +656,6 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                 });
                 return results;
             },
-
 
             createSimpleLayer: createSimpleLayer,
             checkHipsServiceIsAvailable : checkHipsServiceIsAvailable
