@@ -21,8 +21,8 @@
 /**
  *    Moc base module
  */
-define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils"],
-    function ($, FeatureStyle, MocLayer, Utils) {
+define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils", "../string", "../layer/FitsLoader", "../gw/HEALPixBase"],
+    function ($, FeatureStyle, MocLayer, Utils, String, FitsLoader, HEALPixBase) {
 
         var mizar;
         var coverageServiceUrl;
@@ -112,7 +112,11 @@ define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils"],
                 if (!layer.describeUrl) {
                     requestMocDesc(layer, function (layer) {
                         handleMocLayer(layer, layer.describeUrl);
-                        requestSkyCoverage(layer, layer.describeUrl + "?media=txt", successCallback);
+                        var url = layer.describeUrl;
+                        if (!String(url).endsWith(".fits")) {
+                            url+="?media=txt"
+                        }
+                        requestSkyCoverage(layer, url, successCallback);
                     }, errorCallback);
                 }
                 else {
@@ -132,16 +136,49 @@ define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils"],
          */
         function requestSkyCoverage(layer, mocServiceUrl, successCallback) {
             if (!layer.coverage) {
-                // Request MOC space coverage
-                $.ajax({
-                    type: "GET",
-                    url: mocServiceUrl,
-                    success: function (response) {
-                        layer.coverage = Utils.roundNumber(parseFloat(response), 5) + "%";
+
+                if (String(mocServiceUrl).endsWith(".fits")) {
+                    FitsLoader.loadFits(mocServiceUrl, function (fits) {
+                        var healpixMoc = {};
+                        var binaryTable = fits.getHDU(1).data;
+
+                        // setting startOrder with first order in dataTable
+                        //self.startOrder = uniq2hpix(binaryTable.getRow(0)[binaryTable.columns[0]])[0];
+
+                        for(var i = 0; i < binaryTable.rows; i++) {
+                            var uniq = binaryTable.getRow(i);
+                            var hpix = HEALPixBase.uniq2hpix(uniq[binaryTable.columns[0]]);
+
+                            var order = hpix[0];
+                            if (healpixMoc[order] == undefined) {
+                                healpixMoc[order] = [];
+                            }
+                            healpixMoc[order].push(hpix[1]);
+                        }
+
+                        var nOrder = 0;
+                        _.each(healpixMoc, function(pixels, order) {
+                           nOrder++;
+                        });
+
+                        console.log(getCoverage(nOrder, healpixMoc));
+                        layer.coverage = Utils.roundNumber(getCoverage(nOrder, healpixMoc) * 100, 5) + "%";
                         if (successCallback)
                             successCallback(layer);
-                    }
-                });
+                    });
+
+                } else {
+                    // Request MOC space coverage
+                    $.ajax({
+                        type: "GET",
+                        url: mocServiceUrl,
+                        success: function (response) {
+                            layer.coverage = Utils.roundNumber(parseFloat(response), 5) + "%";
+                            if (successCallback)
+                                successCallback(layer);
+                        }
+                    });
+                }
             }
             else {
                 successCallback(layer);
@@ -233,6 +270,38 @@ define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils"],
 
             return intersectionLayer;
         }
+
+        /** Return the fraction of the sky covered by the Moc [0..1] */
+        function getCoverage(nOrder, healpixMoc) {
+            var area = getArea(nOrder);
+            if( area==0 ) return 0.;
+            return getUsedArea(nOrder, healpixMoc) / area;
+        }
+
+        /** Return the number of low level pixels of the Moc  */
+        function getUsedArea(nOrder, healpixMoc) {
+            var n=0;
+            var sizeCell = 1;
+            for( var order=nOrder-1; order>=0; order--, sizeCell*=4) n += getSize(order, healpixMoc)*sizeCell;
+            return n;
+        }
+
+        /** return the area of the Moc computed in pixels at the most low level */
+        function getArea(nOrder) {
+            if( nOrder==0 ) return 0;
+            var nside = pow2(nOrder-1);
+            return 12*nside*nside;
+        }
+
+        /** Provide the number of Healpix pixels for a dedicated order */
+        function getSize(order, healpixMoc) {
+            if(healpixMoc[order]) {
+                return healpixMoc[order].length;
+            }
+            else {return 0};
+        }
+
+        function pow2(order){ return 1<<order;}
 
         /**************************************************************************************************************/
 

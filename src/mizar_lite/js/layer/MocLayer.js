@@ -21,8 +21,8 @@
 /**
  * Moc renderer/layer module
  */
-define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "../gw/HEALPixBase", "../layer/FitsLoader"],
-    function ($, BaseLayer, FeatureStyle, Utils, HEALPixBase, FitsLoader) {
+define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "../gw/HEALPixBase", "../layer/FitsLoader", "../string"],
+    function ($, BaseLayer, FeatureStyle, Utils, HEALPixBase, FitsLoader, String) {
 
         /**
          *    @constructor
@@ -69,7 +69,7 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
 
             var self = this;
 
-            if (self.serviceUrl.search(/[/.fits]+$/g) != 1) {
+            if (String(self.serviceUrl).endsWith(".fits")) {
                 FitsLoader.loadFits(self.serviceUrl, function (fits) {
                     var healpixMoc = {};
                     var binaryTable = fits.getHDU(1).data;
@@ -79,7 +79,7 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
 
                     for(var i = 0; i < binaryTable.rows; i++) {
                         var uniq = binaryTable.getRow(i);
-                        var hpix = uniq2hpix(uniq[binaryTable.columns[0]]);
+                        var hpix = HEALPixBase.uniq2hpix(uniq[binaryTable.columns[0]]);
 
                         var order = hpix[0];
                         if (healpixMoc[order] == undefined) {
@@ -87,8 +87,29 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
                         }
                         healpixMoc[order].push(hpix[1]);
                     }
-                    console.dir(healpixMoc);
+                    // MIZAR CANNOT display MOC with order less than 3, convert the current moc to a moc starting a order 3
+                    if(healpixMoc.hasOwnProperty("0") || healpixMoc.hasOwnProperty("1") || healpixMoc.hasOwnProperty("2")) {
+
+                        for(var i=0; i<3; i++) {
+                            if(healpixMoc.hasOwnProperty(i)) {
+                                var pixels = healpixMoc[i];
+                                _.each(pixels, function(pixel) {
+                                    var pix = HEALPixBase.getChildren(pixel);
+                                    if(!healpixMoc.hasOwnProperty(i+1)){
+                                        healpixMoc[i+1] = [];
+                                    }
+                                    healpixMoc[i+1].push(pix[0]);
+                                    healpixMoc[i+1].push(pix[1]);
+                                    healpixMoc[i+1].push(pix[2]);
+                                    healpixMoc[i+1].push(pix[3]);
+                                });
+                                delete healpixMoc[i];
+                            }
+                        }
+                    }
+                    self.moc = healpixMoc;
                     self.handleDistribution(healpixMoc);
+                    delete fits;
                 });
 
             } else {
@@ -285,26 +306,6 @@ define(["../jquery", "../gw/BaseLayer", '../gw/FeatureStyle', "../gw/Utils", "..
                     this.globe.vectorRendererManager.addGeometryToTile(this, geometry, this.style, parentTile);
                 }
             }
-        };
-
-        function uniq2hpix(uniq, hpix) {
-            if (hpix == null)
-                hpix = [];
-            hpix[0] = log2(uniq / 4) / 2;
-            var nside = pow2(hpix[0]);
-            hpix[1] = uniq - 4 * nside * nside;
-            hpix[0] = parseInt(hpix[0]);
-            return hpix;
-        };
-
-        function log2(nside) {
-            var i = 0;
-            while ((nside >>> (++i)) > 0);
-            return --i;
-        };
-
-        function pow2(order) {
-            return 1 << order;
         };
 
         return MocLayer;
