@@ -196,8 +196,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     "position": "bottom"
                 },
                 "isMobile": this.isMobile,
-                "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
-				//hipsServiceUrl : '/mizar/tests/hips_registry.json'
+                "hipsServiceUrl": userOptions.hasOwnProperty('hipsServiceUrl') ? userOptions.hipsServiceUrl : undefined
             };
 
             var extendableOptions = ["navigation", "nameResolver", "stats", "positionTracker", "elevationTracker"];

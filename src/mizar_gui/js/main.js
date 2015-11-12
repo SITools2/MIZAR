@@ -95,7 +95,9 @@ require(["./MizarWidget"], function (MizarWidget) {
         },
         stats: {
             visible: true
-        }
+        },
+        "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
+        //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
     });
 
     // Set different GUIs
