@@ -317,16 +317,23 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/HEALPixLa
                 baseUrl: hipsServiceUrl,
                 numberOfLevels: hipsLayer.hips_order,
                 copyright: hipsLayer.obs_copyright,
+                attribution: hipsLayer.obs_copyright,
                 copyrightUrl: hipsLayer.obs_copyright_url,
                 serviceUrl: hipsLayer.moc_access_url,
                 format: imageFormat,
                 coordSystem : coordSystem,
-                availableServices: ["Moc"],
                 background: false,
                 visible: false
             };
+
+            if(hipsLayer.hasOwnProperty("moc_access_url")){
+                layerToAdd.availableServices = ["Moc"];
+            }
+
             var healpixLayer = this.mizar.addLayer(layerToAdd);
-            healpixLayer.serviceUrl = hipsLayer.moc_access_url;
+            if(hipsLayer.hasOwnProperty("moc_access_url")) {
+                healpixLayer.serviceUrl = hipsLayer.moc_access_url;
+            }
         }
 
         /**************************************************************************************************************/
