@@ -96,6 +96,7 @@ require(["./MizarWidget"], function (MizarWidget) {
         stats: {
             visible: true
         },
+        sitoolsBaseUrl : 'http://sitools.akka.eu:8080',
         "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
         //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
     });

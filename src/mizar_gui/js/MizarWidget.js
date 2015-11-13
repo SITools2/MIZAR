@@ -146,12 +146,12 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 "coordSystem": userOptions.hasOwnProperty('coordSystem') ? userOptions.coordSystem : "EQ",
                 "debug": userOptions.hasOwnProperty('debug') ? userOptions.debug : false,
                 "nameResolver": {
-                    "baseUrl": sitoolsBaseUrl + '/project/mizar/plugin/nameResolver',
+                    "baseUrl": sitoolsBaseUrl + '/mizar/plugin/nameResolver',
                     "zoomFov": 15,
                     "duration": 3000
                 },
                 "reverseNameResolver": {
-                    "baseUrl": sitoolsBaseUrl + '/project/mizar/plugin/reverseNameResolver'
+                    "baseUrl": sitoolsBaseUrl + '/mizar/plugin/reverseNameResolver'
                 },
                 "coverageService": {
                     "baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/coverage?moc="
