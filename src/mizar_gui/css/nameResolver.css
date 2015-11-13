@@ -77,6 +77,7 @@ input#searchClear {
 	width: 210px;
 	margin-left: 40px;
 	color: white;
+    padding:5px;
 }
 
 #resolverSearchResult .selected {
@@ -100,17 +101,33 @@ input#searchClear {
 	right: 21px;
 }
 
-.layerResolverResult {
+.layerResolverResult, .coordinatesResolverResult {
     margin-bottom: 5px;
-    padding-bottom: 3px;
+    padding: 5px;
 }
 
 .layerResolverResult button {
     display: none;
 }
 
+.layerResolverResult > .nameResolverResult {
+    text-align: left;
+}
+
 .layerResolverResult.selected button {
     display: inline-block;
+}
+
+.firstNameResolverResult {
+    color : white;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.firstNameResolverResult hr {
+    margin: 0px;
+    margin-top:2px;
 }
 
 

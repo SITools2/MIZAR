@@ -1,16 +1,22 @@
 <% if (properties.type == "layer") { %>
+    <% if (first) { %>
+    <div class="firstNameResolverResult"><hr/><span>Layers</span><hr/></div>
+    <% }%>
     <div class="layerResolverResult">
-        <span class="nameResolverResult">
+        <div class="nameResolverResult">
             <em>Type:</em> <%= properties.layerType %><br/>
             <em>Name:</em> <%= properties.name %><br/>
             <% if(properties.description) { %>
-                <em>Description:</em><% var String=require('string');  print (String(properties.description).truncate(50).s) %><br/>
+                <span title="<%= properties.description %>"><em>Description:</em><% var String=require('string');  print (String(properties.description).truncate(50).s) %></span><br/>
             <% } %>
-        </span>
+        </div>
         <button class="show_or_hide"><span>Show</span></button>
     </div>
 <% } %>
 <% if (properties.type != "layer") {%>
+    <% if (first) { %>
+    <div class="firstNameResolverResult"><hr/><span>Objects</span><hr/></div>
+    <% }%>
     <div class="nameResolverResult coordinatesResolverResult">
         <% if (properties.type) { %>
             <em>Type:</em> <%= properties.type %><br/>

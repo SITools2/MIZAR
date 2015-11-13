@@ -133,30 +133,36 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                 // Fill search result field
                 var output = "";
                 var layers = false;
+                var firstLayer = true;
+                var firstObject = true;
                 for (var i = 0; i < response.features.length; i++) {
                     if(response.features[i].properties.type == "layer") {
                         layers = true;
                         output += nameResolverResultTemplate({
+                            first : firstLayer,
                             properties: response.features[i].properties,
                             lon: 0,
                             lat: 0,
                             type: mizar.activatedContext.globe.coordinateSystem.type
                         });
+                        firstLayer = false;
                     } else {
                         var astro = Utils.formatCoordinates([response.features[i].geometry.coordinates[0], response.features[i].geometry.coordinates[1]]);
                         output += nameResolverResultTemplate({
+                            first: firstObject,
                             properties: response.features[i].properties,
                             lon: astro[0],
                             lat: astro[1],
                             type: mizar.activatedContext.globe.coordinateSystem.type
                         });
+                        firstObject = false;
                     }
                 }
 
                 // Show it
                 $resolverSearchResult.html(output).fadeIn(animationDuration);
                 if(!layers) {
-                    $resolverSearchResult.find('div:first-child').addClass('selected');
+                    $resolverSearchResult.find('div:nth-child(2)').addClass('selected');
                 }
 
                 $nameResolver.find("#searchSpinner").fadeOut(animationDuration);
@@ -211,7 +217,7 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
             $('#resolverSearchResult').find('.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            var index = $(this).index();
+            var index = $(this).index() - 1;
             var selectedFeature = response.features[index];
             NameResolver.zoomTo(selectedFeature.geometry.coordinates[0], selectedFeature.geometry.coordinates[1]);
         }
@@ -286,7 +292,7 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
 
             current.addClass('selected');
 
-            var index = $(current).index();
+            var index = $(current).index() - 2 ; // We remove 2 because we have a <hr> and a line of text before layers results
             var selectedFeature = response.features[index];
             var layerName = selectedFeature.properties.name;
             var layer = LayerManager.getLayerByName(layerName);

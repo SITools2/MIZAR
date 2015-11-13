@@ -127,42 +127,6 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLay
 
                 zoomTo(geo[0], geo[1], onSuccess);
             }
-            else if (matchLayer) {
-                var layerSearch = objectName.substr("layer:".length);
-                var layers =[];
-                if(mizar.mode == "planet") {
-                    layers = layerManager.searchPlanetLayer(layerSearch);
-                }
-                else {
-                    layers = layerManager.searchGlobeLayer(layerSearch);
-                }
-
-                layers = _.sortBy(layers, function(layer) {
-                    return (layer.category=="background") ? 0 : 1;
-                });
-
-                var results = {};
-                results.type = "FeatureCollection";
-                results.features = [];
-                _.each(layers, function (layer) {
-                    results.features.push(
-                        {
-                            type : 'Feature',
-                            properties : {
-                                type : 'layer',
-                                name: layer.name,
-                                description : layer.description,
-                                layerType : layer.type,
-                                visible : layer._visible,
-                                background : layer.category=="background"
-                            }
-                        }
-                    )
-                });
-
-                onSuccess(results);
-
-            }
             else {
                 if (dictionary) {
                     // Planet resolver(Mars only currently)
@@ -193,19 +157,20 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLay
                             // Check if response contains features
                             if (response.type === "FeatureCollection") {
                                 var firstFeature = response.features[0];
-                                zoomTo(firstFeature.geometry.coordinates[0], firstFeature.geometry.coordinates[1], onSuccess, response);
+                                var zoomToCallback = function() {
+                                    searchLayer(objectName, onSuccess, onError, response);
+                                };
+                                zoomTo(firstFeature.geometry.coordinates[0], firstFeature.geometry.coordinates[1], zoomToCallback, response);
 
                             } else {
                                 onError();
                             }
                         },
                         error: function (xhr) {
-                            if (onError) {
-                                onError();
-                            }
+                            searchLayer(objectName, onSuccess, onError);
                             console.error(xhr.responseText);
                         },
-                        complete: function (xhr) {
+                        complete: function (xhr, textStatus) {
                             if (onComplete) {
                                 onComplete(xhr);
                             }
@@ -213,6 +178,58 @@ define(["../jquery", "../underscore-min", "../gw/FeatureStyle", "../gw/VectorLay
                     });
                 }
             }
+        }
+
+
+        function searchLayer(objectName, onSuccess, onError, response) {
+            var layers =[];
+            if(mizar.mode == "planet") {
+                layers = layerManager.searchPlanetLayer(objectName);
+            }
+            else {
+                layers = layerManager.searchGlobeLayer(objectName);
+            }
+
+            if(layers.length === 0 && !response) {
+                if (onError) {
+                    onError();
+                }
+                return;
+            }
+
+            layers = _.sortBy(layers, function(layer) {
+                return (layer.category=="background") ? 0 : 1;
+            });
+
+
+
+            var results;
+            // Check if response contains features
+            if (response && response.type === "FeatureCollection") {
+                results = response;
+            }else {
+                var results = {};
+                results.type = "FeatureCollection";
+                results.features = [];
+            }
+
+            _.each(layers, function (layer) {
+                results.features.push(
+                    {
+                        type : 'Feature',
+                        properties : {
+                            type : 'layer',
+                            name: layer.name,
+                            description : layer.description,
+                            layerType : layer.type,
+                            visible : layer._visible,
+                            background : layer.category=="background"
+                        }
+                    }
+                )
+            });
+
+            onSuccess(results);
         }
 
         /**************************************************************************************************************/
