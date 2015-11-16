@@ -2,7 +2,7 @@
     <% if (first) { %>
     <div class="firstNameResolverResult"><hr/><span>Layers</span><hr/></div>
     <% }%>
-    <div class="layerResolverResult">
+    <div class="layerResolverResult" mizar_feature_index="<%= index %>">
         <div class="nameResolverResult">
             <em>Type:</em> <%= properties.layerType %><br/>
             <em>Name:</em> <%= properties.name %><br/>
@@ -17,7 +17,7 @@
     <% if (first) { %>
     <div class="firstNameResolverResult"><hr/><span>Objects</span><hr/></div>
     <% }%>
-    <div class="nameResolverResult coordinatesResolverResult">
+    <div class="nameResolverResult coordinatesResolverResult" mizar_feature_index="<%= index %>">
         <% if (properties.type) { %>
             <em>Type:</em> <%= properties.type %><br/>
         <% } %>

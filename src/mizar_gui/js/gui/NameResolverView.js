@@ -143,7 +143,8 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                             properties: response.features[i].properties,
                             lon: 0,
                             lat: 0,
-                            type: mizar.activatedContext.globe.coordinateSystem.type
+                            type: mizar.activatedContext.globe.coordinateSystem.type,
+                            index : i
                         });
                         firstLayer = false;
                     } else {
@@ -153,7 +154,8 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                             properties: response.features[i].properties,
                             lon: astro[0],
                             lat: astro[1],
-                            type: mizar.activatedContext.globe.coordinateSystem.type
+                            type: mizar.activatedContext.globe.coordinateSystem.type,
+                            index : i
                         });
                         firstObject = false;
                     }
@@ -217,7 +219,7 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
             $('#resolverSearchResult').find('.selected').removeClass('selected');
             $(this).addClass('selected');
 
-            var index = $(this).index() - 1;
+            var index = $(this).attr("mizar_feature_index");
             var selectedFeature = response.features[index];
             NameResolver.zoomTo(selectedFeature.geometry.coordinates[0], selectedFeature.geometry.coordinates[1]);
         }
@@ -292,7 +294,7 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
 
             current.addClass('selected');
 
-            var index = $(current).index() - 2 ; // We remove 2 because we have a <hr> and a line of text before layers results
+            var index = $(current).attr("mizar_feature_index");
             var selectedFeature = response.features[index];
             var layerName = selectedFeature.properties.name;
             var layer = LayerManager.getLayerByName(layerName);
