@@ -18,7 +18,7 @@
  ******************************************************************************/
 /*global define: false */
 
-define(["../gw/FeatureStyle", "../gw/Utils", "../gw/OpenSearchLayer", "../gw/HEALPixBase", "../gw/RendererTileData"],
+define(["../gw/Renderer/FeatureStyle", "../gw/Utils/Utils", "../gw/Layer/OpenSearchLayer", "../gw/Tiling/HEALPixBase", "../gw/Renderer/RendererTileData"],
     function (FeatureStyle, Utils, OpenSearchLayer, HEALPixBase, RendererTileData) {
 
         /**************************************************************************************************************/

@@ -17,7 +17,7 @@
  * along with GlobWeb. If not, see <http://www.gnu.org/licenses/>.
  ***************************************/
 
-define(['../gw/Utils', '../gw/BaseLayer', '../gw/Program'], function (Utils, BaseLayer, Program) {
+define(['../gw/Utils/Utils', '../gw/Layer/BaseLayer', '../gw/Renderer/Program'], function (Utils, BaseLayer, Program) {
 
     /** @name AtmosphereLayer
      @class

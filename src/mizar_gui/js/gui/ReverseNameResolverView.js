@@ -21,7 +21,7 @@
 /**
  * Reverse name resolver view using ReverseNameResolver services
  */
-define(["../jquery", "../service/ReverseNameResolver", "../gw/Numeric", "./IFrame", "../Utils", "../gui_core/ErrorDialog", "../underscore-min", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "../jquery.ui"],
+define(["../jquery", "../service/ReverseNameResolver", "../gw/Utils/Numeric", "./IFrame", "../Utils", "../gui_core/ErrorDialog", "../underscore-min", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "../jquery.ui"],
     function ($, ReverseNameResolver, Numeric, IFrame, Utils, ErrorDialog, _, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var context;

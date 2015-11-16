@@ -22,7 +22,7 @@
  * Tool designed to select areas on globe
  */
 
-define(["../jquery", "../gw/VectorLayer", "../gw/FeatureStyle", "../gw/Numeric", "../gw/Ray", "../Utils", "../gw/glMatrix"],
+define(["../jquery", "../gw/Layer/VectorLayer", "../gw/Renderer/FeatureStyle", "../gw/Utils/Numeric", "../gw/Renderer/Ray", "../Utils", "../gw/Renderer/glMatrix"],
     function ($, VectorLayer, FeatureStyle, Numeric, Ray, Utils) {
 
 

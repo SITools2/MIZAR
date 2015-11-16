@@ -22,7 +22,7 @@
  * Tool designed to measure the distance between two points
  */
 
-define(["../jquery", "../gw/VectorLayer", "../gw/Ray", "../gw/Numeric", "../gw/FeatureStyle", "../gw/glMatrix", "../jquery.ui"],
+define(["../jquery", "../gw/Layer/VectorLayer", "../gw/Renderer/Ray", "../gw/Utils/Numeric", "../gw/Renderer/FeatureStyle", "../gw/Renderer/glMatrix", "../jquery.ui"],
     function ($, VectorLayer, Ray, Numeric, FeatureStyle) {
 
         var globe;
@@ -300,7 +300,8 @@ define(["../jquery", "../gw/VectorLayer", "../gw/Ray", "../gw/Numeric", "../gw/F
                 },
                 properties: {
                     style: new FeatureStyle({
-                        label: globe.coordinateSystem.fromDegreesToDMS(this.geoDistance),
+                        //label: globe.coordinateSystem.fromDegreesToDMS(this.geoDistance),
+                        label: globe.coordinateSystem.from3DToGeo(geoCenter),
                         fillColor: [1, 1, 1, 1],
                         zIndex: 2
                     })

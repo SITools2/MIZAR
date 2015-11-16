@@ -21,7 +21,7 @@
 /**
  *    ImageProcessing module
  */
-define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView", "../gw/FeatureStyle", "../jquery.ui"],
+define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView", "../gw/Renderer/FeatureStyle", "../jquery.ui"],
     function ($, SelectionTool, CutOutViewFactory, DynamicImageView, FeatureStyle) {
 
         /**************************************************************************************************************/

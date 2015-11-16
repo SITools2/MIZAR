@@ -21,7 +21,7 @@
 /**
  * PickingManager module
  */
-define(["../jquery", "../gw/FeatureStyle", "../gw/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "../Utils"],
+define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "../Utils"],
     function ($, FeatureStyle, OpenSearchLayer, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
         var mizar;

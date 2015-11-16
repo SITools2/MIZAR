@@ -27,7 +27,7 @@
  *    Providing planet positions based on ephemeris computations
  *    @see http://www.abecedarical.com/javascript/script_planet_orbits.html
  */
-define(["../jquery", "gw/FeatureStyle", "../layer/LayerManager"],
+define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
     function ($, FeatureStyle, LayerManager) {
 
 

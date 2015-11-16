@@ -24,7 +24,7 @@
  *    Specific star catalogue provider of the Brightest Stars (Ochsenbein+ 1988) from VizieR database
  *    @see Search Catalogue of the Brightest Stars (Ochsenbein+ 1988) in VizieR database for more details
  */
-define(["../jquery", "../gw/FeatureStyle", "../layer/LayerManager"],
+define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
     function ($, FeatureStyle, LayerManager) {
 
         /**************************************************************************************************************/

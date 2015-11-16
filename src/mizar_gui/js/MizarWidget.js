@@ -21,9 +21,9 @@
 /**
  * Mizar widget
  */
-define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/TileWireframeLayer", "gw/Stats", "gw/AttributionHandler", "gw/Event", "gw/TouchNavigationHandler", "gw/MouseNavigationHandler", "gw/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
+define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/Layer/TileWireframeLayer", "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event", "gw/Navigation/TouchNavigationHandler", "gw/Navigation/MouseNavigationHandler", "gw/Navigation/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
         "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
-        "gw/ConvexPolygonRenderer", "gw/PointSpriteRenderer", "gw/LineStringRenderable", "gw/PointRenderer", "jquery.ui"],
+        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
               LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureTool) {
 

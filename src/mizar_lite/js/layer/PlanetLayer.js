@@ -21,7 +21,7 @@
 /**
  * Planet renderer/layer module
  */
-define(["../jquery", "../underscore-min", "../gw/BaseLayer", "../gw/WMSLayer", "../gw/WCSElevationLayer", "../gw/Utils"],
+define(["../jquery", "../underscore-min", "../gw/Layer/BaseLayer", "../gw/Layer/WMSLayer", "../gw/Layer/WCSElevationLayer", "../gw/Utils/Utils"],
     function ($, _, BaseLayer, WMSLayer, WCSElevationLayer, Utils) {
 
         /**

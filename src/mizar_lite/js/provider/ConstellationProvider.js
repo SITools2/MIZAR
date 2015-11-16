@@ -25,7 +25,7 @@
  * @see http://vizier.cfa.harvard.edu/viz-bin/ftp-index?VI/49
  *
  */
-define(["../jquery", "../layer/LayerManager", "../gw/FeatureStyle"], function ($, LayerManager, FeatureStyle) {
+define(["../jquery", "../layer/LayerManager", "../gw/Renderer/FeatureStyle"], function ($, LayerManager, FeatureStyle) {
 
     /**************************************************************************************************************/
 

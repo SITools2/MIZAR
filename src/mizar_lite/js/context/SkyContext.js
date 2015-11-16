@@ -21,7 +21,7 @@
 /**
  * Sky context
  */
-define(["../jquery", "../underscore-min", "../gw/Sky", "../gw/AstroNavigation", "../gw/Utils",
+define(["../jquery", "../underscore-min", "../gw/Context/Sky", "../gw/Navigation/AstroNavigation", "../gw/Utils/Utils",
         "./MizarContext", "../layer/LayerManager", "../gui_core/PositionTracker", "../jquery.ui"],
     function ($, _, Sky, AstroNavigation, Utils,
               MizarContext, LayerManager, PositionTracker) {

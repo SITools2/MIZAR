@@ -21,9 +21,8 @@
 /**
  *    Moc base module
  */
-define(["../jquery", "../gw/FeatureStyle", "../layer/MocLayer", "../Utils", "../string", "../layer/FitsLoader", "../gw/HEALPixBase"],
+define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Utils", "../string", "../layer/FitsLoader", "../gw/Tiling/HEALPixBase"],
     function ($, FeatureStyle, MocLayer, Utils, String, FitsLoader, HEALPixBase) {
-
         var mizar;
         var coverageServiceUrl;
 
