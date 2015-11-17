@@ -209,7 +209,20 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             // Store category name on GlobWeb layer object to be able to restore it later
             gwLayer.category = layerDesc.background ? "background" : layerDesc.category;
 
+            gwLayer.subscribe("visibility:changed", onVisibilityChange);
+
             return gwLayer;
+        }
+
+        function onVisibilityChange (layer) {
+            if(layer.visible() && layer.properties && layer.properties.hasOwnProperty("initialRa") && layer.properties.hasOwnProperty("initialDec") && layer.properties.hasOwnProperty("initialFov")) {
+                if (mizar.mode === "sky") {
+                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000);
+                }
+                else {
+                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000, null);
+                }
+            }
         }
 
         /**************************************************************************************************************/
@@ -323,7 +336,13 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 format: imageFormat,
                 coordSystem : coordSystem,
                 background: false,
-                visible: false
+                visible: false,
+                properties : {
+                    initialRa : hipsLayer.hasOwnProperty("obs_initial_ra")? parseFloat(hipsLayer.obs_initial_ra) : undefined,
+                    initialDec : hipsLayer.hasOwnProperty("obs_initial_dec")? parseFloat(hipsLayer.obs_initial_dec) : undefined,
+                    initialFov : hipsLayer.hasOwnProperty("obs_initial_fov")? parseFloat(hipsLayer.obs_initial_fov) : undefined,
+                    mocCoverage : hipsLayer.hasOwnProperty("moc_sky_fraction")? hipsLayer.moc_sky_fraction : undefined
+                }
             };
 
             if(hipsLayer.hasOwnProperty("moc_access_url")){
