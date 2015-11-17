@@ -120,7 +120,11 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
                 }
                 else {
                     handleMocLayer(layer, layer.describeUrl);
-                    requestSkyCoverage(layer, layer.describeUrl + "?media=txt", successCallback);
+                    var url = layer.describeUrl;
+                    if (!String(url).endsWith(".fits")) {
+                        url+="?media=txt"
+                    }
+                    requestSkyCoverage(layer, url, successCallback);
                 }
             }
             else {
@@ -134,6 +138,10 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
          *    Requesting moc sky coverage information and stock it as layer parameter
          */
         function requestSkyCoverage(layer, mocServiceUrl, successCallback) {
+            if(layer.hasOwnProperty("properties") && layer.properties.hasOwnProperty("mocCoverage")){
+                layer.coverage = Utils.roundNumber(parseFloat(layer.properties.mocCoverage) * 100, 5) + "%";
+            }
+
             if (!layer.coverage) {
 
                 if (String(mocServiceUrl).endsWith(".fits")) {
@@ -155,12 +163,12 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
                             healpixMoc[order].push(hpix[1]);
                         }
 
-                        var nOrder = 0;
+                        var maxOrder;
                         _.each(healpixMoc, function(pixels, order) {
-                           nOrder++;
+                           maxOrder = parseInt(order);
                         });
+                        var nOrder = maxOrder+1;
 
-                        console.log(getCoverage(nOrder, healpixMoc));
                         layer.coverage = Utils.roundNumber(getCoverage(nOrder, healpixMoc) * 100, 5) + "%";
                         if (successCallback)
                             successCallback(layer);
@@ -297,7 +305,9 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
             if(healpixMoc[order]) {
                 return healpixMoc[order].length;
             }
-            else {return 0};
+            else {
+                return 0;
+            }
         }
 
         function pow2(order){ return 1<<order;}
