@@ -22,10 +22,10 @@
  * Mizar widget
  */
 define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/Layer/TileWireframeLayer", "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event", "gw/Navigation/TouchNavigationHandler", "gw/Navigation/MouseNavigationHandler", "gw/Navigation/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
-        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
+        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./gui/SwitchTo2D", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
         "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
-              LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureTool) {
+              LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureTool, SwitchTo2D) {
 
         /**
          *    Private variables
@@ -532,6 +532,27 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
         /**************************************************************************************************************/
 
         /**
+         *    Activate Switch To 2D
+         */
+        MizarWidget.prototype.setSwitchTo2D = function (visible) {
+            if (visible) {
+
+                if (!this.switchTo2D) {
+                    this.switchTo2D = new SwitchTo2D({
+                        mizar : this,
+                        globe: this.sky,
+                        navigation: this.navigation,
+                        isMobile: this.isMobile,
+                        mode: this.mode
+                    });
+                }
+            }
+            skyContext.setComponentVisibility("measureContainer", visible);
+        };
+
+        /**************************************************************************************************************/
+
+        /**
          *    Add/remove samp GUI
          *    Only on desktop
          */
@@ -893,6 +914,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
                 planetContext.setComponentVisibility("compassDiv", false);
                 planetContext.setComponentVisibility("measureContainer", true);
+                planetContext.setComponentVisibility("switch2DContainer", true);
 
                 // Propagate user-defined wish for displaying credits window
                 planetContext.credits = skyContext.credits;

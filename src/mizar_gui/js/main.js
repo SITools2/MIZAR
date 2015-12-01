@@ -112,6 +112,7 @@ require(["./MizarWidget"], function (MizarWidget) {
     mizar.setCompassGui(true);
     mizar.setShowCredits(true);
     mizar.setImageViewerGui(true);
+    mizar.setSwitchTo2D(true);
     var atmosMarsLayer = {
         "category": "Other",
         "type": "atmosphere",
