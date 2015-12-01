@@ -36,6 +36,14 @@ It exists different ways to install MIZAR
   	$ cd mizar
   	$ git submodule init
   	$ git submodule update
+  	
+#### Getting dependencies
+Download and install [Node.js](https://nodejs.org/en/)
+
+##### Install bower and get dependencies
+  	npm install -g bower
+  	bower install
+
   
 #### Copy the directory mizar in your web server
   	$ cp -R src/mizar <path to your web server>`
