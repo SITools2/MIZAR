@@ -37,6 +37,7 @@ require.config({
         "jquery.ui.timepicker": "../../mizar_lite/externals/jquery.ui.timepicker/jquery.ui.timepicker",
         "gw": "../../mizar_lite/externals/GlobWeb/src",
 		"jquery.once": "../../mizar_lite/externals/jquery-once/jquery.once.min",
+		"selectize": "../../../bower_components/selectizejs/selectize",
 
         // requirements Mizar_Lite
         "context" : "../../mizar_lite/js/context",
