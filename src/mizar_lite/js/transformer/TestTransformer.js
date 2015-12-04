@@ -41,14 +41,23 @@ define(["../jquery", "../underscore-min", "../Utils", "../transformer/AbstractTr
         /**************************************************************************************************************/
 
         /**
-         *    Convert passed url into an url understandable by the service
+         *    Convert passed url into an url understandable by the service (input transformer)
          */
         TestTransformer.prototype.convertUrl = function (url) {
             var filters = this.extractFilters(url);
 
-            var formattedUrl = 	this.baseUrl + "/search?test-order=" + filters.order + "&test-healpix=" + filters.healpixID;
+            var formattedUrl = this.baseUrl + "/search?test-order=" + filters.order + "&test-healpix=" + filters.healpixID;
 
             return formattedUrl;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Convert returned data from service into intelligible data for Mizar (output transformer)
+         */
+        TestTransformer.prototype.convertResponse = function (data) {
+            return data;
         };
 
         return TestTransformer;

@@ -34,6 +34,8 @@ define(["../jquery", "../underscore-min"],
             var urlParts = options.url.split('?');
             this.baseUrl = urlParts[0];
 
+            this.type = options.type;
+
         };
 
         /**************************************************************************************************************/
@@ -41,13 +43,22 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert passed url into an url understandable by the service
          */
-        AbstractTransformer.prototype.convertUrl = function (url) {};
+        AbstractTransformer.prototype.convertUrl = function (url) {
+        };
 
         /**************************************************************************************************************/
 
         /**
-        *    Extract HealpixId, order from url
-        */
+         *    Convert returned data from service into intelligible data for Mizar (output transformer)
+         */
+        AbstractTransformer.prototype.convertResponse = function (data) {
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Extract HealpixId, order from url
+         */
         AbstractTransformer.prototype.extractFilters = function (url) {
             var filtersUrl = url.substring(url.indexOf('?') + 1, url.length);
 

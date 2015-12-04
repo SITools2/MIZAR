@@ -135,7 +135,11 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 
                     if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
                         var transformerFunction = require(layerDesc.transformer.jsObject);
-                        gwLayer.transformer = transformerFunction(layerDesc.serviceUrl);
+                        var options = {
+                            url : layerDesc.serviceUrl,
+                            type : layerDesc.transformer.type
+                        };
+                        gwLayer.transformer = new transformerFunction(options);
                     }
 
                     if (layerDesc.availableServices) {
