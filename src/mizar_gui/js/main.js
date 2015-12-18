@@ -22,11 +22,11 @@
  */
 require.config({
     paths: {
-        "jquery": "../../../bower_components/jquery/dist/jquery.min",
-        "jquery.ui": "../../../bower_components/jquery-ui/jquery-ui.min",
-        "underscore-min": "../../../bower_components/underscore/underscore",
-        "jquery.nicescroll.min": "../../../bower_components/jquery.nicescroll/dist/jquery.nicescroll.min",
-		"string": "../../../bower_components/string/dist/string.min",        
+        "jquery": "../../mizar_lite/externals/jquery/dist/jquery.min",
+        "jquery.ui": "../../mizar_lite/externals/jquery-ui/jquery-ui.min",
+        "underscore-min": "../../mizar_lite/externals/underscore/underscore",
+        "jquery.nicescroll.min": "../../mizar_lite/externals/jquery.nicescroll/dist/jquery.nicescroll.min",
+		"string": "../../mizar_lite/externals/string/dist/string.min",        
 		"fits": "../../mizar_lite/externals/fits",
         "samp": "../../mizar_lite/externals/samp",
         "gzip": "../../mizar_lite/externals/gzip",
@@ -34,9 +34,9 @@ require.config({
         "deflate-js": "../../mizar_lite/externals/deflate",
         "inflate-js": "../../mizar_lite/externals/inflate",
         "wcs": "../../mizar_lite/externals/wcs",
-        "jquery.ui.timepicker": "../../../bower_components/jquery.ui.timepicker/jquery.ui.timepicker",
+        "jquery.ui.timepicker": "../../mizar_lite/externals/jquery.ui.timepicker/jquery.ui.timepicker",
         "gw": "../../mizar_lite/externals/GlobWeb/src",
-		"jquery.once": "../../../bower_components/jquery-once/jquery.once.min",
+		"jquery.once": "../../mizar_lite/externals/jquery-once/jquery.once.min",
 
         // requirements Mizar_Lite
         "context" : "../../mizar_lite/js/context",
@@ -49,7 +49,7 @@ require.config({
         "service_gui" : "./service_gui",
         "uws_gui" : "./uws",
         "templates" : "../templates",
-        "data" : "../data",
+        "data" : "../data"
 
     },
     shim: {

@@ -40,9 +40,22 @@ It exists different ways to install MIZAR
 #### Getting dependencies
 Download and install [Node.js](https://nodejs.org/en/)
 
-##### Install bower and get dependencies
+##### Install bower and get dependencies (optional)
   	npm install -g bower
   	bower install
+
+Configure bower to download dependencies to externals directory
+
+    cd
+    vi .bowerrc
+
+Create a Bower configuration file .bowerrc in the project root (as opposed to your home directory) with the content:
+
+    {
+      "directory" : "src/mizar_lite/externals/"
+    }
+
+Run bower update again.
 
   
 #### Copy the directory mizar in your web server

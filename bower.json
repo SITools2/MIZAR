@@ -5,7 +5,7 @@
     "jc.malapert <jc.malapert@cnes.fr>"
   ],
   "description": "3D application in a browser for discovering and visualizing geospatial data for sky and planets",
-  "main": "src/mizar/js/main.js",
+  "main": "src/mizar_gui/js/main.js",
   "moduleType": [],
   "keywords": [
     "webgl",
