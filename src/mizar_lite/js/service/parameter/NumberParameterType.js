@@ -44,7 +44,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         /**************************************************************************************************************/
 
         NumberParameterType.prototype.convertParametersToHTML = function (parameter) {
-            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.name + ' : </label>' + numberParameterTemplate;
+            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.label + ' : </label>' + numberParameterTemplate;
 
 
             _.each(parameter.values, function (p) {

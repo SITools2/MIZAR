@@ -3,11 +3,15 @@
 }
 
 .serviceRecord > div {
-    padding: 4px;
+    padding: 5px;
 }
 
 .serviceRecord > div > div {
-    padding-top: 2px;
+    padding-top: 5px;
+}
+
+.serviceRecord > div > div > div {
+    padding-top: 3px;
 }
 
 .serviceRecord > div > button {

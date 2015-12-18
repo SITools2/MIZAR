@@ -41,7 +41,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         /**************************************************************************************************************/
 
         DateParameterType.prototype.convertParametersToHTML = function (parameter) {
-            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.name + ' : </label>';
+            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.label + ' : </label>';
             parametersHTML += '<div style="width:300px;">' + dateParameterTemplate + '</div>';
             parametersHTML += '</div>';
 

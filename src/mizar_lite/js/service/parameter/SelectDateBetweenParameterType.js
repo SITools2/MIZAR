@@ -49,7 +49,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
             //parametersHTML += minDateParameterTemplate + '</div>';
             //parametersHTML += '</div>';
 
-            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.name + ' : </label><div style="width:300px; display: flex;">';
+            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.label + ' : </label><div style="width:300px; display: flex;">';
 
             var minNumberBetween = minDateParameterTemplate;
             var maxNumberBetween = maxDateParameterTemplate;

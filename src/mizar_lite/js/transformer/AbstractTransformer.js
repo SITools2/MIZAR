@@ -43,7 +43,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert passed url into an url understandable by the service
          */
-        AbstractTransformer.prototype.convertUrl = function (url) {
+        AbstractTransformer.prototype.beforeHandle = function (url) {
         };
 
         /**************************************************************************************************************/
@@ -51,7 +51,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert returned data from service into intelligible data for Mizar (output transformer)
          */
-        AbstractTransformer.prototype.convertResponse = function (data) {
+        AbstractTransformer.prototype.afterHandle = function (data) {
         };
 
         /**************************************************************************************************************/

@@ -47,7 +47,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         /**************************************************************************************************************/
 
         NumberBetweenParameterType.prototype.convertParametersToHTML = function (parameter) {
-            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.name + ' : </label><div style="width:300px; display: flex;">';
+            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.label + ' : </label><div style="width:300px; display: flex;">';
 
             var minNumberBetween = minNumberParameterTemplate;
             var maxNumberBetween = maxNumberParameterTemplate;

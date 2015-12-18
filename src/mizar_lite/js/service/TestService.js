@@ -62,6 +62,7 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                 type: ShapeAndGeoCoordParameterType
             }, {
                 name: 'PAN',
+                label : 'String',
                 type: StringParameterType,
                 values: [{
                     key: "toto_0",
@@ -71,17 +72,8 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                     value: "toto_value_1"
                 }]
             }, {
-                name: 'String',
-                type: StringParameterType,
-                values: [{
-                    key: "toto_0",
-                    value: "toto_value_0"
-                }, {
-                    key: "toto_1",
-                    value: "toto_value_1"
-                }]
-            }, {
-                name: 'Number',
+                name: 'XS',
+                label : 'String',
                 type: NumberParameterType,
                 values: [{
                     key: "number_0",
@@ -91,7 +83,8 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                     value: "10.25"
                 }]
             }, {
-                name: 'Number_between',
+                name: 'Number',
+                label : 'Number Between',
                 type: NumberBetweenParameterType,
                 values: [{
                     field: "minField",
@@ -104,12 +97,15 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                 }]
             }, {
                 name: 'Date_field',
+                label : 'Date',
                 type: DateParameterType
             }, {
                 name: 'Date_field_between',
+                label : 'Date between',
                 type: DateBetweenParameterType
             }, {
                 name: 'Select_date_between',
+                label : 'Select Date between',
                 type: SelectDateBetweenParameterType,
                 values: [{
                     field: "minField",

@@ -66,8 +66,8 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
 
             parametersHTML += '<div name="coordSystemDiv">' + galacticParameter + equatorialParameter + '</div>' + '<br>';
 
-            parametersHTML += '<div name="geometryDiv"><label>Geometry</label><br>' + pointGeometryParameter + multipointGeometryParameter + linestringGeometryParameter + multilinestringGeometryParameter
-                + polygonGeometryParameter + multipolygonGeometryParameter + '</div>';
+            parametersHTML += '<label>Geometry</label><div name="geometryDiv">' + pointGeometryParameter + multipointGeometryParameter + linestringGeometryParameter + multilinestringGeometryParameter
+                + polygonGeometryParameter + multipolygonGeometryParameter + '</div></div>';
 
             return parametersHTML;
         };

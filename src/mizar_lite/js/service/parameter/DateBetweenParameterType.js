@@ -42,7 +42,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         /**************************************************************************************************************/
 
         DateBetweenParameterType.prototype.convertParametersToHTML = function (parameter) {
-            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.name + ' : </label>';
+            var parametersHTML = '<div name="' + parameter.name + '"><label>' + parameter.label + ' : </label>';
             parametersHTML += '<div style="width:300px; display: flex;"><label class="numberBetween">from </label>' + minDateParameterTemplate;
             parametersHTML += '<label class="numberBetween"> to </label>';
             parametersHTML += minDateParameterTemplate + '</div>';
