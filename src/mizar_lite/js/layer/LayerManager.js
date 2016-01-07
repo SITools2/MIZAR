@@ -221,7 +221,9 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
         function onVisibilityChange (layer) {
             if(layer.visible() && layer.properties && layer.properties.hasOwnProperty("initialRa") && layer.properties.hasOwnProperty("initialDec") && layer.properties.hasOwnProperty("initialFov")) {
                 if (mizar.mode === "sky") {
-                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000);
+                    //mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000);
+                    var fov = mizar.activatedContext.navigation.renderContext.fov;
+                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], fov, 3000);
                 }
                 else {
                     mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000, null);

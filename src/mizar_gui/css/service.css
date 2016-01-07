@@ -64,3 +64,23 @@
     padding: 10px 5px 5px 5px;
 }
 
+.noTitlePopup .ui-dialog-titlebar {
+    display: none
+}
+
+/* Flot chart */
+#yaxisLabel {
+    transform: rotate(-90deg);
+}
+#xaxisLabel {
+    padding-top: 15px;
+}
+
+#elevationTrackingBtn {
+    font-size: 12px;
+    border: 1px solid rgba(255, 175, 15, 0.71);
+}
+
+#popupElevation {
+    overflow: hidden;
+}

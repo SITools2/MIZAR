@@ -54,12 +54,19 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
         /**
          * Init parameters defined programmatically
          */
-        TestService.prototype.initParameters = function () {
+        TestService.prototype.initParameters = function (serviceParameters) {
 
 
             return this.parameters = [{
                 name: 'CoordSystem',
-                type: ShapeAndGeoCoordParameterType
+                type: ShapeAndGeoCoordParameterType,
+                values : [{
+                    key : "healpixParam",
+                    value : serviceParameters.healpix
+                }, {
+                    key : "orderParam",
+                    value : serviceParameters.order
+                }]
             }, {
                 name: 'PAN',
                 label : 'String',
@@ -226,7 +233,7 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
             }
 
             this.serviceUrl = layer.serviceUrl;
-            this.initParameters();
+            this.initParameters(layer.serviceParameters);
 
             this.addHTMLTestService(layer);
         }

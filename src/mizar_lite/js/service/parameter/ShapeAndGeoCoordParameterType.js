@@ -47,6 +47,12 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         var multipolygonGeometryParameter = '<input type="checkbox" id="multipolygon" name="geometry" value="multipolygon">' +
             '<label for="multipolygon" style="font-size: 11px;">Multipolygon</label>';
 
+
+        var healpixParameterTemplate = _.template('<label for="healpixParam" class="numberBetween" style="font-size: 11px;">Healpix </label>' +
+            '<input class="selectize-input items not-full has-options" type="textfield" id="healpixParam" name="geometry" value="<%=param.value%>">');
+        var orderParameterTemplate = _.template('<label for="orderParam" class="numberBetween" style="font-size: 11px;">Order </label>' +
+            '<input class="selectize-input items not-full has-options" type="textfield" id="orderParam" name="geometry" value="<%=param.value%>">');
+
         /**
          *   Shape and geometry coordinates parameter constructor
          */
@@ -66,8 +72,23 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
 
             parametersHTML += '<div name="coordSystemDiv">' + galacticParameter + equatorialParameter + '</div>' + '<br>';
 
-            parametersHTML += '<label>Geometry</label><div name="geometryDiv">' + pointGeometryParameter + multipointGeometryParameter + linestringGeometryParameter + multilinestringGeometryParameter
-                + polygonGeometryParameter + multipolygonGeometryParameter + '</div></div>';
+            //parametersHTML += '<label>Geometry</label><div name="geometryDiv">' + pointGeometryParameter + multipointGeometryParameter + linestringGeometryParameter + multilinestringGeometryParameter
+            //    + polygonGeometryParameter + multipolygonGeometryParameter + '</div></div>';
+
+            var healpixParameter, orderParameter;
+            _.each(parameter.values, function (p) {
+                if (p.key == "healpixParam") {
+                    healpixParameter = healpixParameterTemplate({
+                        param: p
+                    });
+                } else {
+                    orderParameter = orderParameterTemplate({
+                        param: p
+                    });
+                }
+            });
+
+            parametersHTML += '<label>Geometry</label><div name="geometryDiv" style="width:300px; display: flex;">' + healpixParameter + orderParameter + '</div></div>';
 
             return parametersHTML;
         };
@@ -75,8 +96,18 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
         ShapeAndGeoCoordParameterType.prototype.bindEventsParameters = function (parameter) {
 
             $('div [name="coordSystemDiv"]').buttonset();
-            $('div [name="geometryDiv"]').buttonset();
+            //$('div [name="geometryDiv"]').buttonset();
 
+            // Set Coordinates System from Mizar value
+            if (mizar.activatedContext.globe.coordinateSystem.type == "EQ") {
+                $('div [name="coordSystemDiv"] > #equatorial').attr('checked', true).button('refresh');
+            } else {
+                $('div [name="coordSystemDiv"] > #galactic').attr('checked', true).button('refresh');
+            }
+
+            $('div [name="coordSystemDiv"]').button({
+                disabled: true
+            });
         };
 
         return ShapeAndGeoCoordParameterType;

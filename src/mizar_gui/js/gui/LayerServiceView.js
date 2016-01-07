@@ -22,8 +22,8 @@
  *    Layer service view
  *    The view representing the services for each layer
  */
-define(["../jquery", "../service_gui/OpenSearchService", "../service_gui/MocService", "../service_gui/XMatchService", "../uws_gui/HEALPixCutService", "../jquery.ui"],
-    function ($, OpenSearchService, MocService, XMatchService, HEALPixCutService) {
+define(["../jquery", "../service_gui/OpenSearchService", "../service_gui/MocService", "../service_gui/XMatchService", "../uws_gui/HEALPixCutService", "../service/TestService", "../jquery.ui"],
+    function ($, OpenSearchService, MocService, XMatchService, HEALPixCutService, TestService) {
 
         var layerServiceView = '<div id="layerServiceView" title="Available services">\
 							<div id="layerServices">\
@@ -36,13 +36,16 @@ define(["../jquery", "../service_gui/OpenSearchService", "../service_gui/MocServ
         var $layerServiceView;
         var tabs;
 
-        var services = [OpenSearchService, MocService, XMatchService];
+        var TestService = new TestService();
+
+        var services = [OpenSearchService, MocService, XMatchService, TestService];
 
         var serviceMapping = {
             "OpenSearch": OpenSearchService,
             "Moc": MocService,
             "XMatch": XMatchService,
-            "HEALPixCut": HEALPixCutService
+            "HEALPixCut": HEALPixCutService,
+            "TestService": TestService
         };
 
         var currentLayer;
@@ -102,7 +105,8 @@ define(["../jquery", "../service_gui/OpenSearchService", "../service_gui/MocServ
 
                 MocService.init(mizar.sky, configuration);
                 XMatchService.init(mizar.sky, configuration);
-                HEALPixCutService.init(mizar.sky, mizar.navigation)
+                HEALPixCutService.init(mizar.sky, mizar.navigation);
+                TestService.init(mizar.sky, mizar.navigation);
             },
 
             /**

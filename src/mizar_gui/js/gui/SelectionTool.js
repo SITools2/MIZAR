@@ -42,7 +42,7 @@ define(["../jquery", "../gw/Layer/VectorLayer", "../gw/Renderer/FeatureStyle", "
             var navigation = options.navigation;
             var onselect = options.onselect;
 
-            this.activated = false;
+            this.activated = options.activated || false;
             this.renderContext = globe.renderContext;
             this.coordinateSystem = globe.coordinateSystem;
 
@@ -144,8 +144,9 @@ define(["../jquery", "../gw/Layer/VectorLayer", "../gw/Renderer/FeatureStyle", "
                 // Compute geo radius
                 var stopPickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
 
+                var coordinates = self.computeSelection();
                 if (self.activated && onselect) {
-                    onselect();
+                    onselect(coordinates);
                 }
 
                 // Reactivate standard navigation events
