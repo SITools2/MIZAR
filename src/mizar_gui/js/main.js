@@ -27,8 +27,7 @@ require.config({
         "underscore-min": "../../mizar_lite/externals/underscore/underscore",
         "jquery.nicescroll.min": "../../mizar_lite/externals/jquery.nicescroll/dist/jquery.nicescroll.min",
 		"string": "../../mizar_lite/externals/string/dist/string.min",        
-		"fits": "../../mizar_lite/externals/fits",
-        "samp": "../../mizar_lite/externals/samp",
+		"fits": "../../mizar_lite/externals/fits",        "samp": "../../mizar_lite/externals/samp",
         "gzip": "../../mizar_lite/externals/gzip",
         "crc32": "../../mizar_lite/externals/crc32",
         "deflate-js": "../../mizar_lite/externals/deflate",
@@ -36,11 +35,13 @@ require.config({
         "wcs": "../../mizar_lite/externals/wcs",
         "jquery.ui.timepicker": "../../mizar_lite/externals/jquery.ui.timepicker/jquery.ui.timepicker",
         "gw": "../../mizar_lite/externals/GlobWeb/src",
-		"jquery.once": "../../mizar_lite/externals/jquery-once/jquery.once.min",
-		"selectize": "../../../bower_components/selectizejs/selectize",
-
+        "jquery.once": "../../mizar_lite/externals/jquery-once/jquery.once.min",
+        "selectize": "../../../bower_components/selectizejs/selectize",
+        "flot": "../../../bower_components/flot/jquery.flot",
+        "flot.tooltip": "../../../bower_components/flot/jquery.flot.tooltip.min",
+        "flot.axislabels": "../../../bower_components/flot/jquery.flot.axislabels",
         // requirements Mizar_Lite
-        "context" : "../../mizar_lite/js/context",
+           "context" : "../../mizar_lite/js/context",
         "layer" : "../../mizar_lite/js/layer",
         "provider" : "../../mizar_lite/js/provider",
         "service" : "../../mizar_lite/js/service",
@@ -51,7 +52,6 @@ require.config({
         "uws_gui" : "./uws",
         "templates" : "../templates",
         "data" : "../data"
-
     },
     shim: {
         'jquery': {
@@ -73,6 +73,16 @@ require.config({
         'jquery.nicescroll.min': {
             deps: ['jquery'],
             exports: ''
+        },
+        'flot': {
+            deps: ['jquery'],
+            exports: '$.plot'
+        },
+        'flot.tooltip': {
+            deps: ['flot']
+        },
+        'flot.axislabels': {
+            deps: ['flot']
         }
     },
     waitSeconds: 0
@@ -97,13 +107,13 @@ require(["./MizarWidget"], function (MizarWidget) {
         stats: {
             visible: true
         },
-        sitoolsBaseUrl : 'http://sitools.akka.eu:8080',
+        sitoolsBaseUrl: 'http://sitools.akka.eu:8080',
         "hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color"
         //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
     });
 
     // Set different GUIs
-    mizar.setAngleDistanceGui(true);
+    mizar.setAngleDistanceSkyGui(true);
     mizar.setSampGui(true);
     mizar.setShortenerUrlGui(true);
     mizar.set2dMapGui(true);
@@ -114,6 +124,7 @@ require(["./MizarWidget"], function (MizarWidget) {
     mizar.setShowCredits(true);
     mizar.setImageViewerGui(true);
     mizar.setSwitchTo2D(true);
+    mizar.setSearchGui(true);
     var atmosMarsLayer = {
         "category": "Other",
         "type": "atmosphere",
@@ -142,10 +153,10 @@ require(["./MizarWidget"], function (MizarWidget) {
         "icon": "css/images/toto.png",
         "data": {
             "type": "JSON",
-            "url": "http://localhost/mizar/tests/simple_geometry/linestring.json"
+            "url": "http://localhost/tests/simple_geometry/multilinestring.json"
         },
         "visible": false,
-        "pickable" : true,
+        "pickable": true,
         "color": "rgb(237, 67, 53)",
         "dataType": "line"
     }, marsLayer);

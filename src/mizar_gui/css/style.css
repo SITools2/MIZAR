@@ -183,7 +183,7 @@ body {
 }
 
 /*** Measure tool ***/
-#measureInvoker {
+#measureSkyInvoker, #measurePlanetInvoker {
     width: 32px;
     height: 32px;
     border: 0px solid black;
@@ -196,11 +196,11 @@ body {
     pointer-events: auto;
 }
 
-#measureInvoker.selected {
+#measureSkyInvoker.selected, #measurePlanetInvoker.selected {
     background: url(./images/measure_on.png) no-repeat;
 }
 
-#measureInvoker:hover {
+#measureSkyInvoker:hover, #measurePlanetInvoker:hover {
     cursor: pointer;
 }
 
@@ -223,6 +223,28 @@ body {
 }
 
 #switch2DButton:hover {
+    cursor: pointer;
+}
+
+/*** Search tool ***/
+#searchInvoker {
+    width: 32px;
+    height: 32px;
+    border: 0px solid black;
+    overflow: hidden;
+    outline: none;
+    display: inline-block;
+    background: url(./images/search_off.png) no-repeat;
+    position: relative;
+    left: -20px;
+    pointer-events: auto;
+}
+
+#searchInvoker.selected {
+    background: url(./images/search_on.png) no-repeat;
+}
+
+#searchInvoker:hover {
     cursor: pointer;
 }
 

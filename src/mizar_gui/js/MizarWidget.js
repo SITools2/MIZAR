@@ -22,10 +22,11 @@
  * Mizar widget
  */
 define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/Layer/TileWireframeLayer", "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event", "gw/Navigation/TouchNavigationHandler", "gw/Navigation/MouseNavigationHandler", "gw/Navigation/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
-        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog", "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureTool", "./gui/SwitchTo2D", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
-        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui"],
+        "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog",
+        "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureToolSky", "./gui/MeasureToolPlanet", "./gui/SwitchTo2D", "./gui/SearchTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
+        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui", "flot", "flot.tooltip", "flot.axislabels"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
-              LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureTool, SwitchTo2D) {
+              LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureToolSky, MeasureToolPlanet, SwitchTo2D, SearchTool) {
 
         /**
          *    Private variables
@@ -513,20 +514,21 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
         /**
          *    Add/remove angle distance GUI
          */
-        MizarWidget.prototype.setAngleDistanceGui = function (visible) {
+        MizarWidget.prototype.setAngleDistanceSkyGui = function (visible) {
             if (visible) {
-
                 // Distance measure tool lazy initialization
-                if (!this.measureTool) {
-                    this.measureTool = new MeasureTool({
-                        globe: this.sky,
-                        navigation: this.navigation,
-                        isMobile: this.isMobile,
-                        mode: this.mode
-                    });
+                if (this.mode == "sky") {
+                    if (!this.measureToolSky) {
+                        this.measureToolSky = new MeasureToolSky({
+                            globe: this.sky,
+                            navigation: this.navigation,
+                            isMobile: this.isMobile,
+                            mode: this.mode
+                        });
+                    }
                 }
             }
-            skyContext.setComponentVisibility("measureContainer", visible);
+            skyContext.setComponentVisibility("measureSkyContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -539,7 +541,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
 
                 if (!this.switchTo2D) {
                     this.switchTo2D = new SwitchTo2D({
-                        mizar : this,
+                        mizar: this,
                         globe: this.sky,
                         navigation: this.navigation,
                         isMobile: this.isMobile,
@@ -646,6 +648,23 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 }
                 skyContext.setComponentVisibility("imageViewerDiv", visible);
             }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Add/remove jQueryUI search GUI
+         */
+        MizarWidget.prototype.setSearchGui = function (visible) {
+            if (visible) {
+                this.searchTool = new SearchTool({
+                    globe: this.sky,
+                    navigation: this.navigation,
+                    layers : this.getLayers()
+                });
+            }
+
+            skyContext.setComponentVisibility("searchContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -861,6 +880,10 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 // Hide planet
                 planetContext.hide();
 
+                // desactive the planet measure tool
+                if (this.measureToolPlanet.activated)
+                    this.measureToolPlanet.toggle();
+
                 this.activatedContext = skyContext;
                 // Add smooth animation from planet context to sky context
                 planetContext.navigation.toViewMatrix(this.oldVM, this.oldFov, 2000, function () {
@@ -875,13 +898,14 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     // Show sky
                     skyContext.show();
                     self.sky.refresh();
-                    if(callback) {
+                    if (callback) {
                         callback.call(this);
                     }
                 });
 
             } else {
                 console.log("Change sky to planet context");
+
                 // Hide sky
                 skyContext.hide();
 
@@ -898,12 +922,12 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                         "baseUrl": gwLayer.nameResolverURL
                     },
                     reverseNameResolver: {
-                        "baseUrl": gwLayer.revereseNameResolverURL	// TODO: define protocol for reverse name resolver
+                        "baseUrl": gwLayer.reverseNameResolverURL	// TODO: define protocol for reverse name resolver
                     }
                 };
                 planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
                 planetConfiguration = $.extend({}, options, planetConfiguration);
-                if(!planetDimension) {
+                if (!planetDimension) {
                     planetDimension = "3d";
                 }
                 planetConfiguration.mode = planetDimension;
@@ -929,7 +953,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 this.oldFov = this.sky.renderContext.fov;
 
 
-                if(planetContext.mode == "3d") {
+                if (planetContext.mode == "3d") {
                     //Compute planet view matrix
                     var planetVM = mat4.create();
                     planetContext.navigation.computeInverseViewMatrix();
@@ -946,15 +970,24 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                     planetContext.show();
                     planetContext.globe.refresh();
                     self.publish("mizarMode:toggle", gwLayer);
+                }
+                ;
 
-                    console.log('new Measure Tool for Planet');
-                    //this.measureTool = new MeasureTool({
-                    //    globe: planetContext.globe,
-                    //    navigation: planetContext.navigation,
-                    //    isMobile: self.isMobile,
-                    //    mode : self.mode
-                    //});
-                };
+                // desactive the sky measure tool
+                if (this.measureToolSky.activated)
+                    this.measureToolSky.toggle();
+
+                //planetContext.globe.isSky = true;
+                if (!this.measureToolPlanet) {
+                    this.measureToolPlanet = new MeasureToolPlanet({
+                        globe: planetContext.globe,
+                        navigation: planetContext.navigation,
+                        planetLayer: planetContext.planetLayer,
+                        isMobile: this.isMobile,
+                        mode: this.mode
+                    });
+                }
+                planetContext.setComponentVisibility("measurePlanetContainer", true);
             }
         };
 
@@ -969,7 +1002,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
             }
 
             var dimension = planetContext.toggleDimension();
-            var callback = function() {
+            var callback = function () {
                 this.viewPlanet("Mars", dimension);
             }.bind(this);
 
