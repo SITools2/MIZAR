@@ -328,6 +328,11 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             else if (hipsLayer.hips_frame === "galactic")
                 coordSystem = "GAL";
 
+            // Skipping this layer due to copyright
+            if (hipsLayer.obs_collection === "Mellinger colored") {
+                return;
+            }
+
             var layerToAdd = {
                 category: "Image",
                 type: "healpix",
