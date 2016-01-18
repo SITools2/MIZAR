@@ -62,10 +62,10 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                 type: ShapeAndGeoCoordParameterType,
                 values : [{
                     key : "healpixParam",
-                    value : serviceParameters.healpix
+                    value : (serviceParameters != undefined) ? serviceParameters.healpix : ""
                 }, {
                     key : "orderParam",
-                    value : serviceParameters.order
+                    value : (serviceParameters != undefined) ? serviceParameters.order : ""
                 }]
             }, {
                 name: 'PAN',
@@ -80,7 +80,7 @@ define(["../jquery", "../underscore-min", "../Utils", "./AbstractService", "./pa
                 }]
             }, {
                 name: 'XS',
-                label : 'String',
+                label : 'Number',
                 type: NumberParameterType,
                 values: [{
                     key: "number_0",

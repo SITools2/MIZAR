@@ -88,7 +88,7 @@ define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParame
                 }
             });
 
-            parametersHTML += '<label>Geometry</label><div name="geometryDiv" style="width:300px; display: flex;">' + healpixParameter + orderParameter + '</div></div>';
+            parametersHTML += '<label>Geometry</label><div name="geometryDiv" style="width:300px; display: flex;">' + healpixParameter + '</div></div>';
 
             return parametersHTML;
         };

@@ -21,7 +21,7 @@
 /**
  * Utility module : contains various functions useful for differnt modules
  */
-define(["wcs"], function () {
+define(["wcs", "underscore-min"], function (wcs, _) {
 
     var mizar;
 
@@ -221,7 +221,7 @@ define(["wcs"], function () {
                     break;
                 case "LineString":
                     //TODO check avec JCM
-                    _.each(geometry.coordinates, function(value, i) {
+                    _.each(geometry.coordinates, function (value, i) {
                         sLon += value[0];
                         sLat += value[1];
                         nbPoints++;
@@ -286,8 +286,6 @@ define(["wcs"], function () {
 
             //If not, return false
             return false;
-        }
-
+        },
     };
-
 });

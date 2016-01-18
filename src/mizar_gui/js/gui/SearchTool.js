@@ -22,8 +22,8 @@
  * Tool designed to select areas on globe
  */
 
-define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool", "./PickingManager", "./LayerServiceView"],
-    function ($, _, PickingManager, SelectionTool, PickingManager, LayerServiceView) {
+define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool", "./PickingManager", "./LayerServiceView", "gw/Tiling/HEALPixBase"],
+    function ($, _, PickingManager, SelectionTool, PickingManager, LayerServiceView, HealpixBase) {
 
 
         /**
@@ -119,10 +119,6 @@ define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool",
             PickingManager.deactivate();
             navigation.stop();
 
-            //_.each(navigation.handlers, function (handler) {
-            //    handler.uninstall();
-            //});
-
             selectionTool = new SelectionTool({
                 globe: globe,
                 navigation: navigation,
@@ -164,10 +160,8 @@ define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool",
             PickingManager.activate();
             navigation.start();
             selectionTool.clear();
+            selectionTool.toggle();
 
-            //_.each(navigation.handlers, function (handler) {
-            //    handler.install(navigation);
-            //});
         };
 
         /**************************************************************************************************************/
@@ -215,9 +209,11 @@ define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool",
         SearchTool.prototype.showLayerServices = function () {
             var layer = $(this.parentElement).data("layer");
 
+            var healpixRanges = HealpixBase.convertPolygonToHealpixOrder(self.coordinates);
+
             layer.serviceParameters  = {
-                "healpix" : self.coordinates[0][0],
-                "order" : self.coordinates[0][1]
+                "healpix" : healpixRanges,
+                "order" : ""
             };
 
             LayerServiceView.show(layer);
