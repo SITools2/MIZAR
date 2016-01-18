@@ -539,6 +539,18 @@ define(["../jquery", "./IFrame", "../provider/JsonProcessor", "../Utils", "./Ima
             createFeatureList: function (selection) {
                 featureListHTML = featureListTemplate({selection: selection});
                 $leftDiv.html(featureListHTML);
+
+                if (selection[0].layer.name === "Planets" && selection[0].feature.properties.name === "Mars") {
+                    var button = $('#goToMarsBtn');
+
+                    button.button().once().click(function(event) {
+                        var marsLayer = mizar.getLayer("Mars");
+                        if (marsLayer != undefined) {
+                            mizar.toggleMode(marsLayer);
+                            $('#selectedFeatureDiv').hide();
+                        }
+                    });
+                }
             },
 
             /**********************************************************************************************/
