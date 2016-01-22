@@ -303,7 +303,7 @@ define(["../jquery", "underscore-min", "../Utils", "../gw/Layer/VectorLayer", ".
                 },
                 "properties": {
                     "style": new FeatureStyle({
-                        zIndex: 2,
+                        //zIndex: 2,
                         fillColor: [1, 0, 0, 1]
                     })
                 },
@@ -332,7 +332,8 @@ define(["../jquery", "underscore-min", "../Utils", "../gw/Layer/VectorLayer", ".
                         //label: globe.coordinateSystem.from3DToGeo(geoCenter),
                         label: distance + " km",
                         fillColor: [1, 1, 1, 1],
-                        zIndex: 2
+                        //zIndex: 10000,
+                        extrusionScale : -1000
                     })
                 }
             };
@@ -354,6 +355,10 @@ define(["../jquery", "underscore-min", "../Utils", "../gw/Layer/VectorLayer", ".
             else {
                 $(this.renderContext.canvas).css('cursor', 'default');
                 $('#elevationTrackingBtn').hide();
+                try {
+                    $('#popupElevation').dialog('close');
+                } catch (e) {}
+
                 this.clear();
             }
             $('#measurePlanetInvoker').toggleClass('selected');
@@ -478,8 +483,16 @@ define(["../jquery", "underscore-min", "../Utils", "../gw/Layer/VectorLayer", ".
             return intermediatePoints;
         };
 
+        /**
+         *
+         * url calcul distance : http://www.movable-type.co.uk/scripts/latlong.html
+         *
+         * @param firstPoint
+         * @param secondPoint
+         * @returns {number}
+         */
         MeasureToolPlanet.prototype.calculateDistanceElevation = function (firstPoint, secondPoint) {
-            var R = 3390000; // metres
+            var R = 3390000; // metres TODO Utiliser le système de ref de JC
             var φ1 = Numeric.toRadian(firstPoint[1]);
             var φ2 = Numeric.toRadian(secondPoint[1]);
             var Δφ = Numeric.toRadian(secondPoint[1] - firstPoint[1]);

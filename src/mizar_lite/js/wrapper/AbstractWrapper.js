@@ -18,7 +18,7 @@
  ******************************************************************************/
 
 /**
- *    Abstract class for Layer Transformer
+ *    Abstract class for Layer Wrapper
  *    Implemented by Concrete transformers in order to transform opensearch request in owner request
  */
 define(["../jquery", "../underscore-min"],
@@ -27,14 +27,14 @@ define(["../jquery", "../underscore-min"],
         /**************************************************************************************************************/
 
         /**
-         *   Abstract Transformer constructor
+         *   Abstract Wrapper constructor
          */
-        var AbstractTransformer = function (options) {
-
-            var urlParts = options.url.split('?');
-            this.baseUrl = urlParts[0];
-
-            this.type = options.type;
+        var AbstractWrapper = function (options) {
+            this.options = options;
+            //var urlParts = options.url.split('?');
+            //this.baseUrl = urlParts[0];
+            //
+            //this.type = options.type;
 
         };
 
@@ -43,7 +43,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert passed url into an url understandable by the service
          */
-        AbstractTransformer.prototype.beforeHandle = function (url) {
+        AbstractWrapper.prototype.beforeHandle = function (url) {
         };
 
         /**************************************************************************************************************/
@@ -51,7 +51,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert returned data from service into intelligible data for Mizar (output transformer)
          */
-        AbstractTransformer.prototype.afterHandle = function (data) {
+        AbstractWrapper.prototype.afterHandle = function (data) {
         };
 
         /**************************************************************************************************************/
@@ -59,7 +59,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Extract HealpixId, order from url
          */
-        AbstractTransformer.prototype.extractFilters = function (url) {
+        AbstractWrapper.prototype.extractFilters = function (url) {
             var filtersUrl = url.substring(url.indexOf('?') + 1, url.length);
 
             var filtersParts = filtersUrl.split('&');
@@ -84,5 +84,5 @@ define(["../jquery", "../underscore-min"],
             };
         };
 
-        return AbstractTransformer;
+        return AbstractWrapper;
     });

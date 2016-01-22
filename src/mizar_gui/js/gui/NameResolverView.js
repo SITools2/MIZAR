@@ -415,7 +415,10 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
                 NameResolver.setContext(ctx);
                 _clearInput();
                 $resolverSearchResult.css("display", "none");
-            }
+            },
+
+            toggleButtonVisibility : toggleButtonVisibility,
+            toggleLayer : toggleLayer
         };
 
     });

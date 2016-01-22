@@ -21,9 +21,9 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string", "../transformer/TransformerManager"],
+define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String, TransformerManager) {
+              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
 
         /**
          * Private variables
@@ -133,14 +133,14 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                         gwLayer = new HEALPixLayer(layerDesc);
                     }
 
-                    if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
+                    /*if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
                         var transformerFunction = require(layerDesc.transformer.jsObject);
                         var options = {
                             url : layerDesc.serviceUrl,
                             type : layerDesc.transformer.type
                         };
                         gwLayer.transformer = new transformerFunction(options);
-                    }
+                    }*/
 
                     if (layerDesc.availableServices) {
                         gwLayer.availableServices = layerDesc.availableServices;
@@ -172,13 +172,13 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                         gwLayer = new OpenSearchLayer(layerDesc);
                     }
 
-                    if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
+                    /*if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
                         var transformerFunction = require(layerDesc.transformer.jsObject);
                         var options = {
                             url : layerDesc.serviceUrl
                         };
                         gwLayer.transformer = new transformerFunction(options);
-                    }
+                    }*/
 
                     if (layerDesc.displayProperties) {
                         gwLayer.displayProperties = layerDesc.displayProperties;

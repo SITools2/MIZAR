@@ -25,6 +25,8 @@ require.config({
         "jquery": "../../mizar_lite/externals/jquery/dist/jquery.min",
         "jquery.ui": "../../mizar_lite/externals/jquery-ui/jquery-ui.min",
         "underscore-min": "../../mizar_lite/externals/underscore/underscore",
+        "jszip": "../../mizar_lite/externals/jszip/jszip.min",
+        "saveAs": "../../mizar_lite/externals/fileSaver/FileSaver.min",
         "jquery.nicescroll.min": "../../mizar_lite/externals/jquery.nicescroll/dist/jquery.nicescroll.min",
 		"string": "../../mizar_lite/externals/string/dist/string.min",        
 		"fits": "../../mizar_lite/externals/fits",
@@ -41,6 +43,7 @@ require.config({
         "flot": "../../mizar_lite/externals/flot/jquery.flot.min",
         "flot.tooltip": "../../mizar_lite/externals/flot/jquery.flot.tooltip.min",
         "flot.axislabels": "../../mizar_lite/externals/flot/jquery.flot.axislabels",
+        "loadmask" : "../../mizar_lite/externals/loadmask/jquery.loadmask",
 
         // requirements Mizar_Lite
         "context" : "../../mizar_lite/js/context",
@@ -48,12 +51,14 @@ require.config({
         "provider" : "../../mizar_lite/js/provider",
         "service" : "../../mizar_lite/js/service",
         "gui_core" : "../../mizar_lite/js/gui",
-        "transformer" : "../../mizar_lite/js/transformer",
+        "wrapper" : "../../mizar_lite/js/wrapper",
         "uws" : "../../mizar_lite/js/uws",
+        "mizar_lite" : "../../mizar_lite",
         "service_gui" : "./service_gui",
         "uws_gui" : "./uws",
         "templates" : "../templates",
-        "data" : "../data"
+        "data" : "../data",
+        "data_core" : "../../mizar_lite/data"
     },
     shim: {
         'jquery': {
@@ -101,7 +106,12 @@ require(["./MizarWidget"], function (MizarWidget) {
             "initTarget": [0, 0]
         },
         nameResolver: {
-            "zoomFov": 2
+            "zoomFov": 2,
+            "wrapper" : {
+                //"jsObject" : "./wrapper/NameResolverCDSWrapper",
+                "jsObject" : "./wrapper/NameResolverWrapper"
+            },
+            //"baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
         },
         positionTracker: {
             position: "bottom"
@@ -126,7 +136,9 @@ require(["./MizarWidget"], function (MizarWidget) {
     mizar.setShowCredits(true);
     mizar.setImageViewerGui(true);
     mizar.setSwitchTo2D(true);
-    mizar.setSearchGui(true);
+    mizar.setExportGui(true);
+    mizar.setSearchGui(false);
+
     var atmosMarsLayer = {
         "category": "Other",
         "type": "atmosphere",
@@ -155,13 +167,31 @@ require(["./MizarWidget"], function (MizarWidget) {
         "icon": "css/images/toto.png",
         "data": {
             "type": "JSON",
-            "url": "http://localhost/tests/simple_geometry/multilinestring.json"
+            "url": "http://localhost/tests/simple_geometry/polygon.json"
         },
         "visible": false,
         "pickable": true,
         "color": "rgb(237, 67, 53)",
         "dataType": "line"
     }, marsLayer);
+
+
+    //var earthLayer = mizar.getLayer("Earth");
+    //mizar.addLayer({
+    //    "category": "Other",
+    //    "type": "GeoJSON",
+    //    "name": "MultiPoint_earth",
+    //    "icon": "css/images/toto.png",
+    //    "data": {
+    //        "type": "JSON",
+    //        //"url": "http://localhost/tests/simple_geometry/multilinestring.json"
+    //        "url": "http://localhost/tests/simple_geometry/polygon.json"
+    //    },
+    //    "visible": true,
+    //    "pickable": true,
+    //    "color": "rgb(237, 67, 53)",
+    //    "dataType": "line"
+    //}, earthLayer);
 
 
 });

@@ -22,8 +22,8 @@
  * Tool designed to select areas on globe
  */
 
-define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool", "./PickingManager", "./LayerServiceView", "gw/Tiling/HEALPixBase"],
-    function ($, _, PickingManager, SelectionTool, PickingManager, LayerServiceView, HealpixBase) {
+define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool", "./PickingManager", "./LayerServiceView", "../Utils", "gw/Tiling/HEALPixBase"],
+    function ($, _, PickingManager, SelectionTool, PickingManager, LayerServiceView, Utils, HealpixBase) {
 
 
         /**
@@ -209,7 +209,13 @@ define(["../jquery", "../underscore-min", "./PickingManager", "./SelectionTool",
         SearchTool.prototype.showLayerServices = function () {
             var layer = $(this.parentElement).data("layer");
 
-            var healpixRanges = HealpixBase.convertPolygonToHealpixOrder(self.coordinates);
+            var selectedTile = mizar.navigation.globe.tileManager.getVisibleTile(self.coordinates[0][0], self.coordinates[0][1]);
+
+            if (selectedTile != undefined) {
+                var order = selectedTile.order;
+            }
+
+            var healpixRanges = HealpixBase.convertPolygonToHealpixOrder(self.coordinates, 4, order);
 
             layer.serviceParameters  = {
                 "healpix" : healpixRanges,

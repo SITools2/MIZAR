@@ -20,7 +20,7 @@
 /**
  * Name resolver module : API allowing to search object name and zoom to it
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/VectorLayer", "../gw/Tiling/HEALPixBase", "text!../../data/mars_resolver.json", "../layer/LayerManager", "../jquery.ui"],
+define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/VectorLayer", "../gw/Tiling/HEALPixBase", "text!../data_core/mars_resolver.json", "../layer/LayerManager", "../jquery.ui"],
     function ($, _, FeatureStyle, VectorLayer, HEALPixBase, marsResolverJSON, layerManager) {
 
 // Name resolver globals
@@ -146,9 +146,37 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                     }
                 }
                 else {
-                    // Service
+                    var options = {
+                        objectName: objectName,
+                        context: context,
+                        onError : onError,
+                        onComplete : onComplete,
+                        onSuccess : onSuccess,
+                        searchLayer: searchLayer,
+                        zoomTo : zoomTo
+                    };
+                    if (context.configuration.nameResolver.wrapper != undefined) {
+                        var wrapperFunction = require(context.configuration.nameResolver.wrapper.jsObject);
+                    }
+                    else {
+                        var wrapperFunction = require("./wrapper/NameResolverWrapper");
+                    }
+
+                    var wrapper = new wrapperFunction(options);
+
+                    if(wrapper) {
+                        wrapper.handle();
+                    } else {
+                        alert("No name resolver found")
+                    }
+
+                   /* // Service
                     // Name of the object which could be potentially found by name resolver
                     var url = context.configuration.nameResolver.baseUrl + "/" + objectName + "/EQUATORIAL";
+
+                    var zoomToCallback = function() {
+                        searchLayer(objectName, onSuccess, onError, response);
+                    };
 
                     $.ajax({
                         type: "GET",
@@ -175,7 +203,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                                 onComplete(xhr);
                             }
                         }
-                    });
+                    });*/
                 }
             }
         }
@@ -280,9 +308,10 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             var containsDictionary = context.configuration.nameResolver.baseUrl.indexOf("json") >= 0;
             if (containsDictionary) {
                 // Dictionary as json
+                var marsResolverUrl = context.configuration.nameResolver.baseUrl.replace('mizar_gui', 'mizar_lite');
                 $.ajax({
                     type: "GET",
-                    url: context.configuration.nameResolver.baseUrl,
+                    url: marsResolverUrl,
                     success: function (response) {
                         dictionary = response;
                         nameResolverLayer = new VectorLayer();

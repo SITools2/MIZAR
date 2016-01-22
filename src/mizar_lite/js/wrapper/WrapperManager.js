@@ -18,21 +18,21 @@
  ******************************************************************************/
 
 /**
- *    Main class for managing Transformers, all transformers have to be required here
+ *    Main class for managing Wrappers, all transformers have to be required here
  */
-define(["../jquery", "../underscore-min", "../transformer/AbstractTransformer", "../transformer/TestTransformer"],
-    function ($, _, AbstractTransformer, TestTransformer) {
+define(["../jquery", "../underscore-min", "./NameResolverWrapper", "./NameResolverCDSWrapper"],
+    function ($, _, NameResolverWrapper, NameResolverCDSWrapper) {
 
         /**************************************************************************************************************/
 
         /**
-         *    Transformer Manager Constructor
+         *    Wrapper Manager Constructor
          */
-        var TransformerManager = function (options) {
+        var WrapperManager = function (options) {
 
         };
 
 
-        return TransformerManager;
+        return WrapperManager;
 
     });
