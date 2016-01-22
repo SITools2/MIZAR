@@ -35,7 +35,7 @@ define(["../jquery", "../underscore-min", "../gw/Layer/BaseLayer", "../gw/Layer/
             this.baseImageries = [];
             this.layers = [];
             this.category = "Planets";
-            this.nameResolverURL = options.nameResolverURL;
+            this.nameResolver = options.nameResolver;
 
             for (var i = 0; i < options.baseImageries.length; i++) {
                 var planetDesc = options.baseImageries[i];

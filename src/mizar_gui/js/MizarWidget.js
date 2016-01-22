@@ -24,7 +24,7 @@
 define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/Layer/TileWireframeLayer", "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event", "gw/Navigation/TouchNavigationHandler", "gw/Navigation/MouseNavigationHandler", "gw/Navigation/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
         "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog",
         "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureToolSky", "./gui/MeasureToolPlanet", "./gui/SwitchTo2D", "./gui/SearchTool", "./gui/ExportTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
-        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui", "flot", "flot.tooltip", "flot.axislabels", "./wrapper/WrapperManager"],
+        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui", "flot", "flot.tooltip", "flot.axislabels", "./name_resolver/NameResolverManager"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
               LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureToolSky, MeasureToolPlanet, SwitchTo2D, SearchTool, ExportTool) {
 
@@ -928,20 +928,24 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
 
                 // Hide all additional layers
                 skyContext.hideAdditionalLayers();
-
                 // Create planet context( with existing sky render context )
                 var planetConfiguration = {
                     planetLayer: gwLayer,
                     renderContext: this.sky.renderContext,
                     initTarget: options.navigation.initTarget,
-                    nameResolver: {
-                        "zoomFov": 200000, // in fact it must be distance, to be improved
-                        "baseUrl": gwLayer.nameResolverURL
-                    },
                     reverseNameResolver: {
                         "baseUrl": gwLayer.reverseNameResolverURL	// TODO: define protocol for reverse name resolver
                     }
                 };
+
+                if(gwLayer.nameResolver != undefined) {
+                    planetConfiguration.nameResolver = {
+                        "zoomFov": 200000, // in fact it must be distance, to be improved
+                            "baseUrl": gwLayer.nameResolver.baseUrl,
+                            "jsObject" : gwLayer.nameResolver.jsObject
+                    }
+                };
+
                 planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
                 planetConfiguration = $.extend({}, options, planetConfiguration);
                 if (!planetDimension) {

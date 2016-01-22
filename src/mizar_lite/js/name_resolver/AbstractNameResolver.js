@@ -29,7 +29,7 @@ define(["../jquery", "../underscore-min"],
         /**
          *   Abstract Wrapper constructor
          */
-        var AbstractWrapper = function (options) {
+        var AbstractNameResolver = function (options) {
             this.options = options;
             //var urlParts = options.url.split('?');
             //this.baseUrl = urlParts[0];
@@ -43,7 +43,12 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert passed url into an url understandable by the service
          */
-        AbstractWrapper.prototype.beforeHandle = function (url) {
+        AbstractNameResolver.prototype.init = function () {
+        };
+        /**
+         *    Convert passed url into an url understandable by the service
+         */
+        AbstractNameResolver.prototype.remove = function () {
         };
 
         /**************************************************************************************************************/
@@ -51,38 +56,38 @@ define(["../jquery", "../underscore-min"],
         /**
          *    Convert returned data from service into intelligible data for Mizar (output transformer)
          */
-        AbstractWrapper.prototype.afterHandle = function (data) {
+        AbstractNameResolver.prototype.handle = function () {
         };
 
         /**************************************************************************************************************/
 
-        /**
-         *    Extract HealpixId, order from url
-         */
-        AbstractWrapper.prototype.extractFilters = function (url) {
-            var filtersUrl = url.substring(url.indexOf('?') + 1, url.length);
+        ///**
+        // *    Extract HealpixId, order from url
+        // */
+        //AbstractNameResolver.prototype.extractFilters = function (url) {
+        //    var filtersUrl = url.substring(url.indexOf('?') + 1, url.length);
+        //
+        //    var filtersParts = filtersUrl.split('&');
+        //
+        //    var startOrder, startHealpixID;
+        //    var order, healpixID;
+        //    _.each(filtersParts, function (part) {
+        //
+        //        var keyAndValue = part.split('=');
+        //
+        //        if (keyAndValue[0] === "order") {
+        //            order = keyAndValue[1];
+        //        }
+        //        if (keyAndValue[0] === "healpix") {
+        //            healpixID = keyAndValue[1];
+        //        }
+        //    });
+        //
+        //    return this.filters = {
+        //        "healpixID": healpixID,
+        //        "order": order
+        //    };
+        //};
 
-            var filtersParts = filtersUrl.split('&');
-
-            var startOrder, startHealpixID;
-            var order, healpixID;
-            _.each(filtersParts, function (part) {
-
-                var keyAndValue = part.split('=');
-
-                if (keyAndValue[0] === "order") {
-                    order = keyAndValue[1];
-                }
-                if (keyAndValue[0] === "healpix") {
-                    healpixID = keyAndValue[1];
-                }
-            });
-
-            return this.filters = {
-                "healpixID": healpixID,
-                "order": order
-            };
-        };
-
-        return AbstractWrapper;
+        return AbstractNameResolver;
     });

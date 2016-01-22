@@ -337,7 +337,11 @@
 	"category": "Planets",
 	"type": "Planet",
 	"name": "Mars",
-	"nameResolverURL": "../mizar_gui/data/mars_resolver.json",
+    "nameResolver" : {
+      "zoomFov": 2,
+      "jsObject" : "./name_resolver/DictionaryNameResolver",
+      "baseUrl" : "../mizar_gui/data/mars_resolver.json"
+    },
 	"elevation": {
 	  "baseUrl": "http://idoc-wcsmars.ias.u-psud.fr/wcsmap",
 	  "coverage": "MARSTOPO_16",

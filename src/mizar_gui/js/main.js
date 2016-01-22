@@ -51,7 +51,7 @@ require.config({
         "provider" : "../../mizar_lite/js/provider",
         "service" : "../../mizar_lite/js/service",
         "gui_core" : "../../mizar_lite/js/gui",
-        "wrapper" : "../../mizar_lite/js/wrapper",
+        "name_resolver" : "../../mizar_lite/js/name_resolver",
         "uws" : "../../mizar_lite/js/uws",
         "mizar_lite" : "../../mizar_lite",
         "service_gui" : "./service_gui",
@@ -107,10 +107,7 @@ require(["./MizarWidget"], function (MizarWidget) {
         },
         nameResolver: {
             "zoomFov": 2,
-            "wrapper" : {
-                //"jsObject" : "./wrapper/NameResolverCDSWrapper",
-                "jsObject" : "./wrapper/NameResolverWrapper"
-            },
+            "jsObject" : "./name_resolver/DefaultNameResolver"
             //"baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
         },
         positionTracker: {

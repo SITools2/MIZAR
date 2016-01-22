@@ -21,30 +21,30 @@
  *    Abstract class for Layer Wrapper
  *    Implemented by Concrete transformer in order to transform opensearch request in owner request
  */
-define(["../jquery", "../underscore-min", "../Utils", "../wrapper/AbstractWrapper"],
-    function ($, _, Utils, AbstractWrapper) {
+define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/AbstractNameResolver"],
+    function ($, _, Utils, AbstractNameResolver) {
 
         /**************************************************************************************************************/
 
         /**
-         *    NameResolverCDSWrapper context constructor
+         *    CDSNameResolver context constructor
          */
-        var NameResolverWrapper = function (options) {
+        var CDSNameResolver = function (options) {
 
-            AbstractWrapper.prototype.constructor.call(this, options);
+            AbstractNameResolver.prototype.constructor.call(this, options);
         };
 
         /**************************************************************************************************************/
 
-        Utils.inherits(AbstractWrapper, NameResolverWrapper);
+        Utils.inherits(AbstractNameResolver, CDSNameResolver);
 
         /**************************************************************************************************************/
 
         /**
          *    Convert passed url into an url understandable by the service (input transformer)
          */
-        NameResolverWrapper.prototype.handle = function () {
-
+        CDSNameResolver.prototype.handle = function (options) {
+            this.options = options;
             var objectName = this.options.objectName;
             var context = this.options.context;
             var onError = this.options.onError;
@@ -53,15 +53,63 @@ define(["../jquery", "../underscore-min", "../Utils", "../wrapper/AbstractWrappe
             var searchLayer = this.options.searchLayer;
             var zoomTo = this.options.zoomTo;
 
-            var url = context.configuration.nameResolver.baseUrl + "/" + objectName + "/EQUATORIAL";
+            var url = context.configuration.nameResolver.baseUrl + "?" + objectName;
             $.ajax({
                 type: "GET",
                 url: url,
-                success: function (response) {
+                dataType: "xml",
+                success: function (xmlResponse) {
+                    var target = $(xmlResponse).find("Target");
+
+                    var features = [];
+
+                    $(target).find("Resolver").each(function(index) {
+                        var resolver = this;
+                        var ra = $(resolver).find("jradeg");
+                        var dec = $(resolver).find("jdedeg");
+
+                        if(!_.isEmpty(ra.text()) && !_.isEmpty(dec.text())) {
+                            ra = parseFloat(ra.text());
+                            dec = parseFloat(dec.text());
+                            var feature = {};
+                            feature.ra=ra;
+                            feature.dec=dec;
+                            feature.credit = $(resolver).attr('name');
+                            features.push(feature);
+                        }
+                    });
+
+                    var response = {
+                        totalResults: features.length,
+                        type: "FeatureCollection",
+                        features: [
+                        ]
+                    };
+
+                    _.each(features, function(feature) {
+                       response.features.push({
+                           type: 'Feature',
+                           geometry: {
+                               coordinates: [feature.ra, feature.dec],
+                               "type": "Point"
+                           },
+                           "properties": {
+                               "crs": {
+                                   "type": "name",
+                                   "properties": {
+                                       "name": "equatorial.ICRS"
+                                   }
+                               },
+                               "identifier": "CDS0",
+                               "credits": feature.credit
+                           }
+                       })
+                    });
+
                     // Check if response contains features
-                    if (response.type === "FeatureCollection") {
+                    if (response.type === "FeatureCollection" && response.features.length > 0) {
                         var firstFeature = response.features[0];
-                        var zoomToCallback = function() {
+                        var zoomToCallback = function () {
                             searchLayer(objectName, onSuccess, onError, response);
                         };
                         zoomTo(firstFeature.geometry.coordinates[0], firstFeature.geometry.coordinates[1], zoomToCallback, response);
@@ -82,15 +130,6 @@ define(["../jquery", "../underscore-min", "../Utils", "../wrapper/AbstractWrappe
             });
         };
 
-        /**************************************************************************************************************/
-
-        /**
-         *    Convert returned data from service into intelligible data for Mizar (output transformer)
-         */
-        NameResolverWrapper.prototype.convertResponse = function (data) {
-            return data;
-        };
-
-        return NameResolverWrapper;
+        return CDSNameResolver;
 
     });

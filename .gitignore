@@ -29,7 +29,6 @@ bower_components/
 *.log
 
 build/
-dist/
 
 *.log
 npm-debug.log*

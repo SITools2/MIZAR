@@ -20,19 +20,19 @@
 /**
  *    Main class for managing Wrappers, all transformers have to be required here
  */
-define(["../jquery", "../underscore-min", "./NameResolverWrapper", "./NameResolverCDSWrapper"],
-    function ($, _, NameResolverWrapper, NameResolverCDSWrapper) {
+define(["../jquery", "../underscore-min", "./DefaultNameResolver", "./CDSNameResolver",  "./DictionaryNameResolver"],
+    function ($, _, DefaultNameResolver, CDSNameResolver, DictionaryNameResolver) {
 
         /**************************************************************************************************************/
 
         /**
-         *    Wrapper Manager Constructor
+         *    NameResolver Manager Constructor
          */
-        var WrapperManager = function (options) {
+        var NameResolverManager = function (options) {
 
         };
 
 
-        return WrapperManager;
+        return NameResolverManager;
 
     });

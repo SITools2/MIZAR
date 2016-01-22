@@ -399,7 +399,7 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
              *    Handler on mizar mode toggle
              */
             onModeToggle: function (planetLayer) {
-                if (!planetLayer || planetLayer.nameResolverURL) {
+                if (!planetLayer || (planetLayer.nameResolver != undefined && planetLayer.nameResolver.baseUrl)) {
                     $nameResolver.show();
                     self.setContext(mizar.activatedContext);
                 }

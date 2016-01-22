@@ -26,15 +26,16 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 // Name resolver globals
         var mizar;
         var context;
-        var dictionary;
 
 // Name resolver properties
         var duration;
         var zoomFov;
-
-        var nameResolverLayer = null; // Layer containing labels from dictionary
         var targetLayer; 			  // Layer containing target feature(cross) on zoom
         var targetFeature;			  // Zooming destination feature
+
+
+//Wrapper Object
+        var nameResolverImplementation = null;
 
         /**************************************************************************************************************/
 
@@ -128,114 +129,51 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 zoomTo(geo[0], geo[1], onSuccess);
             }
             else {
-                if (dictionary) {
-                    // Planet resolver(Mars only currently)
-                    var feature = _.find(dictionary.features, function (f) {
-                        return f.properties.Name.toLowerCase() === objectName.toLowerCase();
-                    });
+                var options = {
+                    objectName: objectName,
+                    context: context,
+                    onError: onError,
+                    onComplete: onComplete,
+                    onSuccess: onSuccess,
+                    searchLayer: searchLayer,
+                    zoomTo: zoomTo
+                };
 
-                    if (feature) {
-                        var lon = parseFloat(feature.properties.center_lon);
-                        var lat = parseFloat(feature.properties.center_lat);
-                        zoomTo(lon, lat, onSuccess, {features: [feature]});
-                    }
-                    else {
-                        if (onError) {
-                            onError();
-                        }
-                    }
-                }
-                else {
-                    var options = {
-                        objectName: objectName,
-                        context: context,
-                        onError : onError,
-                        onComplete : onComplete,
-                        onSuccess : onSuccess,
-                        searchLayer: searchLayer,
-                        zoomTo : zoomTo
-                    };
-                    if (context.configuration.nameResolver.wrapper != undefined) {
-                        var wrapperFunction = require(context.configuration.nameResolver.wrapper.jsObject);
-                    }
-                    else {
-                        var wrapperFunction = require("./wrapper/NameResolverWrapper");
-                    }
-
-                    var wrapper = new wrapperFunction(options);
-
-                    if(wrapper) {
-                        wrapper.handle();
-                    } else {
-                        alert("No name resolver found")
-                    }
-
-                   /* // Service
-                    // Name of the object which could be potentially found by name resolver
-                    var url = context.configuration.nameResolver.baseUrl + "/" + objectName + "/EQUATORIAL";
-
-                    var zoomToCallback = function() {
-                        searchLayer(objectName, onSuccess, onError, response);
-                    };
-
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        success: function (response) {
-                            // Check if response contains features
-                            if (response.type === "FeatureCollection") {
-                                var firstFeature = response.features[0];
-                                var zoomToCallback = function() {
-                                    searchLayer(objectName, onSuccess, onError, response);
-                                };
-                                zoomTo(firstFeature.geometry.coordinates[0], firstFeature.geometry.coordinates[1], zoomToCallback, response);
-
-                            } else {
-                                onError();
-                            }
-                        },
-                        error: function (xhr) {
-                            searchLayer(objectName, onSuccess, onError);
-                            console.error(xhr.responseText);
-                        },
-                        complete: function (xhr, textStatus) {
-                            if (onComplete) {
-                                onComplete(xhr);
-                            }
-                        }
-                    });*/
+                if (nameResolverImplementation) {
+                    nameResolverImplementation.handle(options);
+                } else {
+                    alert("No name resolver found")
                 }
             }
         }
 
 
         function searchLayer(objectName, onSuccess, onError, response) {
-            var layers =[];
-            if(mizar.mode == "planet") {
+            var layers = [];
+            if (mizar.mode == "planet") {
                 layers = layerManager.searchPlanetLayer(objectName);
             }
             else {
                 layers = layerManager.searchGlobeLayer(objectName);
             }
 
-            if(layers.length === 0 && !response) {
+            if (layers.length === 0 && !response) {
                 if (onError) {
                     onError();
                 }
                 return;
             }
 
-            layers = _.sortBy(layers, function(layer) {
-                return (layer.category=="background") ? 0 : 1;
+            layers = _.sortBy(layers, function (layer) {
+                return (layer.category == "background") ? 0 : 1;
             });
-
 
 
             var results;
             // Check if response contains features
             if (response && response.type === "FeatureCollection") {
                 results = response;
-            }else {
+            } else {
                 var results = {};
                 results.type = "FeatureCollection";
                 results.features = [];
@@ -244,14 +182,14 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             _.each(layers, function (layer) {
                 results.features.push(
                     {
-                        type : 'Feature',
-                        properties : {
-                            type : 'layer',
+                        type: 'Feature',
+                        properties: {
+                            type: 'layer',
                             name: layer.name,
-                            description : layer.description,
-                            layerType : layer.type,
-                            visible : layer._visible,
-                            background : layer.category=="background"
+                            description: layer.description,
+                            layerType: layer.type,
+                            visible: layer._visible,
+                            background: layer.category == "background"
                         }
                     }
                 )
@@ -300,40 +238,6 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 
         /**************************************************************************************************************/
 
-        /**
-         *    In case if base url isn't a service but a json containing all known places
-         *    this method allows to retrieve it
-         */
-        var retrieveDictionary = function () {
-            var containsDictionary = context.configuration.nameResolver.baseUrl.indexOf("json") >= 0;
-            if (containsDictionary) {
-                // Dictionary as json
-                var marsResolverUrl = context.configuration.nameResolver.baseUrl.replace('mizar_gui', 'mizar_lite');
-                $.ajax({
-                    type: "GET",
-                    url: marsResolverUrl,
-                    success: function (response) {
-                        dictionary = response;
-                        nameResolverLayer = new VectorLayer();
-                        for (var i = 0; i < response.features.length; i++) {
-                            var feature = response.features[i];
-                            feature.properties.style = new FeatureStyle({
-                                label: feature.properties.Name,
-                                fillColor: [1, 0.7, 0, 1]
-                            });
-                        }
-                        nameResolverLayer.addFeatureCollection(response);
-                        context.globe.addLayer(nameResolverLayer);
-                    },
-                    error: function (thrownError) {
-                        console.error(thrownError);
-                    }
-                });
-            }
-            else {
-                dictionary = null;
-            }
-        };
 
         /**************************************************************************************************************/
 
@@ -353,13 +257,11 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             remove: function () {
                 if (context) {
                     context.globe.removeLayer(targetLayer);
-                    if (nameResolverLayer) {
-                        context.globe.removeLayer(nameResolverLayer);
-                        nameResolverLayer = null;
+                    if (nameResolverImplementation != undefined) {
+                        nameResolverImplementation.remove();
                     }
                     context.navigation.unsubscribe("modified", removeTarget);
                     context = null;
-                    dictionary = null;
                 }
             },
 
@@ -374,7 +276,18 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 this.remove();
                 context = ctx;
 
-                retrieveDictionary();
+                //instantiate name resolver nameResolverImplementation object
+                var nameResolverClass;
+                if (context.configuration.nameResolver != undefined) {
+                    nameResolverClass = require(context.configuration.nameResolver.jsObject);
+                }
+                else {
+                    //Use default name resolver if none defined...
+                    nameResolverClass = require("./nameResolverImplementation/DefaultNameResolver");
+                }
+
+                nameResolverImplementation = new nameResolverClass(context);
+
                 var style = new FeatureStyle({
                     iconUrl: ctx.configuration.mizarBaseUrl + "css/images/target.png",
                     fillColor: [1, 1, 1, 1]
