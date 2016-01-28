@@ -328,8 +328,8 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             else if (hipsLayer.hips_frame === "galactic")
                 coordSystem = "GAL";
 
-            // Skipping this layer due to copyright
-            if (hipsLayer.obs_collection === "Mellinger colored") {
+            // Skipping no public layers
+            if (hipsLayer.hasOwnProperty("hips_status") && !hipsLayer.hips_status.match('public') === null) {
                 return;
             }
 
@@ -343,6 +343,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 copyright: hipsLayer.obs_copyright,
                 attribution: hipsLayer.obs_copyright,
                 copyrightUrl: hipsLayer.obs_copyright_url,
+                ack: hipsLayer.obs_ack,
                 serviceUrl: hipsLayer.moc_access_url,
                 format: imageFormat,
                 coordSystem : coordSystem,
@@ -361,6 +362,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             }
 
             var healpixLayer = this.mizar.addLayer(layerToAdd);
+
             if(hipsLayer.hasOwnProperty("moc_access_url")) {
                 healpixLayer.serviceUrl = hipsLayer.moc_access_url;
             }

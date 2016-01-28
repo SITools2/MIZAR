@@ -253,14 +253,14 @@ body {
     overflow: hidden;
     outline: none;
     display: inline-block;
-    background: url(./images/search_off.png) no-repeat;
+    background: url(./images/export_off.png) no-repeat;
     position: relative;
     left: -20px;
     pointer-events: auto;
 }
 
 #exportInvoker.selected {
-    background: url(./images/search_on.png) no-repeat;
+    background: url(./images/export_on.png) no-repeat;
 }
 
 #exportInvoker:hover {
@@ -388,5 +388,13 @@ input::-moz-placeholder {
     background: -webkit-linear-gradient(top,  #ea7d00 0%,#f78809 51%,#ffaa01 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(to bottom,  #ea7d00 0%,#f78809 51%,#ffaa01 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea7d00', endColorstr='#ffaa01',GradientType=0 ); /* IE6-9 */
+}
 
+.whiteLink {
+    color: #FFF;
+}
+
+.zoneToExport {
+    text-align: center;
+    margin-top : 25px;
 }
