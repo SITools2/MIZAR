@@ -179,8 +179,8 @@ define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min",
          */
         function _showError() {
             $resolverSearchResult
-                .html("Bad input or object not found")
-                .fadeIn(animationDuration);
+                .html("<div class='errorNameResolver'>Bad input or object not found</div>")
+                .fadeIn(0);
 
             $nameResolver.find("#searchSpinner").fadeOut(animationDuration).end();
             $clear.fadeIn(animationDuration);

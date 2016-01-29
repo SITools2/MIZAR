@@ -24,7 +24,7 @@
 define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyContext", "gw/Layer/TileWireframeLayer", "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event", "gw/Navigation/TouchNavigationHandler", "gw/Navigation/MouseNavigationHandler", "gw/Navigation/KeyboardNavigationHandler", "text!./templates/mizarCore.html", "text!../data/backgroundSurveys.json",
         "./layer/LayerManager", "./gui/LayerManagerView", "./gui/BackgroundLayersView", "./service/NameResolver", "./gui/NameResolverView", "./service/ReverseNameResolver", "./gui/ReverseNameResolverView", "./service/MocBase", "./Utils", "./gui/PickingManager", "./gui/FeaturePopup", "./gui/IFrame", "./gui/Compass", "./gui/MollweideViewer", "./gui_core/ErrorDialog", "./gui_core/AboutDialog",
         "./service/Share", "./service/Samp", "./gui/AdditionalLayersView", "./gui/ImageManager", "./gui/ImageViewer", "./uws/UWSManager", "./gui/MeasureToolSky", "./gui/MeasureToolPlanet", "./gui/SwitchTo2D", "./gui/SearchTool", "./gui/ExportTool", "./provider/StarProvider", "./provider/ConstellationProvider", "./provider/JsonProvider", "./provider/OpenSearchProvider", "./provider/PlanetProvider",
-        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui", "flot", "flot.tooltip", "flot.axislabels", "./name_resolver/NameResolverManager"],
+        "gw/Renderer/ConvexPolygonRenderer", "gw/Renderer/PointSpriteRenderer", "gw/Renderer/LineStringRenderable", "gw/Renderer/PointRenderer", "jquery.ui", "flot", "flot.tooltip", "flot.axislabels", "./name_resolver/NameResolverManager", "./reverse_name_resolver/ReverseNameResolverManager"],
     function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats, AttributionHandler, Event, TouchNavigationHandler, MouseNavigationHandler, KeyboardNavigationHandler, mizarCoreHTML, backgroundSurveys,
               LayerManager, LayerManagerView, BackgroundLayersView, NameResolver, NameResolverView, ReverseNameResolver, ReverseNameResolverView, MocBase, Utils, PickingManager, FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog, AboutDialog, Share, Samp, AdditionalLayersView, ImageManager, ImageViewer, UWSManager, MeasureToolSky, MeasureToolPlanet, SwitchTo2D, SearchTool, ExportTool) {
 
@@ -147,12 +147,17 @@ define(["jquery", "underscore-min", "./context/PlanetContext", "./context/SkyCon
                 "coordSystem": userOptions.hasOwnProperty('coordSystem') ? userOptions.coordSystem : "EQ",
                 "debug": userOptions.hasOwnProperty('debug') ? userOptions.debug : false,
                 "nameResolver": {
+                    "jsObject" : "./name_resolver/DefaultNameResolver",
                     "baseUrl": sitoolsBaseUrl + '/mizar/plugin/nameResolver',
+                    //"baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
                     "zoomFov": 15,
                     "duration": 3000
                 },
                 "reverseNameResolver": {
-                    "baseUrl": sitoolsBaseUrl + '/mizar/plugin/reverseNameResolver'
+                    //"jsObject" : "./reverse_name_resolver/DefaultReverseNameResolver",
+                    "jsObject" : "./reverse_name_resolver/CDSReverseNameResolver",
+                    //"baseUrl": sitoolsBaseUrl + '/mizar/plugin/reverseNameResolver',
+                    "baseUrl": "http://alasky.u-strasbg.fr/cgi/simbad-flat/simbad-quick.py?Ident={coordinates}&SR={radius}",
                 },
                 "coverageService": {
                     "baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/coverage?moc="

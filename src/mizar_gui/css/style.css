@@ -398,3 +398,8 @@ input::-moz-placeholder {
     text-align: center;
     margin-top : 25px;
 }
+
+.errorNameResolver {
+    color: #F79A2E;
+    margin-top: 35px;
+}

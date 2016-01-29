@@ -52,6 +52,7 @@ require.config({
         "service" : "../../mizar_lite/js/service",
         "gui_core" : "../../mizar_lite/js/gui",
         "name_resolver" : "../../mizar_lite/js/name_resolver",
+        "reverse_name_resolver" : "../../mizar_lite/js/reverse_name_resolver",
         "uws" : "../../mizar_lite/js/uws",
         "mizar_lite" : "../../mizar_lite",
         "service_gui" : "./service_gui",
@@ -90,6 +91,9 @@ require.config({
         },
         'flot.axislabels': {
             deps: ['flot']
+        },
+        'loadmask': {
+            deps: ['jquery']
         }
     },
     waitSeconds: 0
@@ -104,11 +108,6 @@ require(["./MizarWidget"], function (MizarWidget) {
         debug: false,
         navigation: {
             "initTarget": [0, 0]
-        },
-        nameResolver: {
-            "zoomFov": 2,
-            "jsObject" : "./name_resolver/DefaultNameResolver"
-            //"baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
         },
         positionTracker: {
             position: "bottom"

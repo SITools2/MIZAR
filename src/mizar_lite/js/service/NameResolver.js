@@ -283,7 +283,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 }
                 else {
                     //Use default name resolver if none defined...
-                    nameResolverClass = require("./nameResolverImplementation/DefaultNameResolver");
+                    nameResolverClass = require("./name_resolver/DefaultNameResolver");
                 }
 
                 nameResolverImplementation = new nameResolverClass(context);
