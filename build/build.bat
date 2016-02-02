@@ -1,4 +1,4 @@
-call "C:\Program Files\nodejs\nodejsvars.bat"
+call "D:\programs\nodejs\nodevars.bat"
 node r.js -o buildMizar.js
-node r.js -o cssIn=../css/style.css out=../css/style.min.css
+node r.js -o cssIn=../src/mizar_gui/css/style.css out=../src/mizar_gui/css/style.min.css
 pause
