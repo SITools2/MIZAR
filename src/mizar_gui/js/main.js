@@ -40,6 +40,8 @@ require.config({
         "gw": "../../mizar_lite/externals/GlobWeb/src",
         "jquery.once": "../../mizar_lite/externals/jquery-once/jquery.once.min",
         "selectize": "../../mizar_lite/externals/selectizejs/selectize",
+        "sifter": "../../mizar_lite/externals/selectizejs/sifter",
+        "microplugin": "../../mizar_lite/externals/selectizejs/microplugin",
         "flot": "../../mizar_lite/externals/flot/jquery.flot.min",
         "flot.tooltip": "../../mizar_lite/externals/flot/jquery.flot.tooltip.min",
         "flot.axislabels": "../../mizar_lite/externals/flot/jquery.flot.axislabels",
