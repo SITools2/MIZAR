@@ -25,8 +25,14 @@ define(['../gw/Utils/ImageRequest'], function (ImageRequest) {
     /*
      *	Override send function to handle fits requests
      */
-    ImageRequest.prototype.send = function (url) {
+    ImageRequest.prototype.send = function (url, crossOrigin, noRequest) {
+
+
         var self = this;
+        if (noRequest) {
+            self.failCallback(self);
+            return;
+        }
         if (url.search("fits") > 0) {
             // Fits
             var xhr = new XMLHttpRequest();
