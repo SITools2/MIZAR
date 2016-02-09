@@ -122,7 +122,9 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                             navigation.moveTo(pickPoint, 800, showPopup);
                         }
                         else {
-                            navigation.zoomTo(pickPoint, 1800000, 3000, null, showPopup);
+                            var currentDistance = navigation.distance / navigation.globe.coordinateSystem.heightScale;
+                            var distance = (currentDistance < 2500000) ? currentDistance : 2500000;
+                            navigation.zoomTo(pickPoint, distance, 3000, null, showPopup);
                         }
                     });
                 } else {
