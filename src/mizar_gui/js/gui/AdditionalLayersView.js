@@ -560,8 +560,8 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                 sLat += barycenter[1];
                 nbGeometries++;
             }
-
-            navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries], 2.0, 2000);
+            //TODO : compute the fov of the zoomTo according to the shape.
+            mizar.activatedContext.navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries]);
         }
 
         /**************************************************************************************************************/
