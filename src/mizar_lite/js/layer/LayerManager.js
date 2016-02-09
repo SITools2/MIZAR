@@ -299,17 +299,15 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 
         function getHipsServiceUrlArray(hipsLayer){
             var hipsServiceUrlArray = [];
+            var imageFormat = (hipsLayer.hips_tile_format.match("jpeg")) ? "jpg" : hips_tile_format;
             if(hipsLayer.hips_service_url) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url+"/");
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url+"/Norder3/Allsky."+imageFormat);
             }
             if(hipsLayer.hips_service_url_1) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1+"/");
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1+"/Norder3/Allsky."+imageFormat);
             }
             if(hipsLayer.hips_service_url_2) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2+"/");
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2+"/Norder3/Allsky."+imageFormat);
             }
             return hipsServiceUrlArray;
         }
