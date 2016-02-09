@@ -248,14 +248,16 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
         /**
          *    Load HIPS layers from passed service url
          *
-         *    @param hipsServiceUrl
-         *        HIPS service URL
+         * @param hipsServiceUrlArray HIPS service URL
+         * @param imageFormat HIPS format
+         * @param callback
          */
-        function checkHipsServiceIsAvailable(hipsServiceUrlArray, callback) {
+        function checkHipsServiceIsAvailable(hipsServiceUrlArray, imageFormat, callback) {
             if (hipsServiceUrlArray.length == 0) {
                 return callback(undefined);
             }
             var url = hipsServiceUrlArray.shift();
+            url+="/Norder3/Allsky."+imageFormat;
             $.ajax({
                 type: 'GET',
                 url: url,
@@ -267,7 +269,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                     return callback(url);
                 }
             }).error(function () {
-                checkHipsServiceIsAvailable(hipsServiceUrlArray, callback);
+                checkHipsServiceIsAvailable(hipsServiceUrlArray, imageFormat, callback);
             });
         }
 
@@ -286,7 +288,8 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             }).done(function (hipsLayersJSON) {
                 _.each(hipsLayersJSON, function (hipsLayer) {
                     var hipsServiceUrlArray = getHipsServiceUrlArray(hipsLayer);
-                    var hipsUrl = this.checkHipsServiceIsAvailable(hipsServiceUrlArray, function (hipsServiceUrl) {
+                    var imageFormat = (hipsLayer.hips_tile_format.match("jpeg")) ? "jpg" : "png";
+                    var hipsUrl = this.checkHipsServiceIsAvailable(hipsServiceUrlArray, imageFormat, function (hipsServiceUrl) {
                        if(hipsServiceUrl == undefined){
                            console.log("Cannot add layer " + hipsLayer.obs_title + " no mirror available");
                            return;
@@ -299,15 +302,15 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 
         function getHipsServiceUrlArray(hipsLayer){
             var hipsServiceUrlArray = [];
-            var imageFormat = (hipsLayer.hips_tile_format.match("jpeg")) ? "jpg" : hips_tile_format;
+
             if(hipsLayer.hips_service_url) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url+"/Norder3/Allsky."+imageFormat);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url);
             }
             if(hipsLayer.hips_service_url_1) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1+"/Norder3/Allsky."+imageFormat);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_1);
             }
             if(hipsLayer.hips_service_url_2) {
-                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2+"/Norder3/Allsky."+imageFormat);
+                hipsServiceUrlArray.push(hipsLayer.hips_service_url_2);
             }
             return hipsServiceUrlArray;
         }
