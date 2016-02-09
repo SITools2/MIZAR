@@ -158,20 +158,20 @@ require(["./MizarWidget"], function (MizarWidget) {
     mizar.addLayer(atmosMarsLayer, marsLayer);
     mizar.addLayer(coordLayer, marsLayer);
     //
-    mizar.addLayer({
-        "category": "Other",
-        "type": "GeoJSON",
-        "name": "MultiPoint_mars",
-        "icon": "css/images/toto.png",
-        "data": {
-            "type": "JSON",
-            "url": "http://localhost/tests/simple_geometry/polygon.json"
-        },
-        "visible": false,
-        "pickable": true,
-        "color": "rgb(237, 67, 53)",
-        "dataType": "line"
-    }, marsLayer);
+    //mizar.addLayer({
+    //    "category": "Other",
+    //    "type": "GeoJSON",
+    //    "name": "MultiPoint_mars",
+    //    "icon": "css/images/toto.png",
+    //    "data": {
+    //        "type": "JSON",
+    //        "url": "http://localhost/tests/simple_geometry/polygon.json"
+    //    },
+    //    "visible": false,
+    //    "pickable": true,
+    //    "color": "rgb(237, 67, 53)",
+    //    "dataType": "line"
+    //}, marsLayer);
 
 
     //var earthLayer = mizar.getLayer("Earth");
