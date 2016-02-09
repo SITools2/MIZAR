@@ -257,10 +257,9 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 return callback(undefined);
             }
             var url = hipsServiceUrlArray.shift();
-            url+="/Norder3/Allsky."+imageFormat;
             $.ajax({
                 type: 'GET',
-                url: url,
+                url: url+"/Norder3/Allsky."+imageFormat,
                 dataType : 'text'
                 //context: layerManager,
                 //timeout: 10000
