@@ -123,7 +123,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                         }
                         else {
                             var currentDistance = navigation.distance / navigation.globe.coordinateSystem.heightScale;
-                            var distance = (currentDistance < 2500000) ? currentDistance : 2500000;
+                            var distance = (currentDistance < 1800000) ? currentDistance : 1800000;
                             navigation.zoomTo(pickPoint, distance, 3000, null, showPopup);
                         }
                     });
