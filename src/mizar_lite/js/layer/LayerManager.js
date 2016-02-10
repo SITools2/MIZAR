@@ -21,9 +21,9 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./ClusterOpenSearchLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
+define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              ClusterOpenSearchLayer, MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
+              MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
 
         /**
          * Private variables
@@ -165,12 +165,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
 
                 case "DynamicOpenSearch":
 
-                    if (layerDesc.useCluster) {
-                        gwLayer = new ClusterOpenSearchLayer(layerDesc);
-                    }
-                    else {
-                        gwLayer = new OpenSearchLayer(layerDesc);
-                    }
+                    gwLayer = new OpenSearchLayer(layerDesc);
 
                     /*if (layerDesc.transformer != undefined && layerDesc.serviceUrl != undefined) {
                         var transformerFunction = require(layerDesc.transformer.jsObject);
