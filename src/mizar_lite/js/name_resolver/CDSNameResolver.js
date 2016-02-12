@@ -53,7 +53,7 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
             var searchLayer = this.options.searchLayer;
             var zoomTo = this.options.zoomTo;
 
-            var url = context.configuration.nameResolver.baseUrl + "?" + objectName;
+            var url = "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/A?" + objectName;
             $.ajax({
                 type: "GET",
                 url: url,
