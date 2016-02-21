@@ -41,7 +41,6 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
         IMCCENameResolver.prototype.handle = function (options) {
             this.options = options;
             var objectName = this.options.objectName;
-            var context = this.options.context;
             var onError = this.options.onError;
             var onComplete = this.options.onComplete;
             var onSuccess = this.options.onSuccess;
@@ -92,7 +91,7 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
                                     "identifier": feature.id,
                                     "type": feature.type,
                                     "name":feature.name,
-                                    "credits": feature.credits,
+                                    "credits": feature.credits
                                 }
                             })
                         });
@@ -124,7 +123,7 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
                     searchLayer(objectName, onSuccess, onError);
                     console.error(xhr.responseText);
                 },
-                complete: function (xhr, textStatus) {
+                complete: function (xhr) {
                     if (onComplete) {
                         onComplete(xhr);
                     }
