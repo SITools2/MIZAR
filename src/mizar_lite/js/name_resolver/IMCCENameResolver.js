@@ -54,49 +54,59 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
                 url: url,
                 dataType: "json",
                 success: function (jsonResponse) {
-                    var ra = jsonResponse.ra;
-                    var dec = jsonResponse.dec;
 
-                    if(!_.isEmpty(ra) && !_.isEmpty(dec)) {
-                        ra = parseFloat(ra);
-                        dec = parseFloat(dec);
-                        var feature = {};
-                        feature.ra=ra;
-                        feature.dec=dec;
-                        feature.credit = "IMCCE";
-                        feature.id = jsonResponse.id;
-                        feature.type = jsonResponse.type;
-                        feature.name = jsonResponse.name;
-                        features.push(feature);
+                    function parseResponse(data, features) {
+                        _.each(data, function(data) {
+                            var ra = data.ra;
+                            var dec = data.dec;
+
+                            if(_.isNumber(ra) && _.isNumber(dec)) {
+                                ra = parseFloat(ra);
+                                dec = parseFloat(dec);
+                                var feature = {};
+                                feature.ra=ra;
+                                feature.dec=dec;
+                                feature.credit = "IMCCE";
+                                feature.id = data.id;
+                                feature.type = data.type;
+                                feature.name = data.name;
+                                features.push(feature);
+                            }
+                        });
                     }
+                    function createsGeoJsonResponse (features, response) {
+                        _.each(features, function(feature) {
+                            response.features.push({
+                                type: 'Feature',
+                                geometry: {
+                                    coordinates: [feature.ra, feature.dec],
+                                    "type": "Point"
+                                },
+                                "properties": {
+                                    "crs": {
+                                        "type": "name",
+                                        "properties": {
+                                            "name": "equatorial.ICRS"
+                                        }
+                                    },
+                                    "identifier": feature.id,
+                                    "type": feature.type,
+                                    "name":feature.name,
+                                    "credits": feature.credits,
+                                }
+                            })
+                        });
+                    }
+
+                    var data = jsonResponse.data;
+                    parseResponse(data, features);
                     var response = {
                         totalResults: features.length,
                         type: "FeatureCollection",
                         features: [
                         ]
                     };
-
-                    _.each(features, function(feature) {
-                        response.features.push({
-                            type: 'Feature',
-                            geometry: {
-                                coordinates: [feature.ra, feature.dec],
-                                "type": "Point"
-                            },
-                            "properties": {
-                                "crs": {
-                                    "type": "name",
-                                    "properties": {
-                                        "name": "equatorial.ICRS"
-                                    }
-                                },
-                                "identifier": feature.id,
-                                "type": feature.type,
-                                "name":feature.name,
-                                "credits": feature.credits,
-                            }
-                        })
-                    });
+                    createsGeoJsonResponse(features, response);
 
                     // Check if response contains features
                     if (response.type === "FeatureCollection" && response.features.length > 0) {
