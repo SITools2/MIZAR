@@ -21,8 +21,8 @@
 /**
  * PickingManager module
  */
-define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "../Utils"],
-    function ($, FeatureStyle, OpenSearchLayer, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
+define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "../Utils"],
+    function ($, PickingManagerLite, FeatureStyle, OpenSearchLayer, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
         var mizar;
         var context;
@@ -36,7 +36,6 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
             fillColor: [1., 1., 0., 1.],
             zIndex: 1
         });
-        var pickableLayers = [];
 
         var mouseXStart;
         var mouseYStart;
@@ -96,12 +95,12 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                         }
 
                         var showPopup = function () {
-                            selection = newSelection;
+                            var select = PickingManagerLite.setSelection(newSelection);
 
                             // Add selected style for new selection
-                            focusSelection(selection);
-                            FeaturePopup.createFeatureList(selection);
-                            if (selection.length > 1) {
+                            focusSelection(select);
+                            FeaturePopup.createFeatureList(select);
+                            if (select.length > 1) {
                                 // Create dialogue for the first selection call
                                 FeaturePopup.createHelp();
                                 stackSelectionIndex = -1;
@@ -110,7 +109,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                                 // only one layer, no pile needed, create feature dialogue
                                 self.focusFeatureByIndex(0, {isExclusive: true});
                                 $('#featureList div:eq(0)').addClass('selected');
-                                FeaturePopup.showFeatureInformation(selection[stackSelectionIndex].layer, selection[stackSelectionIndex].feature)
+                                FeaturePopup.showFeatureInformation(select[stackSelectionIndex].layer, select[stackSelectionIndex].feature)
                             }
                             var offset = $(globe.renderContext.canvas).offset();
                             FeaturePopup.show(offset.left + globe.renderContext.canvas.width / 2, offset.top + globe.renderContext.canvas.height / 2);
@@ -182,8 +181,8 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
          *    Revert style of selection
          */
         function blurSelection() {
-            for (var i = 0; i < selection.length; i++) {
-                var selectedData = selection[i];
+            for (var i = 0; i < PickingManagerLite.getSelection().length; i++) {
+                var selectedData = PickingManagerLite.getSelection()[i];
                 var style = new FeatureStyle(selectedData.feature.properties.style);
                 switch (selectedData.feature.geometry.type) {
                     case "Polygon":
@@ -246,7 +245,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
          */
         function clearSelection() {
             blurSelection();
-            selection = [];
+            PickingManagerLite.setSelection([]);
         }
 
         /**************************************************************************************************************/
@@ -332,9 +331,9 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
          */
         function computePickSelection(pickPoint) {
             var newSelection = [];
-            for (var i = 0; i < pickableLayers.length; i++) {
+            for (var i = 0; i < PickingManagerLite.getPickableLayers().length; i++) {
                 var selectedTile = sky.tileManager.getVisibleTile(pickPoint[0], pickPoint[1]);
-                var pickableLayer = pickableLayers[i];
+                var pickableLayer = PickingManagerLite.getPickableLayers()[i];
                 if (pickableLayer.visible() && pickableLayer.globe === mizar.activatedContext.globe) {
                     if (pickableLayer instanceof OpenSearchLayer) {
                         // Extension using layer
@@ -423,12 +422,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
              *    Add pickable layer
              */
             addPickableLayer: function (layer) {
-                if (pickableLayers.indexOf(layer) == -1) {
-                    pickableLayers.push(layer);
-                }
-                else {
-                    console.log("WARN:" + layer.name + " has been already added");
-                }
+                PickingManagerLite.addPickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -437,10 +431,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
              *    Remove pickable layers
              */
             removePickableLayer: function (layer) {
-                for (var i = 0; i < pickableLayers.length; i++) {
-                    if (layer.id == pickableLayers[i].id)
-                        pickableLayers.splice(i, 1);
-                }
+                PickingManagerLite.removePickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -449,7 +440,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
              *    Revert style of selected feature
              */
             blurSelectedFeature: function () {
-                var selectedData = selection[stackSelectionIndex];
+                var selectedData = PickingManagerLite.getSelection()[stackSelectionIndex];
                 if (selectedData) {
                     var style = new FeatureStyle(selectedData.feature.properties.style);
                     switch (selectedData.feature.geometry.type) {
@@ -487,7 +478,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
                 var strokeColor = options.color ? FeatureStyle.fromStringToColor(options.color) : selectedStyle.strokeColor;
                 var fillColor = options.color ? FeatureStyle.fromStringToColor(options.color) : selectedStyle.fillColor;
 
-                var selectedData = selection[index];
+                var selectedData = PickingManagerLite.getSelection()[index];
                 if (selectedData) {
                     stackSelectionIndex = index;
                     var style = new FeatureStyle(selectedData.feature.properties.style);
@@ -514,20 +505,20 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer
              *    Apply selected style to the given feature
              */
             focusFeature: function (selectedData, options) {
-                selection.push(selectedData);
-                this.focusFeatureByIndex(selection.length - 1, options);
+                PickingManagerLite.getSelection().push(selectedData);
+                this.focusFeatureByIndex(PickingManagerLite.getSelection().length - 1, options);
             },
 
             /**************************************************************************************************************/
 
             getSelectedData: function () {
-                return selection[stackSelectionIndex];
+                return PickingManagerLite.getSelection()[stackSelectionIndex];
             },
 
             /**************************************************************************************************************/
 
             getSelection: function () {
-                return selection;
+                return PickingManagerLite.getSelection();
             },
 
             computePickSelection: computePickSelection,

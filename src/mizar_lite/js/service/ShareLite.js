@@ -24,7 +24,7 @@
 define(["../jquery", "../layer/LayerManager", "../gui_core/ErrorDialog"],
     function ($, LayerManager, ErrorDialog) {
 
-// Globals
+        // Globals
         var mizar;
         var navigation;
         var baseUrl;
@@ -107,27 +107,6 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/ErrorDialog"],
             if (options.configuration.hasOwnProperty('shortener')) {
                 baseUrl = options.configuration.shortener.baseUrl;
             }
-
-            $('#share').on('click', function () {
-                var url = generateURL();
-                $('#shareInput').val(url);
-                $(this).fadeOut(300, function () {
-                    $(this).next().fadeIn();
-                    $('#shareInput').select();
-                });
-            });
-
-            $('#shareClear').on('click', function () {
-                $(this).parent().fadeOut(300, function () {
-                    $("#share").fadeIn();
-                });
-            });
-
-            $('#share').hover(function () {
-                $(this).animate({left: '-10px'}, 100);
-            }, function () {
-                $(this).animate({left: '-20px'}, 100);
-            });
         }
 
         return {

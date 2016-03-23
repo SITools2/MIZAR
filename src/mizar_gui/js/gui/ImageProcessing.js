@@ -105,7 +105,25 @@ define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageVi
             else {
                 this.setImage(image);
             }
-        }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Set image on the Histogram element
+         *
+         * @param image
+         */
+        function setImage(image) {
+            histogramElement.setImage(image);
+            if (image.url) {
+                cutOutElement.setUrl(image.url);
+            }
+
+            $dialog.find('.histogramContent').children('p').fadeOut(function () {
+                $(this).siblings('div').fadeIn();
+            });
+        };
 
         /**************************************************************************************************************/
 
@@ -197,19 +215,13 @@ define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageVi
                     }
                 });
                 cutOutElement = CutOutViewFactory.addView("cutOutView");
+
+                this.mizar.subscribe("image:set", setImage);
+
             },
 
             setData: setData,
-            setImage: function (image) {
-                histogramElement.setImage(image);
-                if (image.url) {
-                    cutOutElement.setUrl(image.url);
-                }
-
-                $dialog.find('.histogramContent').children('p').fadeOut(function () {
-                    $(this).siblings('div').fadeIn();
-                });
-            },
+            setImage: setImage,
             toggle: toggle,
             isOpened: function () {
                 return $dialog.dialog("isOpen");

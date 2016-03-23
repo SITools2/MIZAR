@@ -21,9 +21,9 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManager", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
+define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManager, Utils, JsonProcessor, AtmosphereLayer, String) {
+              MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManagerLite, Utils, JsonProcessor, AtmosphereLayer, String) {
 
         /**
          * Private variables
@@ -288,7 +288,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                            console.log("Cannot add layer " + hipsLayer.obs_title + " no mirror available");
                            return;
                        }
-                        addHIPSLayer(hipsLayer, hipsServiceUrl);
+                        $.proxy(addHIPSLayer, layerManager)(hipsLayer, hipsServiceUrl);
                     });
                 }, layerManager);
             });
@@ -539,7 +539,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                     }
 
                     if (gwLayer.pickable) {
-                        PickingManager.addPickableLayer(gwLayer);
+                        PickingManagerLite.addPickableLayer(gwLayer);
                     }
                 }
 
@@ -556,7 +556,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 var index = gwLayers.indexOf(gwLayer);
                 gwLayers.splice(index, 1);
                 if (gwLayer.pickable) {
-                    PickingManager.removePickableLayer(gwLayer);
+                    PickingManagerLite.removePickableLayer(gwLayer);
                 }
 
                 this.mizar.publish("layer:remove", gwLayer);
@@ -586,7 +586,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                             gwLayer.visible(true);
 
                             // Clear selection
-                            PickingManager.getSelection().length = 0;
+                            PickingManagerLite.getSelection().length = 0;
 
                             for (var i = 0; i < gwLayers.length; i++) {
                                 var currentLayer = gwLayers[i];
@@ -595,7 +595,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                                     for (var j = 0; j < len; j++) {
                                         var subLayer = currentLayer.subLayers[j];
                                         if (subLayer.name === "SolarObjectsSublayer") {
-                                            PickingManager.removePickableLayer(subLayer);
+                                            PickingManagerLite.removePickableLayer(subLayer);
                                             globe.removeLayer(subLayer);
                                             currentLayer.subLayers.splice(j, 1);
                                         }
@@ -643,7 +643,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 };
 
                 gwLayer.addFeature(feature);
-                PickingManager.addPickableLayer(gwLayer);
+                PickingManagerLite.addPickableLayer(gwLayer);
                 this.addLayer(gwLayer, mizar.activatedContext.planetLayer);
                 return gwLayer;
             },
@@ -658,7 +658,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
                 // Add feature collection
                 JsonProcessor.handleFeatureCollection(gwLayer, geoJson);
                 gwLayer.addFeatureCollection(geoJson);
-                PickingManager.addPickableLayer(gwLayer);
+                PickingManagerLite.addPickableLayer(gwLayer);
 
                 this.addLayer(gwLayer, mizar.activatedContext.planetLayer);
                 return gwLayer;
