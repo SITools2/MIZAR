@@ -18,7 +18,7 @@
  ******************************************************************************/
 /*global define: false */
 
-define(['../gw/Utils/Utils', '../gw/Tiling/HEALPixTiling', '../gw/Layer/RasterLayer', '../gw/Renderer/DynamicImage', './FitsLoader', '../gzip', '../gw/Utils/ImageRequest', './FitsRequest'],
+define(['gw/Utils/Utils', 'gw/Tiling/HEALPixTiling', 'gw/Layer/RasterLayer', 'gw/Renderer/DynamicImage', './FitsLoader', 'gzip', 'gw/Utils/ImageRequest', './FitsRequest'],
     function (Utils, HEALPixTiling, RasterLayer, DynamicImage, FitsLoader, gZip, ImageRequest) {
 
         /**************************************************************************************************************/

@@ -18,7 +18,7 @@
  ******************************************************************************/
 /*global define: false */
 
-define(['../gw/Utils/ImageRequest'], function (ImageRequest) {
+define(['gw/Utils/ImageRequest'], function (ImageRequest) {
 
     /**************************************************************************************************************/
 

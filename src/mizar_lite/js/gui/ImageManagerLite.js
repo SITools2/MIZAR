@@ -21,7 +21,7 @@
 /**
  * Image manager
  */
-define(["../jquery", "../gw/Renderer/FeatureStyle", "../gw/Renderer/DynamicImage", "../layer/FitsLoader", "../Utils", "../fits"],
+define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "../layer/FitsLoader", "../Utils", "fits"],
     function ($, FeatureStyle, DynamicImage, FitsLoader, Utils) {
 
         var sky = null;

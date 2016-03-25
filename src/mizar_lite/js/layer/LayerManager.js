@@ -21,7 +21,7 @@
 /**
  * LayerManager module
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/HEALPixLayer", "../gw/Layer/VectorLayer", "../gw/Layer/CoordinateGridLayer", "../gw/Layer/TileWireframeLayer", "../gw/Layer/OpenSearchLayer", "../gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "../string"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
               MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManagerLite, Utils, JsonProcessor, AtmosphereLayer, String) {
 
@@ -331,7 +331,7 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             var layerToAdd = {
                 category: "Image",
                 type: "healpix",
-                name: hipsLayer.obs_collection,
+                name: (_.isArray(hipsLayer.obs_collection) ? hipsLayer.obs_collection[0] : hipsLayer.obs_collection),
                 description: hipsLayer.obs_description,
                 baseUrl: hipsServiceUrl,
                 numberOfLevels: hipsLayer.hips_order,
@@ -692,7 +692,10 @@ define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/
             },
 
             createSimpleLayer: createSimpleLayer,
-            checkHipsServiceIsAvailable : checkHipsServiceIsAvailable
+            checkHipsServiceIsAvailable : checkHipsServiceIsAvailable,
+            getPickingManagerLite : function () {
+                return PickingManagerLite;
+            }
         };
 
     });

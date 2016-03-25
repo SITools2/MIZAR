@@ -24,7 +24,7 @@
  *    Module processing feature collection
  *
  */
-define(["../gw/Layer/HEALPixLayer"], function (HEALPixLayer) {
+define(["gw/Layer/HEALPixLayer"], function (HEALPixLayer) {
 
     var gid = 0;
 

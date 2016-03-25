@@ -18,7 +18,7 @@
  ******************************************************************************/
 /*global define: false */
 
-define(["../fits"], function () {
+define(["fits"], function () {
 
     /**
      *    Parse fits file

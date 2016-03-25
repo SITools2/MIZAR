@@ -21,7 +21,7 @@
 /**
  *    ImageProcessing module
  */
-define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView", "../gw/Renderer/FeatureStyle", "../jquery.ui"],
+define(["jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView", "gw/Renderer/FeatureStyle", "jquery.ui"],
     function ($, SelectionTool, CutOutViewFactory, DynamicImageView, FeatureStyle) {
 
         /**************************************************************************************************************/
@@ -216,7 +216,7 @@ define(["../jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageVi
                 });
                 cutOutElement = CutOutViewFactory.addView("cutOutView");
 
-                this.mizar.subscribe("image:set", setImage);
+                options.mizar.subscribe("image:set", setImage);
 
             },
 

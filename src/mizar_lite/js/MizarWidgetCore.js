@@ -270,8 +270,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
                         try {
                             layers = $.parseJSON(response);
                         } catch (e) {
-                            ErrorDialog
-                                .open("Background surveys parsing error<br/> For more details see http://jsonlint.com/.");
+                            ErrorDialog.open("Background surveys parsing error<br/> For more details see http://jsonlint.com/.");
                             console.error(e.message);
                             return false;
                         }
@@ -289,8 +288,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
 
                 // Update layer visibility according to options
                 if (options.layerVisibility
-                    && options.layerVisibility
-                        .hasOwnProperty(layer.name)) {
+                    && options.layerVisibility.hasOwnProperty(layer.name)) {
                     gwLayer.visible(options.layerVisibility[layer.name]);
                 }
 
@@ -436,6 +434,18 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
                 name: layerName
             });
         };
+
+        /************************************************************************************************************* */
+
+        /**
+        *
+        * Get LayerManager already initialized
+        */
+        MizarWidgetCore.prototype.getLayerManager = function () {
+            return LayerManager;
+        };
+
+        /************************************************************************************************************* */
 
         /**
          * Convert votable to json from url
@@ -671,24 +681,25 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
                     planetContext.show();
                     planetContext.globe.refresh();
                     self.publish("mizarMode:toggle", gwLayer);
-                }
-                ;
+                };
 
                 // desactive the sky measure tool
-                if (this.measureToolSky.activated)
-                    this.measureToolSky.toggle();
+                //if (this.measureToolSky.activated)
+                //    this.measureToolSky.toggle();
 
                 // planetContext.globe.isSky = true;
                 mizar.navigation.globe.isSky = true;
                 if (!this.measureToolPlanet) {
-                    this.measureToolPlanet = new MeasureToolPlanet({
-                        globe: planetContext.globe,
-                        navigation: planetContext.navigation,
-                        planetLayer: planetContext.planetLayer,
-                        isMobile: this.isMobile,
-                        mode: this.mode
-                    });
+                    self.publish("mizarMode:toggle", gwLayer);
+                //    this.measureToolPlanet = new MeasureToolPlanet({
+                //        globe: planetContext.globe,
+                //        navigation: planetContext.navigation,
+                //        planetLayer: planetContext.planetLayer,
+                //        isMobile: this.isMobile,
+                //        mode: this.mode
+                //    });
                 }
+
                 planetContext.setComponentVisibility(
                     "measurePlanetContainer", true);
             }

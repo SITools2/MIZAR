@@ -22,15 +22,14 @@
  */
 define(["jquery", "underscore-min",
         "MizarWidgetCore",
-        "text!./templates/mizarCore.html",
+        //'mizar_gui/MizarWidgetGui',
+        "text!../templates/mizarCore.html",
         "text!../data/backgroundSurveys.json"],
-    function ($, _, MizarWidgetCore, mizarCoreHTML) {
+    function ($, _, MizarWidgetCore, /*MizarWidgetGui,*/ mizarCoreHTML) {
 
         var parentElement;
         var options;
-        var planetContext;
-        var skyContext;
-        var mizarWidgetGui, mizarWidgetCore;
+        var self;
 
         var getMizarUrl = function () {
             /**
@@ -64,9 +63,9 @@ define(["jquery", "underscore-min",
         }
 
         /**
-         * Mizar widget Global constructor
+         * Mizar Widget Global constructor
          */
-        var MizarWidgetGlobal = function (div, userOptions) {
+        var MizarWidgetGlobal = function (div, userOptions, callbackInitMain) {
 
             var mizarBaseUrl = getMizarUrl();
 
@@ -74,27 +73,24 @@ define(["jquery", "underscore-min",
             var mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
 
             parentElement = div;
+            self = this;
 
-            var sitoolsBaseUrl = userOptions.sitoolsBaseUrl ? userOptions.sitoolsBaseUrl
-                : "http://demonstrator.telespazio.com/sitools";
+            var sitoolsBaseUrl = userOptions.sitoolsBaseUrl ? userOptions.sitoolsBaseUrl : "http://demonstrator.telespazio.com/sitools";
             var isMobile = ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch));
 
             options = {
                 "sitoolsBaseUrl": sitoolsBaseUrl,
                 "mizarBaseUrl": mizarBaseUrl,
                 "continuousRendering": userOptions
-                    .hasOwnProperty('continuousRendering') ? userOptions.continuousRendering
-                    : !isMobile,
+                    .hasOwnProperty('continuousRendering') ? userOptions.continuousRendering : !isMobile,
                 "coordSystem": userOptions.hasOwnProperty('coordSystem') ? userOptions.coordSystem
                     : "EQ",
                 "debug": userOptions.hasOwnProperty('debug') ? userOptions.debug
                     : false,
                 "nameResolver": {
                     "jsObject": "./name_resolver/DefaultNameResolver",
-                    "baseUrl": sitoolsBaseUrl
-                    + '/mizar/plugin/nameResolver',
-                    // "baseUrl" :
-                    // "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
+                    "baseUrl": sitoolsBaseUrl + '/mizar/plugin/nameResolver',
+                    // "baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
                     "zoomFov": 15,
                     "duration": 3000
                 },
@@ -152,59 +148,37 @@ define(["jquery", "underscore-min",
                     "position": "bottom"
                 },
                 "isMobile": isMobile,
-                "hipsServiceUrl": userOptions
-                    .hasOwnProperty('hipsServiceUrl') ? userOptions.hipsServiceUrl
-                    : undefined
+                "hipsServiceUrl": userOptions.hasOwnProperty('hipsServiceUrl') ? userOptions.hipsServiceUrl : undefined
             };
 
-            //var extendableOptions = ["navigation", "nameResolver",
-            //    "stats", "positionTracker", "elevationTracker"];
-            //// Merge default options with user ones
-            //for (var i = 0; i < extendableOptions.length; i++) {
-            //    var option = extendableOptions[i];
-            //    $.extend(options[option], userOptions[option]);
-            //}
-
-            // Create mizar core HTML
-            var mizarContent = _.template(mizarCoreHTML, {});
-            $(mizarContent).appendTo(div);
-
-            this.sky = null;
-            this.navigation = null;
-
-            // TODO move to MizarWidgetGui if possible ??
-            /** * Refactor into common ? ** */
-                // Fade hover styled image effect
-            //$("body").on("mouseenter", "span.defaultImg", function () {
-            //    // stuff to do on mouseover
-            //    $(this).stop().animate({
-            //        "opacity": "0"
-            //    }, 100);
-            //    $(this).siblings('.hoverImg').stop().animate({
-            //        "opacity": "1"
-            //    }, 100);
-            //});
-            //$("body").on("mouseleave", "span.defaultImg", function () {
-            //    // stuff to do on mouseleave
-            //    $(this).stop().animate({
-            //        "opacity": "1"
-            //    }, 100);
-            //    $(this).siblings('.hoverImg').stop().animate({
-            //        "opacity": "0"
-            //    }, 100);
-            //});
-
-            mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
-
             if (userOptions.guiActivated) {
-                var mizarWidgetGuiRequire = require('mizar_gui/MizarWidgetGui');
-                mizarWidgetGui = new mizarWidgetGuiRequire(div, userOptions, {
-                    mizar: this,
-                    navigation: this.navigation,
-                    configuration: options
-                });
-            }
+                var mizarWidgetGuiRequire = require(['mizar_gui/MizarWidgetGui'], function (MizarWidgetGui) {
+                    // Create mizar core HTML
+                    var mizarContent = _.template(mizarCoreHTML, {});
+                    $(mizarContent).appendTo(div);
 
+                    self.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
+
+                    self.mizarWidgetGui = new MizarWidgetGui(div, {
+                        isMobile: isMobile,
+                        mode: mode,
+                        mizar: self,
+                        sky: self.mizarWidgetCore.sky,
+                        navigation: self.mizarWidgetCore.navigation,
+                        options: options
+                    });
+
+                    callbackInitMain();
+                });
+            } else {
+                // Create mizar core HTML
+                var mizarContent = _.template(mizarCoreHTML, {});
+                $(mizarContent).appendTo(div);
+
+                this.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
+
+                callbackInitMain();
+            }
         };
 
         /************************************************************************************************************* */
@@ -213,7 +187,9 @@ define(["jquery", "underscore-min",
          * Get all layers
          */
         MizarWidgetGlobal.prototype.getLayers = function () {
-            return mizarWidgetCore.getLayers();
+            if (this.mizarWidgetCore) {
+                return this.mizarWidgetCore.getLayers();
+            }
         };
 
         /************************************************************************************************************* */
@@ -222,7 +198,9 @@ define(["jquery", "underscore-min",
          * Get layer with the given name
          */
         MizarWidgetGlobal.prototype.getLayer = function (layerName) {
-            return mizarWidgetCore.getLayer(layerName);
+            if (this.mizarWidgetCore) {
+                return this.mizarWidgetCore.getLayer(layerName);
+            }
         };
 
         /************************************************************************************************************* */
@@ -237,7 +215,9 @@ define(["jquery", "underscore-min",
          *        The created layer
          */
         MizarWidgetGlobal.prototype.addLayer = function (layerDesc, planetLayer) {
-            return mizarWidgetCore.addLayer(layerDesc, planetLayer);
+            if (this.mizarWidgetCore) {
+                return this.mizarWidgetCore.addLayer(layerDesc, planetLayer);
+            }
         };
 
         /************************************************************************************************************* */
@@ -246,8 +226,8 @@ define(["jquery", "underscore-min",
          *    Set the credits popup
          */
         MizarWidgetGlobal.prototype.setShowCredits = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setShowCredits(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setShowCredits(visible);
             }
         };
 
@@ -258,8 +238,8 @@ define(["jquery", "underscore-min",
          *    Only on desktop due performance issues
          */
         MizarWidgetGlobal.prototype.setCompassGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setCompassGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setCompassGui(visible);
             }
         };
 
@@ -269,8 +249,8 @@ define(["jquery", "underscore-min",
          *    Add/remove angle distance GUI
          */
         MizarWidgetGlobal.prototype.setAngleDistanceSkyGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setAngleDistanceSkyGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setAngleDistanceSkyGui(visible);
             }
         };
 
@@ -280,8 +260,8 @@ define(["jquery", "underscore-min",
          *    Activate Switch To 2D
          */
         MizarWidgetGlobal.prototype.setSwitchTo2D = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setSwitchTo2D(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setSwitchTo2D(visible);
             }
         };
 
@@ -292,8 +272,8 @@ define(["jquery", "underscore-min",
          *    Only on desktop
          */
         MizarWidgetGlobal.prototype.setSampGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setSampGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setSampGui(visible);
             }
         };
 
@@ -303,8 +283,8 @@ define(["jquery", "underscore-min",
          *    Add/remove shortener GUI
          */
         MizarWidgetGlobal.prototype.setShortenerUrlGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setShortenerUrlGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setShortenerUrlGui(visible);
             }
         };
 
@@ -314,8 +294,8 @@ define(["jquery", "underscore-min",
          *    Add/remove 2d map GUI
          */
         MizarWidgetGlobal.prototype.set2dMapGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.set2dMapGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.set2dMapGui(visible);
             }
         };
 
@@ -325,8 +305,8 @@ define(["jquery", "underscore-min",
          *    Add/remove reverse name resolver GUI
          */
         MizarWidgetGlobal.prototype.setReverseNameResolverGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setReverseNameResolverGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setReverseNameResolverGui(visible);
             }
         };
 
@@ -336,8 +316,8 @@ define(["jquery", "underscore-min",
          *    Add/remove name resolver GUI
          */
         MizarWidgetGlobal.prototype.setNameResolverGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setNameResolverGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setNameResolverGui(visible);
             }
         };
 
@@ -347,8 +327,8 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI layer manager view
          */
         MizarWidgetGlobal.prototype.setCategoryGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setCategoryGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setCategoryGui(visible);
             }
         };
 
@@ -358,8 +338,8 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI image viewer GUI
          */
         MizarWidgetGlobal.prototype.setImageViewerGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setImageViewerGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setImageViewerGui(visible);
             }
         };
 
@@ -369,8 +349,8 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI Export GUI
          */
         MizarWidgetGlobal.prototype.setExportGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setExportGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setExportGui(visible);
             }
         };
 
@@ -380,8 +360,8 @@ define(["jquery", "underscore-min",
          *    Add/remove position tracker GUI
          */
         MizarWidgetGlobal.prototype.setPositionTrackerGui = function (visible) {
-            if (mizarWidgetGui) {
-                mizarWidgetGui.setPositionTrackerGui(visible);
+            if (this.mizarWidgetGui) {
+                this.mizarWidgetGui.setPositionTrackerGui(visible);
             }
         };
 

@@ -21,7 +21,7 @@
 /**
  * IFrame module : popup appearing when clicking on external link
  */
-define(["../jquery"], function ($) {
+define(["jquery"], function ($) {
 
     var iframe =
         '<div id="externalIFrame" class="contentBox">\

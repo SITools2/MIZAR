@@ -22,7 +22,7 @@
  * Tool used to switch between 3D and 2D in planet mode
  */
 
-define(["../jquery", "../gw/Layer/VectorLayer", "../gw/Renderer/Ray", "../gw/Utils/Numeric", "../gw/Renderer/FeatureStyle", "../gw/Renderer/glMatrix", "../jquery.ui"],
+define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/Ray", "gw/Utils/Numeric", "gw/Renderer/FeatureStyle", "gw/Renderer/glMatrix", "jquery.ui"],
     function ($, VectorLayer, Ray, Numeric, FeatureStyle) {
 
         var globe;

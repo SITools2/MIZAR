@@ -110,7 +110,8 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/ErrorDialog"],
         }
 
         return {
-            init: init
+            init: init,
+            generateURL : generateURL
         };
 
     });

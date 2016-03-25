@@ -23,7 +23,7 @@
  *    UWS CutOutViewFactory
  *    Designed to share selectionTool & picking manager between views
  */
-define(["../jquery", "./SelectionTool", "./CutOutView"],
+define(["jquery", "./SelectionTool", "./CutOutView"],
     function ($, SelectionTool, CutOutView) {
 
         var selectionTool;

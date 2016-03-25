@@ -21,13 +21,14 @@
 /**
  * PickingManager module
  */
-define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Renderer/FeatureStyle", "../gw/Layer/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "../Utils"],
+define(["jquery", "gui_core/PickingManagerLite", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
     function ($, PickingManagerLite, FeatureStyle, OpenSearchLayer, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
         var mizar;
         var context;
         var sky; // TODO: refactor it to use always the context
         var self;
+        var pickingManagerLite;
 
         var selection = [];
         var stackSelectionIndex = -1;
@@ -95,7 +96,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
                         }
 
                         var showPopup = function () {
-                            var select = PickingManagerLite.setSelection(newSelection);
+                            var select = pickingManagerLite.setSelection(newSelection);
 
                             // Add selected style for new selection
                             focusSelection(select);
@@ -181,8 +182,8 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
          *    Revert style of selection
          */
         function blurSelection() {
-            for (var i = 0; i < PickingManagerLite.getSelection().length; i++) {
-                var selectedData = PickingManagerLite.getSelection()[i];
+            for (var i = 0; i < pickingManagerLite.getSelection().length; i++) {
+                var selectedData = pickingManagerLite.getSelection()[i];
                 var style = new FeatureStyle(selectedData.feature.properties.style);
                 switch (selectedData.feature.geometry.type) {
                     case "Polygon":
@@ -245,7 +246,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
          */
         function clearSelection() {
             blurSelection();
-            PickingManagerLite.setSelection([]);
+            pickingManagerLite.setSelection([]);
         }
 
         /**************************************************************************************************************/
@@ -331,9 +332,9 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
          */
         function computePickSelection(pickPoint) {
             var newSelection = [];
-            for (var i = 0; i < PickingManagerLite.getPickableLayers().length; i++) {
+            for (var i = 0; i < pickingManagerLite.getPickableLayers().length; i++) {
                 var selectedTile = sky.tileManager.getVisibleTile(pickPoint[0], pickPoint[1]);
-                var pickableLayer = PickingManagerLite.getPickableLayers()[i];
+                var pickableLayer = pickingManagerLite.getPickableLayers()[i];
                 if (pickableLayer.visible() && pickableLayer.globe === mizar.activatedContext.globe) {
                     if (pickableLayer instanceof OpenSearchLayer) {
                         // Extension using layer
@@ -389,6 +390,8 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
                 sky = mizar.sky;
                 self = this;
                 isMobile = configuration.isMobile;
+                pickingManagerLite = mizar.getLayerManager().getPickingManagerLite();
+
                 this.updateContext();
                 activate();
 
@@ -422,7 +425,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
              *    Add pickable layer
              */
             addPickableLayer: function (layer) {
-                PickingManagerLite.addPickableLayer(layer);
+                pickingManagerLite.addPickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -431,7 +434,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
              *    Remove pickable layers
              */
             removePickableLayer: function (layer) {
-                PickingManagerLite.removePickableLayer(layer);
+                pickingManagerLite.removePickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -440,7 +443,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
              *    Revert style of selected feature
              */
             blurSelectedFeature: function () {
-                var selectedData = PickingManagerLite.getSelection()[stackSelectionIndex];
+                var selectedData = pickingManagerLite.getSelection()[stackSelectionIndex];
                 if (selectedData) {
                     var style = new FeatureStyle(selectedData.feature.properties.style);
                     switch (selectedData.feature.geometry.type) {
@@ -478,7 +481,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
                 var strokeColor = options.color ? FeatureStyle.fromStringToColor(options.color) : selectedStyle.strokeColor;
                 var fillColor = options.color ? FeatureStyle.fromStringToColor(options.color) : selectedStyle.fillColor;
 
-                var selectedData = PickingManagerLite.getSelection()[index];
+                var selectedData = pickingManagerLite.getSelection()[index];
                 if (selectedData) {
                     stackSelectionIndex = index;
                     var style = new FeatureStyle(selectedData.feature.properties.style);
@@ -505,8 +508,8 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
              *    Apply selected style to the given feature
              */
             focusFeature: function (selectedData, options) {
-                PickingManagerLite.getSelection().push(selectedData);
-                this.focusFeatureByIndex(PickingManagerLite.getSelection().length - 1, options);
+                pickingManagerLite.getSelection().push(selectedData);
+                this.focusFeatureByIndex(pickingManagerLite.getSelection().length - 1, options);
             },
 
             /**************************************************************************************************************/
@@ -518,7 +521,7 @@ define(["../jquery", "../../../mizar_lite/js/gui/PickingManagerLite", "../gw/Ren
             /**************************************************************************************************************/
 
             getSelection: function () {
-                return PickingManagerLite.getSelection();
+                return pickingManagerLite.getSelection();
             },
 
             computePickSelection: computePickSelection,

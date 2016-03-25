@@ -1,0 +1,18 @@
+<div class="testService" id="testService_<%=layer.id%>">
+    <% if( htmlParameters != undefined )
+    {
+    %>
+    <div class="serviceRecord" style="display:block !important;"><%=htmlParameters%></div>
+    <%
+    }
+    else
+    {
+    %>
+    <label>No parameter to set</label>
+    <%
+    }
+    %>
+    <!--<input id="launchService_<%=layer.id%>" type="button" value="Launch service">-->
+
+    <br/>
+</div>

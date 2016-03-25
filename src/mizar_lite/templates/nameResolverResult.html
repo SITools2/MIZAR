@@ -1,0 +1,28 @@
+<% if (properties.type == "layer") { %>
+    <% if (first) { %>
+    <div class="firstNameResolverResult"><hr/><span>Layers</span><hr/></div>
+    <% }%>
+    <div class="layerResolverResult" mizar_feature_index="<%= index %>">
+        <div class="nameResolverResult">
+            <em>Type:</em> <%= properties.layerType %><br/>
+            <em>Name:</em> <%= properties.name %><br/>
+            <% if(properties.description) { %>
+                <span title="<%= properties.description %>"><em>Description:</em><% var String=require('string');  print (String(properties.description).truncate(50).s) %></span><br/>
+            <% } %>
+        </div>
+        <button class="show_or_hide"><span>Show</span></button>
+    </div>
+<% } %>
+<% if (properties.type != "layer") {%>
+    <% if (first) { %>
+    <div class="firstNameResolverResult"><hr/><span>Objects</span><hr/></div>
+    <% }%>
+    <div class="nameResolverResult coordinatesResolverResult" mizar_feature_index="<%= index %>">
+        <% if (properties.type) { %>
+            <em>Type:</em> <%= properties.type %><br/>
+        <% } %>
+        <em><% (type == "EQ") ? print("RA: ") : print("Longitude: ") %></em><%= lon %><br/>
+        <em><% (type == "EQ") ? print("Dec: ") : print("Latitude: ") %></em><%= lat %><br/>
+        Found in <%= properties.credits %> database</br>
+    </div>
+<% } %>

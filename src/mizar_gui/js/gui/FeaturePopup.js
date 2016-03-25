@@ -21,7 +21,7 @@
 /**
  * FeaturePopup module
  */
-define(["../jquery", "./IFrame", "../provider/JsonProcessor", "../Utils", "./ImageProcessing", "../gw/Renderer/FeatureStyle", "../gw/Layer/VectorLayer", "../service/Samp", "../underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "../jquery.nicescroll.min", "../jquery.ui"],
+define(["jquery", "./IFrame", "provider/JsonProcessor", "Utils", "./ImageProcessing", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
     function ($, IFrame, JsonProcessor, Utils, ImageProcessing, FeatureStyle, VectorLayer, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var featureListHTML = '';
@@ -250,6 +250,7 @@ define(["../jquery", "./IFrame", "../provider/JsonProcessor", "../Utils", "./Ima
 
                 // Initialize image processing popup
                 ImageProcessing.init({
+                    mizar : im.mizar,
                     disable: function () {
                         $('#dynamicImageView').removeClass('dynamicAvailable').addClass('dynamicNotAvailable');
                     },

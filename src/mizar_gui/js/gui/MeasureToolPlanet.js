@@ -22,7 +22,7 @@
  * Tool designed to measure the distance between two points in planet mode
  */
 
-define(["../jquery", "underscore-min", "../Utils", "../gw/Layer/VectorLayer", "../gw/Renderer/Ray", "../gw/Utils/Numeric", "../gw/Renderer/FeatureStyle", "../gw/Renderer/glMatrix", "../jquery.ui"],
+define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Renderer/Ray", "gw/Utils/Numeric", "gw/Renderer/FeatureStyle", "gw/Renderer/glMatrix", "jquery.ui"],
     function ($, _, Utils, VectorLayer, Ray, Numeric, FeatureStyle) {
 
         var globe, navigation, onselect, scale;

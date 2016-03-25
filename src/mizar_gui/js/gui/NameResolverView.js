@@ -21,7 +21,7 @@
 /**
  * Name resolver module : search object name and zoom to them
  */
-define(["../jquery", "../Utils", "../service/NameResolver", "../underscore-min", "text!../../templates/nameResolverResult.html", "../layer/LayerManager", "../layer/PlanetLayer", "../jquery.ui", "../jquery.once"],
+define(["jquery", "Utils", "service/NameResolver", "underscore-min", "text!templates/nameResolverResult.html", "layer/LayerManager", "layer/PlanetLayer", "jquery.ui", "jquery.once"],
     function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager, PlanetLayer) {
 
 

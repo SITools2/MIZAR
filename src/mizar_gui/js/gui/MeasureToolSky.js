@@ -22,7 +22,7 @@
  * Tool designed to measure the distance between two points
  */
 
-define(["../jquery", "underscore-min", "../gw/Layer/VectorLayer", "../gw/Renderer/Ray", "../gw/Utils/Numeric", "../gw/Renderer/FeatureStyle", "../gw/Renderer/glMatrix", "../jquery.ui"],
+define(["jquery", "underscore-min", "gw/Layer/VectorLayer", "gw/Renderer/Ray", "gw/Utils/Numeric", "gw/Renderer/FeatureStyle", "gw/Renderer/glMatrix", "jquery.ui"],
     function ($, _, VectorLayer, Ray, Numeric, FeatureStyle) {
 
         var globe;
@@ -139,6 +139,11 @@ define(["../jquery", "underscore-min", "../gw/Layer/VectorLayer", "../gw/Rendere
 
                 self.updateMeasure();
             };
+
+            //mizar.mizarWidgetCore.subscribe("mizarMode:toggle", function () {
+            //    if (this.activated)
+            //        this.toggle();
+            //});
 
             this.renderContext.canvas.addEventListener("mousedown", $.proxy(_handleMouseDown, this));
             this.renderContext.canvas.addEventListener("mouseup", $.proxy(_handleMouseUp, this));

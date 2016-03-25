@@ -1,0 +1,31 @@
+<div id="overlappedObjects">
+    <% if ( selection.length > 1 ) {%>
+    <u>Overlapped observations:</u><br/>
+    <% } else { %>
+    <u>Object:</u><br/>
+    <% } %>
+    <div id="scroll-arrow-up" style="display: none" class="scroll-arrow-up"></div>
+    <div id="featureListDiv">
+        <div id="featureList">
+            <%
+            var title = "";
+            for ( var i=0; i < selection.length; i++ ) {
+                var properties = selection[i].feature.properties;
+                title = ( selection[i].feature.id ) ? selection[i].feature.id : ( properties.identifier ) ?
+                properties.identifier : ( properties.name ) ? properties.name : properties.title;
+            %>
+            <div title=<%= title %> class="featureTitle"> <%= title %> <br/></div>
+            <%
+                if (selection[i].layer.name === "Planets" && selection[i].feature.properties.name === "Mars") {
+                    %>
+                    <button id="goToMarsBtn" style="margin-top: 7px; font-size: 11px;">
+                        <span class="ui-button-text">Go to Mars</span>
+                    </button>
+                    <%
+                }
+            }
+            %>
+        </div>
+    </div>
+    <div id="scroll-arrow-down" style="display: none" class="scroll-arrow-down clickable"></div>
+</div>

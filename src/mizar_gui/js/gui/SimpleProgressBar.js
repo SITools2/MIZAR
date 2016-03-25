@@ -21,7 +21,7 @@
 /**
  * Simple progress bar
  */
-define(["../jquery"], function ($) {
+define(["jquery"], function ($) {
 
     var SimpleProgressBar = function (options) {
         var id = options.id;

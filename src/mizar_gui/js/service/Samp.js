@@ -21,7 +21,7 @@
 /**
  * Samp module : performing communication between applications using SAMP protocol
  */
-define(["../jquery", "../underscore-min", "../gw/Renderer/FeatureStyle", "../gw/Layer/VectorLayer", "../Utils", "../provider/JsonProcessor", "samp", "../jquery.ui"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "Utils", "provider/JsonProcessor", "samp", "jquery.ui"],
     function ($, _, FeatureStyle, VectorLayer, Utils, JsonProcessor) {
 
         var mizar;

@@ -21,7 +21,7 @@
 /**
  * About dialog
  */
-define(["../jquery", "../jquery.ui"], function ($) {
+define(["jquery", "jquery.ui"], function ($) {
 
     /*jshint multistr: true */
     var aboutContent =

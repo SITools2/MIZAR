@@ -21,7 +21,7 @@
 /**
  * Mollweider viewer module : Sky representation in mollweide coordinate system
  */
-define(["../jquery", "../Utils", "../gw/Renderer/Ray", "../gw/Renderer/glMatrix"], function ($, Utils, Ray) {
+define(["jquery", "Utils", "gw/Renderer/Ray", "gw/Renderer/glMatrix"], function ($, Utils, Ray) {
 
     var mizarBaseUrl;
 

@@ -21,7 +21,7 @@
 /**
  * Compass module : map control with "north" composant
  */
-define(["../jquery", "../gw/Renderer/glMatrix"], function ($) {
+define(["jquery", "gw/Renderer/glMatrix"], function ($) {
 
     /**
      *    Private variables

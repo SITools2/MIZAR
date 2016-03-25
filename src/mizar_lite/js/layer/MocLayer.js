@@ -21,7 +21,7 @@
 /**
  * Moc renderer/layer module
  */
-define(["../jquery", "../gw/Layer/BaseLayer", '../gw/Renderer/FeatureStyle', "../gw/Utils/Utils", "../gw/Tiling/HEALPixBase", "../layer/FitsLoader", "../string"],
+define(["jquery", "gw/Layer/BaseLayer", 'gw/Renderer/FeatureStyle', "gw/Utils/Utils", "gw/Tiling/HEALPixBase", "../layer/FitsLoader", "string"],
     function ($, BaseLayer, FeatureStyle, Utils, HEALPixBase, FitsLoader, String) {
         /**
          *    @constructor

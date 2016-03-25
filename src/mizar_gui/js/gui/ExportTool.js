@@ -22,8 +22,8 @@
  * Tool designed to select areas on globe
  */
 
-define(["../jquery", "../underscore-min", "../jszip", "../saveAs", "./PickingManager", "./SelectionTool", "./PickingManager", "./LayerServiceView", "../Utils", "gw/Tiling/HEALPixBase", "loadmask"],
-    function ($, _, PickingManager, JSZip, saveAs, SelectionTool, PickingManager, LayerServiceView, Utils, HealpixBase) {
+define(["jquery", "underscore-min", "jszip", "saveAs", "./PickingManager", "./SelectionTool", "./LayerServiceView", "Utils", "gw/Tiling/HEALPixBase", "loadmask"],
+    function ($, _, JSZip, saveAs, PickingManager, SelectionTool, LayerServiceView, Utils, HealpixBase) {
 
 
         /**

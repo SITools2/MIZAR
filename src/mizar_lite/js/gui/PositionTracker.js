@@ -21,7 +21,7 @@
 /**
  * Position tracker : show mouse position formated in default coordinate system
  */
-define(["../jquery", "../Utils"],
+define(["jquery", "../Utils"],
     function ($, Utils) {
 
         var globe;

@@ -22,41 +22,48 @@
  * Mizar widget
  */
 define(["jquery", "underscore-min",
-    "../../mizar_lite/js/MizarWidgetGlobal",
-    "./context/PlanetContext", "./context/SkyContext",
-    "gw/Layer/TileWireframeLayer", "gw/Utils/Stats",
-    "gw/Utils/Event",
 
-    "text!../data/backgroundSurveys.json",
+        // Gui
+        "./gui/LayerManagerView", "./gui/BackgroundLayersView",
+        "./gui/NameResolverView", "./gui/ReverseNameResolverView",
+        "./gui/PickingManager", "./gui/FeaturePopup",
+        "./gui/IFrame", "./gui/Compass",
+        "./gui/MollweideViewer", "./gui/ImageViewer",
+        "./service/Share", "./service/Samp",
+        "./gui/AdditionalLayersView", "./gui/ImageManager",
 
-    "./layer/LayerManager",
-    "./gui/LayerManagerView", "./gui/BackgroundLayersView",
-    "./gui/NameResolverView",
-    "./gui/ReverseNameResolverView",
-    "../../mizar_lite/Utils",
-    "./gui/PickingManager","./gui/FeaturePopup",
-    "./gui/IFrame", "./gui/Compass",
-    "./gui/MollweideViewer", "./gui_core/ErrorDialog",
-    "../../mizar_lite/gui/AboutDialog",
-    "./service/Share", "./service/Samp",
-    "./gui/AdditionalLayersView", "../../mizar_lite/gui/ImageManagerLite",
-    "./gui/ImageViewer", "./uws/UWSManager",
-    "./gui/MeasureToolSky", "./gui/MeasureToolPlanet",
-    "./gui/SwitchTo2D", "./gui/SearchTool",
-    "./gui/ExportTool",
+        "./gui/MeasureToolSky", "./gui/MeasureToolPlanet",
+        "./gui/SwitchTo2D", "./gui/ExportTool",
 
-    "jquery.ui", "flot",
-    "flot.tooltip", "flot.axislabels"],
-    function ($, _, MizarWidgetGlobal, PlanetContext, SkyContext, TileWireframeLayer,
-              Stats, Event,
-              backgroundSurveys,
-              LayerManager, LayerManagerView, BackgroundLayersView,
+        // Mizar_lite
+        "../../mizar_lite/js/MizarWidgetGlobal",
+        "../../mizar_lite/js/context/PlanetContext",
+        "../../mizar_lite/js/context/SkyContext",
+        "../../mizar_lite/js/layer/LayerManager",
+        "../../mizar_lite/js/Utils",
+        "../../mizar_lite/js/gui/ImageManagerLite",
+        "../../mizar_lite/js/gui/AboutDialog",
+        "../../mizar_lite/js/gui/ErrorDialog",
+
+        // GlobWeb
+        "gw/Utils/Event",
+
+        // Externals
+        "jquery.ui", "flot",
+        "flot.tooltip", "flot.axislabels"],
+    function ($, _,
+              LayerManagerView, BackgroundLayersView,
               NameResolverView, ReverseNameResolverView,
-              Utils, PickingManager,
-              FeaturePopup, IFrame, Compass, MollweideViewer, ErrorDialog,
-              AboutDialog, Share, Samp, AdditionalLayersView, ImageManagerLite,
-              ImageViewer, UWSManager, MeasureToolSky, MeasureToolPlanet,
-              SwitchTo2D, SearchTool, ExportTool) {
+              PickingManager, FeaturePopup,
+              IFrame, Compass,
+              MollweideViewer, ImageViewer,
+              Share, Samp,
+              AdditionalLayersView, ImageManager,
+              MeasureToolSky, MeasureToolPlanet,
+              SwitchTo2D, ExportTool,
+              MizarWidgetGlobal, PlanetContext, SkyContext,
+              LayerManager, Utils, ImageManagerLite, AboutDialog, ErrorDialog,
+              Event) {
 
         /**
          *    Private variables
@@ -65,191 +72,28 @@ define(["jquery", "underscore-min",
         var options;
         var planetContext;
         var skyContext;
+        var mizarCore;
 
         /**************************************************************************************************************/
 
         /**
-         *    Apply shared parameters to options if exist
+         *    Mizar Widget GUI constructor
          */
-        var _applySharedParameters = function () {
-            var documentURI = window.document.documentURI;
-            // Retrieve shared parameters
-            var sharedParametersIndex = documentURI.indexOf("sharedParameters=");
-            if (sharedParametersIndex !== -1) {
-                var startIndex = sharedParametersIndex + "sharedParameters=".length;
-                var sharedString = documentURI.substr(startIndex);
-                if (options.shortener) {
-                    $.ajax({
-                        type: "GET",
-                        url: options.shortener.baseUrl + '/' + sharedString,
-                        async: false, // TODO: create callback
-                        success: function (sharedConf) {
-                            _mergeWithOptions(sharedConf);
-                        },
-                        error: function (thrownError) {
-                            console.error(thrownError);
-                        }
-                    });
-                }
-                else {
-                    console.log("Shortener plugin isn't defined, try to extract as a string");
-                    var sharedParameters = JSON.parse(decodeURI(sharedString));
-                    _mergeWithOptions(sharedParameters);
-                }
-            }
-        };
+        var MizarWidgetGui = function (div, globalOptions) {
 
-        /**************************************************************************************************************/
-
-        /**
-         *    Remove "C"-like comment lines from string
-         */
-        var _removeComments = function (string) {
-            var starCommentRe = new RegExp("/\\\*(.|[\r\n])*?\\\*/", "g");
-            var slashCommentRe = new RegExp("[^:]//.*[\r\n]", "g");
-            string = string.replace(slashCommentRe, "");
-            string = string.replace(starCommentRe, "");
-
-            return string;
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Merge retrieved shared parameters with Mizar configuration
-         */
-        var _mergeWithOptions = function (sharedParameters) {
-            // Navigation
-            options.navigation.initTarget = sharedParameters.initTarget;
-            options.navigation.initFov = sharedParameters.fov;
-            options.navigation.up = sharedParameters.up;
-
-            // Layer visibility
-            options.layerVisibility = sharedParameters.visibility;
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Store the mizar base url
-         *    Used to access to images(Compass, Mollweide, Target icon for name resolver)
-         *    Also used to define "star" icon for point data on-fly
-         *    NB: Not the best solution of my life.... TODO: think how to improve it..
-         */
-        // Search throught all the loaded scripts for minified version
-        var scripts = document.getElementsByTagName('script');
-        var mizarSrc = _.find(scripts, function (script) {
-            return script.src.indexOf("MizarWidget.min") !== -1;
-        });
-
-        // Depending on its presence decide if Mizar is used on prod or on dev
-        var mizarBaseUrl;
-        if (mizarSrc) {
-            // Prod
-            // Extract mizar's url
-            mizarBaseUrl = mizarSrc.src.split('/').slice(0, -1).join('/') + '/';
-        }
-        else {
-            // Dev
-            // Basically use the relative path from index page
-            mizarSrc = _.find(scripts, function (script) {
-                return script.src.indexOf("MizarWidget") !== -1;
-            });
-            mizarBaseUrl = mizarSrc.src.split('/').slice(0, -1).join('/') + '/../';
-        }
-
-        /**
-         *    Mizar widget constructor
-         */
-        var MizarWidgetGui = function (div, userOptions) {
-            Event.prototype.constructor.call(this);
-
-            // Sky mode by default
-            this.mode = "sky";
+            this.mode = globalOptions.mode;
 
             parentElement = div;
-            var sitoolsBaseUrl = userOptions.sitoolsBaseUrl ? userOptions.sitoolsBaseUrl : "http://demonstrator.telespazio.com/sitools";
-            this.isMobile = ('ontouchstart' in window || (window.DocumentTouch && document instanceof DocumentTouch));
-            options = {
-                "sitoolsBaseUrl": sitoolsBaseUrl,
-                "mizarBaseUrl": mizarBaseUrl,
-                "continuousRendering": userOptions.hasOwnProperty('continuousRendering') ? userOptions.continuousRendering : !this.isMobile,
-                "coordSystem": userOptions.hasOwnProperty('coordSystem') ? userOptions.coordSystem : "EQ",
-                "debug": userOptions.hasOwnProperty('debug') ? userOptions.debug : false,
-                "nameResolver": {
-                    "jsObject" : "./name_resolver/DefaultNameResolver",
-                    "baseUrl": sitoolsBaseUrl + '/mizar/plugin/nameResolver',
-                    //"baseUrl" : "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-oxp/ALL"
-                    "zoomFov": 15,
-                    "duration": 3000
-                },
-                "reverseNameResolver": {
-                    //"jsObject" : "./reverse_name_resolver/DefaultReverseNameResolver",
-                    "jsObject" : "./reverse_name_resolver/CDSReverseNameResolver",
-                    //"baseUrl": sitoolsBaseUrl + '/mizar/plugin/reverseNameResolver',
-                    "baseUrl": "http://alasky.u-strasbg.fr/cgi/simbad-flat/simbad-quick.py?Ident={coordinates}&SR={radius}",
-                },
-                "coverageService": {
-                    "baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/coverage?moc="
-                },
-                "solarObjects": {
-                    "baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/solarObjects/"
-                },
-                "votable2geojson": {
-                    "baseUrl": sitoolsBaseUrl + "/project/mizar/plugin/votable2geojson"
-                },
-                "cutOut": {
-                    "baseUrl": sitoolsBaseUrl + "/cutout"
-                },
-                "zScale": {
-                    "baseUrl": sitoolsBaseUrl + "/zscale"
-                },
-                "healpixcut": {
-                    "baseUrl": sitoolsBaseUrl + "/healpixcut"
-                },
-                "shortener": {
-                    "baseUrl": sitoolsBaseUrl + "/shortener"
-                },
-                "navigation": {
-                    "initTarget": [85.2500, -2.4608],
-                    "initFov": 20,
-                    "inertia": true,
-                    "minFov": 0.001,
-                    "zoomFactor": 0,
-                    "isMobile": this.isMobile,
-                    "mouse": {
-                        "zoomOnDblClick": true
-                    }
-                },
-                "stats": {
-                    "verbose": false,
-                    "visible": false
-                },
-                "positionTracker": {
-                    "position": "bottom"
-                },
-                "elevationTracker": {
-                    "position": "bottom"
-                },
-                "isMobile": this.isMobile,
-                "hipsServiceUrl": userOptions.hasOwnProperty('hipsServiceUrl') ? userOptions.hipsServiceUrl : undefined
-            };
+            options = globalOptions.options;
+            mizarCore = globalOptions.mizar.mizarWidgetCore;
 
-            var extendableOptions = ["navigation", "nameResolver", "stats", "positionTracker", "elevationTracker"];
-            // Merge default options with user ones
-            for (var i = 0; i < extendableOptions.length; i++) {
-                var option = extendableOptions[i];
-                $.extend(options[option], userOptions[option]);
-            }
+            this.isMobile = globalOptions.isMobile;
 
-            this.sky = null;
-            this.navigation = null;
+            this.activatedContext = mizarCore.activatedContext;
+            this.sky = this.activatedContext;
 
-            _applySharedParameters();
-
-            // Initialize sky&globe contexts
-            skyContext = new SkyContext(div, $.extend({canvas: $(div).find('#GlobWebCanvas')[0]}, options));
-            this.activatedContext = skyContext;
+            this.navigation = this.sky.navigation;
+            skyContext = this.sky;
 
             // TODO : Extend GlobWeb base layer to be able to publish events by itself
             // to avoid the following useless call
@@ -258,109 +102,37 @@ define(["jquery", "underscore-min",
                 self.publish("features:added", featureData);
             });
 
-            self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
-                self.addFitsEvent(layerDesc, planetLayer);
-            });
-
-            this.sky = skyContext.globe;
-            this.navigation = skyContext.navigation;
-
-            // Add stats
-            if (options.stats.visible) {
-                new Stats(this.sky.renderContext, {element: "fps", verbose: options.stats.verbose});
-                $("#fps").show();
-            }
+            //self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
+            //    self.addFitsEvent(layerDesc, planetLayer);
+            //});
 
             // TODO : Extend GlobWeb base layer to be able to publish events by itself
             // to avoid the following useless call
 
-            this.sky.coordinateSystem.type = options.coordSystem;
+            this.sky.globe.coordinateSystem.type = globalOptions.options.coordSystem;
 
             // Create data manager
-            PickingManager.init(this, options);
+            PickingManager.init(mizarCore, globalOptions.options);
 
             // Share configuration module init
-            Share.init({mizar: this, navigation: this.navigation, configuration: options});
+            Share.init({
+                mizar: mizarCore,
+                navigation: this.navigation,
+                configuration: globalOptions.options
+            });
 
             // Initialize SAMP component
             // TODO : Bear in mind that a website may already implement specific SAMP logics, so check that
             // current samp component doesn't break existing SAMP functionality
             if (!this.isMobile) {
-                Samp.init(this, LayerManager, ImageManagerLite, options);
+                var lm = mizarCore.getLayerManager();
+                Samp.init(mizarCore, lm, ImageManagerLite, globalOptions.options);
             }
-
-            // UWS services initialization
-            UWSManager.init(options);
 
             // Initialization of tools useful for different modules
-            Utils.init(this);
+            Utils.init(mizarCore);
 
-            // Get background surveys only
-            // Currently in background surveys there are not only background layers but also catalog ones
-            // TODO : Refactor it !
-            var layers = [];
-            if (userOptions.backgroundSurveys) {
-                // Use user defined background surveys
-                layers = userOptions.backgroundSurveys;
-            }
-            else {
-                // // Use built-in background surveys
-                // backgroundSurveys = _removeComments(backgroundSurveys);
-                // try
-                // {
-                // 	layers = $.parseJSON(backgroundSurveys);
-                // }
-                // catch (e) {
-                // 	ErrorDialog.open("Background surveys parsing error<br/> For more details see http://jsonlint.com/.");
-                // 	console.error(e.message);
-                // 	return false;
-                // }
-                $.ajax({
-                    type: "GET",
-                    async: false, // Deal with it..
-                    url: mizarBaseUrl + "data/backgroundSurveys.json",
-                    dataType: "text",
-                    success: function (response) {
-                        response = _removeComments(response);
-                        try {
-                            layers = $.parseJSON(response);
-                        }
-                        catch (e) {
-                            ErrorDialog.open("Background surveys parsing error<br/> For more details see http://jsonlint.com/.");
-                            console.error(e.message);
-                            return false;
-                        }
-                    },
-                    error: function (thrownError) {
-                        console.error(thrownError);
-                    }
-                });
-            }
-
-            // Add surveys
-            for (var i = 0; i < layers.length; i++) {
-                var layer = layers[i];
-                var gwLayer = self.addLayer(layer);
-
-                // Update layer visibility according to options
-                if (options.layerVisibility && options.layerVisibility.hasOwnProperty(layer.name)) {
-                    gwLayer.visible(options.layerVisibility[layer.name]);
-                }
-
-                self.publish("backgroundSurveysReady");
-            }
-
-            // Fullscreen mode
-            document.addEventListener("keydown", function (event) {
-                // Ctrl + Space
-                if (event.ctrlKey === true && event.keyCode === 32) {
-                    $('.canvas > canvas').siblings(":not(canvas)").each(function () {
-                        $(this).fadeToggle();
-                    });
-                }
-            });
-
-            // Subscribe all events to MizarWidgetGlobal
+            // TODO Subscribe all events to MizarWidgetGlobal
             //MizarWidgetGlobal.subscribe('mizarGui:')
 
             /*** Refactor into common ? ***/
@@ -394,27 +166,6 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         Utils.inherits(Event, MizarWidgetGui);
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Set a predefined background survey
-         */
-        MizarWidgetGui.prototype.setBackgroundSurvey = function (survey) {
-            LayerManager.setBackgroundSurvey(survey);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Set a custom background survey
-         */
-        MizarWidgetGui.prototype.setCustomBackgroundSurvey = function (layerDesc) {
-            layerDesc.background = true; // Ensure that background option is set to true
-            var layer = LayerManager.addLayerFromDescription(layerDesc);
-            LayerManager.setBackgroundSurvey(layerDesc.name);
-            return layer;
-        };
 
         /**************************************************************************************************************/
 
@@ -456,17 +207,6 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         *    Remove the given layer
-         *    @param layer
-         *        Layer returned by addLayer()
-         */
-        MizarWidgetGui.prototype.removeLayer = function (layer) {
-            LayerManager.removeLayer(layer);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
          *    Return current fov
          */
         MizarWidgetGui.prototype.getCurrentFov = function () {
@@ -503,9 +243,9 @@ define(["jquery", "underscore-min",
                 if (visible) {
                     this.compass = new Compass({
                         element: "compassDiv",
-                        globe: this.sky,
+                        globe: this.sky.globe,
                         navigation: this.navigation,
-                        coordSystem: this.sky.coordinateSystem.type,
+                        coordSystem: this.sky.globe.coordinateSystem.type,
                         isMobile: options.isMobile,
                         mizarBaseUrl: options.mizarBaseUrl
                     });
@@ -527,8 +267,31 @@ define(["jquery", "underscore-min",
                 if (this.mode == "sky") {
                     if (!this.measureToolSky) {
                         this.measureToolSky = new MeasureToolSky({
-                            globe: this.sky,
+                            globe: this.sky.globe,
                             navigation: this.navigation,
+                            isMobile: this.isMobile,
+                            mode: this.mode
+                        });
+                    }
+                }
+            }
+            skyContext.setComponentVisibility("measureSkyContainer", visible);
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Add/remove angle distance GUI
+         */
+        MizarWidgetGui.prototype.setAngleDistancePlanetGui = function (visible) {
+            if (visible) {
+                // Distance measure tool lazy initialization
+                if (this.mode == "planet") {
+                    if (!this.measureToolPlanet) {
+                        this.measureToolPlanet = new MeasureToolPlanet({
+                            globe: planetContext.globe,
+                            navigation: planetContext.navigation,
+                            planetLayer: planetContext.planetLayer,
                             isMobile: this.isMobile,
                             mode: this.mode
                         });
@@ -549,7 +312,7 @@ define(["jquery", "underscore-min",
                 if (!this.switchTo2D) {
                     this.switchTo2D = new SwitchTo2D({
                         mizar: this,
-                        globe: this.sky,
+                        globe: this.sky.globe,
                         navigation: this.navigation,
                         isMobile: this.isMobile,
                         mode: this.mode
@@ -590,9 +353,9 @@ define(["jquery", "underscore-min",
                 // Mollweide viewer lazy initialization
                 if (!this.mollweideViewer) {
                     this.mollweideViewer = new MollweideViewer({
-                        globe: this.sky,
+                        globe: this.sky.globe,
                         navigation: this.navigation,
-                        mizarBaseUrl: mizarBaseUrl
+                        mizarBaseUrl: options.mizarBaseUrl
                     });
                 }
             }
@@ -607,7 +370,7 @@ define(["jquery", "underscore-min",
          */
         MizarWidgetGui.prototype.setReverseNameResolverGui = function (visible) {
             if (visible) {
-                ReverseNameResolverView.init(this, skyContext);
+                ReverseNameResolverView.init(mizarCore, skyContext);
             } else {
                 ReverseNameResolverView.remove();
             }
@@ -620,7 +383,7 @@ define(["jquery", "underscore-min",
          */
         MizarWidgetGui.prototype.setNameResolverGui = function (visible) {
             if (visible) {
-                NameResolverView.init(this);
+                NameResolverView.init(mizarCore);
             } else {
                 NameResolverView.remove();
             }
@@ -634,7 +397,7 @@ define(["jquery", "underscore-min",
          */
         MizarWidgetGui.prototype.setCategoryGui = function (visible) {
             if (visible) {
-                LayerManagerView.init(this, $.extend({element: $(parentElement).find("#categoryDiv")}, options));
+                LayerManagerView.init(mizarCore, $.extend({element: $(parentElement).find("#categoryDiv")}, options));
             } else {
                 LayerManagerView.remove();
             }
@@ -649,7 +412,7 @@ define(["jquery", "underscore-min",
         MizarWidgetGui.prototype.setImageViewerGui = function (visible) {
             if (!options.isMobile) {
                 if (visible) {
-                    ImageViewer.init(this);
+                    ImageViewer.init(mizarCore);
                 } else {
                     ImageViewer.remove();
                 }
@@ -660,31 +423,14 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         *    Add/remove jQueryUI search GUI
-         */
-        MizarWidgetGui.prototype.setSearchGui = function (visible) {
-            if (visible) {
-                this.searchTool = new SearchTool({
-                    globe: this.sky,
-                    navigation: this.navigation,
-                    layers : this.getLayers()
-                });
-            }
-
-            skyContext.setComponentVisibility("searchContainer", visible);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
          *    Add/remove jQueryUI Export GUI
          */
         MizarWidgetGui.prototype.setExportGui = function (visible) {
             if (visible) {
                 this.exportTool = new ExportTool({
-                    globe: this.sky,
+                    globe: this.sky.globe,
                     navigation: this.navigation,
-                    layers : this.getLayers()
+                    layers: mizarCore.getLayers()
                 });
             }
 
@@ -721,19 +467,10 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         *    Get all layers
-         */
-        MizarWidgetGui.prototype.getLayers = function () {
-            return LayerManager.getLayers();
-        };
-
-        /**************************************************************************************************************/
-
-        /**
          *    Get layer with the given name
          */
         MizarWidgetGui.prototype.getLayer = function (layerName) {
-            var layers = this.getLayers();
+            var layers = mizarCore.getLayers();
             return _.findWhere(layers, {name: layerName});
         };
 
@@ -827,13 +564,13 @@ define(["jquery", "underscore-min",
                     }
                 };
 
-                if(gwLayer.nameResolver != undefined) {
+                if (gwLayer.nameResolver != undefined) {
                     planetConfiguration.nameResolver = {
                         "zoomFov": 200000, // in fact it must be distance, to be improved
-                            "baseUrl": gwLayer.nameResolver.baseUrl,
-                            "jsObject" : gwLayer.nameResolver.jsObject
+                        "baseUrl": gwLayer.nameResolver.baseUrl,
+                        "jsObject": gwLayer.nameResolver.jsObject
                     }
-                };
+                }
 
                 planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
                 planetConfiguration = $.extend({}, options, planetConfiguration);
@@ -881,7 +618,6 @@ define(["jquery", "underscore-min",
                     planetContext.globe.refresh();
                     self.publish("mizarMode:toggle", gwLayer);
                 }
-                ;
 
                 // desactive the sky measure tool
                 if (this.measureToolSky.activated)
@@ -903,5 +639,4 @@ define(["jquery", "underscore-min",
         };
 
         return MizarWidgetGui;
-
     });
