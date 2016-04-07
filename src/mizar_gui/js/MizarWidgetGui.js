@@ -32,6 +32,7 @@ define(["jquery", "underscore-min",
         "./service/Share", "./service/Samp",
         "./gui/AdditionalLayersView", "./gui/ImageManager",
 
+        // Gui
         "./gui/MeasureToolSky", "./gui/MeasureToolPlanet",
         "./gui/SwitchTo2D", "./gui/ExportTool",
 
@@ -80,12 +81,13 @@ define(["jquery", "underscore-min",
          *    Mizar Widget GUI constructor
          */
         var MizarWidgetGui = function (div, globalOptions) {
+            Event.prototype.constructor.call(this);
 
             this.mode = globalOptions.mode;
 
             parentElement = div;
             options = globalOptions.options;
-            mizarCore = globalOptions.mizar.mizarWidgetCore;
+            mizarCore = globalOptions.mizarGlobal.mizarWidgetCore;
 
             this.isMobile = globalOptions.isMobile;
 
@@ -98,6 +100,7 @@ define(["jquery", "underscore-min",
             // TODO : Extend GlobWeb base layer to be able to publish events by itself
             // to avoid the following useless call
             var self = this;
+            mizarGui = this;
             skyContext.globe.subscribe("features:added", function (featureData) {
                 self.publish("features:added", featureData);
             });
@@ -250,7 +253,9 @@ define(["jquery", "underscore-min",
                         mizarBaseUrl: options.mizarBaseUrl
                     });
                 } else {
-                    this.compass.remove();
+                    if (this.compass) {
+                        this.compass.remove();
+                    }
                 }
                 skyContext.setComponentVisibility("compassDiv", visible);
             }
@@ -348,7 +353,7 @@ define(["jquery", "underscore-min",
         /**
          *    Add/remove 2d map GUI
          */
-        MizarWidgetGui.prototype.set2dMapGui = function (visible) {
+        MizarWidgetGui.prototype.setMollweideMapGui = function (visible) {
             if (visible) {
                 // Mollweide viewer lazy initialization
                 if (!this.mollweideViewer) {
@@ -516,33 +521,36 @@ define(["jquery", "underscore-min",
          *    Toggle between planet/sky mode
          */
         MizarWidgetGui.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
-            this.mode = (this.mode === "sky") ? "planet" : "sky";
-            var self = this;
-            if (this.mode === "sky") {
+            var mizarCore = mizar.getMizarCore();
+            var mizarGui = mizar.getMizarGui();
+
+            mizarCore.mode = (mizarCore.mode === "sky") ? "planet" : "sky";
+
+            if (mizarCore.mode === "sky") {
                 console.log("Change planet to sky context");
                 // Hide planet
                 planetContext.hide();
 
                 // desactive the planet measure tool
-                if (this.measureToolPlanet.activated)
-                    this.measureToolPlanet.toggle();
+                if (!_.isEmpty(mizarGui.measureToolPlanet) && mizarGui.measureToolPlanet.activated)
+                    mizarGui.measureToolPlanet.toggle();
 
-                this.activatedContext = skyContext;
+                mizarCore.activatedContext = skyContext;
                 // Add smooth animation from planet context to sky context
-                planetContext.navigation.toViewMatrix(this.oldVM, this.oldFov, 2000, function () {
+                planetContext.navigation.toViewMatrix(mizarCore.oldVM, mizarCore.oldFov, 2000, function () {
                     // Show all additional layers
                     skyContext.showAdditionalLayers();
-                    self.sky.renderContext.tileErrorTreshold = 1.5;
-                    self.publish("mizarMode:toggle", gwLayer);
+                    mizarCore.sky.renderContext.tileErrorTreshold = 1.5;
+                    mizarCore.publish("mizarMode:toggle", gwLayer);
 
                     // Destroy planet context
                     planetContext.destroy();
                     planetContext = null;
                     // Show sky
                     skyContext.show();
-                    self.sky.refresh();
+                    mizarCore.sky.refresh();
                     if (callback) {
-                        callback.call(this);
+                        callback.call(mizarCore);
                     }
                 });
 
@@ -557,7 +565,7 @@ define(["jquery", "underscore-min",
                 // Create planet context( with existing sky render context )
                 var planetConfiguration = {
                     planetLayer: gwLayer,
-                    renderContext: this.sky.renderContext,
+                    renderContext: mizarCore.sky.renderContext,
                     initTarget: options.navigation.initTarget,
                     reverseNameResolver: {
                         "baseUrl": gwLayer.reverseNameResolverURL	// TODO: define protocol for reverse name resolver
@@ -581,24 +589,21 @@ define(["jquery", "underscore-min",
                 planetContext = new PlanetContext(parentElement, planetConfiguration);
                 planetContext.setComponentVisibility("categoryDiv", true);
                 planetContext.setComponentVisibility("searchDiv", true);
-                planetContext.setComponentVisibility("posTracker", this.activatedContext.components.posTracker);
-                planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
+                planetContext.setComponentVisibility("posTracker", mizarCore.activatedContext.components.posTracker);
+                planetContext.setComponentVisibility("elevTracker", mizarCore.activatedContext.components.posTracker);
                 planetContext.setComponentVisibility("compassDiv", false);
                 planetContext.setComponentVisibility("measureContainer", true);
-                planetContext.setComponentVisibility("switch2DContainer", true);
+                planetContext.setComponentVisibility("switch2DContainer", false);
 
                 // Propagate user-defined wish for displaying credits window
                 planetContext.credits = skyContext.credits;
 
                 // Planet tile error treshold is less sensetive than sky's one
-                this.sky.renderContext.tileErrorTreshold = 3;
-
-                this.activatedContext = planetContext;
-
+                mizarCore.sky.renderContext.tileErrorTreshold = 3;
+                mizarCore.activatedContext = planetContext;
                 // Store old view matrix & fov to be able to rollback to sky context
-                this.oldVM = this.sky.renderContext.viewMatrix;
-                this.oldFov = this.sky.renderContext.fov;
-
+                mizarCore.oldVM = mizarCore.sky.renderContext.viewMatrix;
+                mizarCore.oldFov = mizarCore.sky.renderContext.fov;
 
                 if (planetContext.mode == "3d") {
                     //Compute planet view matrix
@@ -607,33 +612,34 @@ define(["jquery", "underscore-min",
                     mat4.inverse(planetContext.navigation.inverseViewMatrix, planetVM);
 
                     // Add smooth animation from sky context to planet context
-                    this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
+                    mizarCore.navigation.toViewMatrix(planetVM, 45, 2000, function () {
                         planetContext.show();
                         planetContext.globe.refresh();
-                        self.publish("mizarMode:toggle", gwLayer);
+                        mizarCore.publish("mizarMode:toggle", gwLayer);
                     });
                 }
                 else {
                     planetContext.show();
                     planetContext.globe.refresh();
-                    self.publish("mizarMode:toggle", gwLayer);
+                    mizarCore.publish("mizarMode:toggle", gwLayer);
                 }
 
-                // desactive the sky measure tool
-                if (this.measureToolSky.activated)
-                    this.measureToolSky.toggle();
-
-                //planetContext.globe.isSky = true;
-                mizar.navigation.globe.isSky = true;
-                if (!this.measureToolPlanet) {
-                    this.measureToolPlanet = new MeasureToolPlanet({
+                if (!mizarGui.measureToolPlanet) {
+                    mizarGui.measureToolPlanet = new MeasureToolPlanet({
                         globe: planetContext.globe,
                         navigation: planetContext.navigation,
                         planetLayer: planetContext.planetLayer,
-                        isMobile: this.isMobile,
-                        mode: this.mode
+                        isMobile: mizarCore.isMobile,
+                        mode: mizarCore.mode
                     });
                 }
+
+                // desactive the sky measure tool
+                if (!_.isEmpty(mizarGui.measureToolSky) && mizarGui.measureToolSky.activated)
+                    mizarGui.measureToolSky.toggle();
+
+                //planetContext.globe.isSky = true;
+                mizarCore.navigation.globe.isSky = true;
                 planetContext.setComponentVisibility("measurePlanetContainer", true);
             }
         };

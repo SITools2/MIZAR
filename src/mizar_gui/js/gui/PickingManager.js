@@ -515,7 +515,7 @@ define(["jquery", "gui_core/PickingManagerLite", "gw/Renderer/FeatureStyle", "gw
             /**************************************************************************************************************/
 
             getSelectedData: function () {
-                return PickingManagerLite.getSelection()[stackSelectionIndex];
+                return pickingManagerLite.getSelection()[stackSelectionIndex];
             },
 
             /**************************************************************************************************************/

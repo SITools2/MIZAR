@@ -225,7 +225,9 @@ define(["../jquery", "../layer/LayerManager", "../gw/Renderer/FeatureStyle"], fu
 
     /**************************************************************************************************************/
 
-// Register the data provider
-    LayerManager.registerDataProvider("constellation", loadFiles);
+    // Register the data provider
+    if (mizar.mode == "sky") {
+        LayerManager.registerDataProvider("constellation", loadFiles);
+    }
 
 });

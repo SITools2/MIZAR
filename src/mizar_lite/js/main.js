@@ -116,7 +116,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         mizar.setAngleDistanceSkyGui(true);
         mizar.setSampGui(true);
         mizar.setShortenerUrlGui(true);
-        mizar.set2dMapGui(false);
+        mizar.setMollweideMapGui(false);
         mizar.setReverseNameResolverGui(true);
         mizar.setNameResolverGui(true);
         mizar.setCategoryGui(true);
@@ -741,6 +741,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
     }
 
     var mizar = new MizarWidgetGlobal('#mizarWidget-div', {
+    mizar = new MizarWidgetGlobal('#mizarWidget-div', {
         guiActivated : true,
         mode : "sky",
         debug: false,

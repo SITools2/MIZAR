@@ -21,11 +21,11 @@
  * Mizar widget Global
  */
 define(["jquery", "underscore-min",
-        "MizarWidgetCore",
-        //'mizar_gui/MizarWidgetGui',
+        "gw/Utils/Event",
+        "./Utils",
         "text!../templates/mizarCore.html",
         "text!../data/backgroundSurveys.json"],
-    function ($, _, MizarWidgetCore, /*MizarWidgetGui,*/ mizarCoreHTML) {
+    function ($, _, Event, Utils, mizarCoreHTML) {
 
         var parentElement;
         var options;
@@ -55,7 +55,7 @@ define(["jquery", "underscore-min",
                 // Dev
                 // Basically use the relative path from index page
                 mizarSrc = _.find(scripts, function (script) {
-                    return script.src.indexOf("MizarWidget") !== -1;
+                    return script.src.indexOf("MizarWidgetGlobal") !== -1;
                 });
                 mizarBaseUrl = mizarSrc.src.split('/').slice(0, -1).join('/') + '/../';
             }
@@ -66,11 +66,12 @@ define(["jquery", "underscore-min",
          * Mizar Widget Global constructor
          */
         var MizarWidgetGlobal = function (div, userOptions, callbackInitMain) {
+            Event.prototype.constructor.call(this);
 
             var mizarBaseUrl = getMizarUrl();
 
             // Sky mode by default
-            var mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
+            this.mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
 
             parentElement = div;
             self = this;
@@ -151,37 +152,65 @@ define(["jquery", "underscore-min",
                 "hipsServiceUrl": userOptions.hasOwnProperty('hipsServiceUrl') ? userOptions.hipsServiceUrl : undefined
             };
 
+            // Async Load of MizarWidgetGui if GUI activated
             if (userOptions.guiActivated) {
-                var mizarWidgetGuiRequire = require(['mizar_gui/MizarWidgetGui'], function (MizarWidgetGui) {
+                require(['mizar_gui/MizarWidgetGui'], function (MizarWidgetGui) {
+
+                    // Create mizar core HTML
+                    var mizarContent = _.template(mizarCoreHTML, {});
+                    $(mizarContent).appendTo(div);
+
+                    require(['MizarWidgetCore'], function (MizarWidgetCore) {
+                        self.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
+
+                        self.mizarWidgetGui = new MizarWidgetGui(div, {
+                            isMobile: isMobile,
+                            mode: this.mode,
+                            mizarGlobal: self,
+                            sky: self.mizarWidgetCore.sky,
+                            navigation: self.mizarWidgetCore.navigation,
+                            options: options
+                        });
+                        callbackInitMain(); // init GUI and layers
+                    });
+
+                });
+            } else {
+                require(['MizarWidgetCore'], function (MizarWidgetCore) {
                     // Create mizar core HTML
                     var mizarContent = _.template(mizarCoreHTML, {});
                     $(mizarContent).appendTo(div);
 
                     self.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
-
-                    self.mizarWidgetGui = new MizarWidgetGui(div, {
-                        isMobile: isMobile,
-                        mode: mode,
-                        mizar: self,
-                        sky: self.mizarWidgetCore.sky,
-                        navigation: self.mizarWidgetCore.navigation,
-                        options: options
-                    });
-
-                    callbackInitMain();
+                    callbackInitMain(); // init GUI and layers
                 });
-            } else {
-                // Create mizar core HTML
-                var mizarContent = _.template(mizarCoreHTML, {});
-                $(mizarContent).appendTo(div);
-
-                this.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
-
-                callbackInitMain();
             }
+
         };
 
-        /************************************************************************************************************* */
+        /**************************************************************************************************************/
+
+        Utils.inherits(Event, MizarWidgetGlobal);
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get Mizar Core
+         */
+        MizarWidgetGlobal.prototype.getMizarCore = function () {
+            return this.mizarWidgetCore;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get Mizar Gui
+         */
+        MizarWidgetGlobal.prototype.getMizarGui = function () {
+            return this.mizarWidgetGui;
+        };
+
+        /**************************************************************************************************************/
 
         /**
          * Get all layers
@@ -192,7 +221,7 @@ define(["jquery", "underscore-min",
             }
         };
 
-        /************************************************************************************************************* */
+        /**************************************************************************************************************/
 
         /**
          * Get layer with the given name
@@ -203,7 +232,7 @@ define(["jquery", "underscore-min",
             }
         };
 
-        /************************************************************************************************************* */
+        /**************************************************************************************************************/
 
         /**
          *    Add additional layer(OpenSearch, GeoJSON, HIPS, grid coordinates)
@@ -220,7 +249,7 @@ define(["jquery", "underscore-min",
             }
         };
 
-        /************************************************************************************************************* */
+        /**************************************************************************************************************/
 
         /**
          *    Set the credits popup
@@ -293,9 +322,9 @@ define(["jquery", "underscore-min",
         /**
          *    Add/remove 2d map GUI
          */
-        MizarWidgetGlobal.prototype.set2dMapGui = function (visible) {
+        MizarWidgetGlobal.prototype.setMollweideMapGui = function (visible) {
             if (this.mizarWidgetGui) {
-                this.mizarWidgetGui.set2dMapGui(visible);
+                this.mizarWidgetGui.setMollweideMapGui(visible);
             }
         };
 
@@ -366,6 +395,26 @@ define(["jquery", "underscore-min",
         };
 
         /**************************************************************************************************************/
+
+        /**
+         *    Toggle between between 3D and 2D
+         */
+        MizarWidgetGlobal.prototype.toggleDimension = function (gwLayer) {
+            if (this.mizarWidgetCore) {
+                this.mizarWidgetCore.toggleDimension(gwLayer);
+            }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Toggle between planet and sky mode
+         */
+        MizarWidgetGlobal.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
+            if (this.mizarWidgetCore) {
+                this.mizarWidgetCore.toggleMode(gwLayer, planetDimension, callback);
+            }
+        };
 
         return MizarWidgetGlobal;
 

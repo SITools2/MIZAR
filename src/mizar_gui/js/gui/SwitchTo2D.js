@@ -61,8 +61,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/Ray", "gw/Utils/Numeric",
          *    Switch between modes
          */
         SwitchTo2D.prototype.toggle2DSwitch = function () {
-
-            self.mizar.toggleDimension();
+            mizar.toggleDimension();
             $('#switch2DButton').toggleClass('selected');
         };
 

@@ -19,35 +19,43 @@
 /*global define: false */
 
 /**
- * Mizar widget
+ * Mizar widget Core
  */
-define(["jquery", "underscore-min", "./context/PlanetContext",
-        "./context/SkyContext", "gw/Layer/TileWireframeLayer",
-        "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event",
-        "gw/Navigation/TouchNavigationHandler",
-        "gw/Navigation/MouseNavigationHandler",
-        "gw/Navigation/KeyboardNavigationHandler",
+define(["jquery", "underscore-min",
+        "./context/PlanetContext",
+        "./context/SkyContext",
+
         "text!../data/backgroundSurveys.json", "./layer/LayerManager",
         "./service/NameResolver", "./service/ReverseNameResolver",
         "./service/MocBase", "./Utils",
         "./gui_core/ErrorDialog",
         "./gui_core/AboutDialog",
         "./uws/UWSManager",
-        "./provider/StarProvider", "./provider/ConstellationProvider",
-        "./provider/JsonProvider", "./provider/OpenSearchProvider",
-        "./provider/PlanetProvider",
+
+        // GlobWeb
+        "gw/Layer/TileWireframeLayer",
+        "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event",
+        "gw/Navigation/TouchNavigationHandler",
+        "gw/Navigation/MouseNavigationHandler",
+        "gw/Navigation/KeyboardNavigationHandler",
         "gw/Renderer/ConvexPolygonRenderer",
         "gw/Renderer/PointSpriteRenderer",
         "gw/Renderer/LineStringRenderable",
         "gw/Renderer/PointRenderer",
+
+        // Providers
+        "./provider/StarProvider", "./provider/ConstellationProvider",
+        "./provider/JsonProvider", "./provider/OpenSearchProvider",
+        "./provider/PlanetProvider",
+
         "./name_resolver/NameResolverManager",
         "./reverse_name_resolver/ReverseNameResolverManager"],
-    function ($, _, PlanetContext, SkyContext, TileWireframeLayer, Stats,
-              AttributionHandler, Event, TouchNavigationHandler,
-              MouseNavigationHandler, KeyboardNavigationHandler,
+    function ($, _, PlanetContext, SkyContext,
               backgroundSurveys, LayerManager, NameResolver,
               ReverseNameResolver, MocBase, Utils,
-              ErrorDialog, AboutDialog, UWSManager) {
+              ErrorDialog, AboutDialog, UWSManager, TileWireframeLayer, Stats,
+              AttributionHandler, Event, TouchNavigationHandler,
+              MouseNavigationHandler, KeyboardNavigationHandler) {
 
         /**
          * Private variables
@@ -57,7 +65,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
         var planetContext;
         var skyContext;
 
-        /** *********************************************************************************************************** */
+        /************************************************************************************************************* */
 
         /**
          * Apply shared parameters to options if exist
@@ -94,7 +102,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             }
         };
 
-        /** *********************************************************************************************************** */
+        /************************************************************************************************************* */
 
         /**
          * Remove "C"-like comment lines from string
@@ -108,7 +116,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             return string;
         };
 
-        /** *********************************************************************************************************** */
+        /************************************************************************************************************* */
 
         /**
          * Merge retrieved shared parameters with Mizar configuration
@@ -123,7 +131,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             options.layerVisibility = sharedParameters.visibility;
         };
 
-        /** *********************************************************************************************************** */
+        /************************************************************************************************************* */
 
         /**
          * Store the mizar base url Used to access to images(Compass,
@@ -163,6 +171,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
 
             // Sky mode by default
             this.mode = "sky";
+            this.mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
 
             var self = this;
 
@@ -217,17 +226,13 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             });
 
             // Initialize name resolver
-            NameResolver.init(this, skyContext, options);
+            NameResolver.init(this, this.activatedContext, options);
 
             // Initialize reverse name resolver
-            ReverseNameResolver.init(this, skyContext);
+            ReverseNameResolver.init(this, this.activatedContext);
 
             // Create layers from configuration file
             LayerManager.init(this, options);
-
-            // Create data manager
-            // TODO Split PickingManager
-            //PickingManager.init(this, options);
 
             // UWS services initialization
             UWSManager.init(options);
@@ -320,7 +325,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             LayerManager.setBackgroundSurvey(survey);
         };
 
-        /** *********************************************************************************************************** */
+        /************************************************************************************************************* */
 
         /**
          * Set a custom background survey
@@ -438,9 +443,9 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
         /************************************************************************************************************* */
 
         /**
-        *
-        * Get LayerManager already initialized
-        */
+         *
+         * Get LayerManager already initialized
+         */
         MizarWidgetCore.prototype.getLayerManager = function () {
             return LayerManager;
         };
@@ -566,143 +571,8 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
          * Toggle between planet/sky mode
          */
         MizarWidgetCore.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
-            this.mode = (this.mode === "sky") ? "planet" : "sky";
-            var self = this;
-            if (this.mode === "sky") {
-                console.log("Change planet to sky context");
-                // Hide planet
-                planetContext.hide();
-
-                // desactive the planet measure tool
-                if (this.measureToolPlanet.activated)
-                    this.measureToolPlanet.toggle();
-
-                this.activatedContext = skyContext;
-                // Add smooth animation from planet context to sky context
-                planetContext.navigation.toViewMatrix(this.oldVM,
-                    this.oldFov, 2000, function () {
-                        // Show all additional layers
-                        skyContext.showAdditionalLayers();
-                        self.sky.renderContext.tileErrorTreshold = 1.5;
-                        self.publish("mizarMode:toggle", gwLayer);
-
-                        // Destroy planet context
-                        planetContext.destroy();
-                        planetContext = null;
-                        // Show sky
-                        skyContext.show();
-                        self.sky.refresh();
-                        if (callback) {
-                            callback.call(this);
-                        }
-                    });
-
-            } else {
-                console.log("Change sky to planet context");
-
-                // Hide sky
-                skyContext.hide();
-
-                // Hide all additional layers
-                skyContext.hideAdditionalLayers();
-                // Create planet context( with existing sky render context )
-                var planetConfiguration = {
-                    planetLayer: gwLayer,
-                    renderContext: this.sky.renderContext,
-                    initTarget: options.navigation.initTarget,
-                    reverseNameResolver: {
-                        "baseUrl": gwLayer.reverseNameResolverURL
-                        // TODO: define protocol for reverse name resolver
-                    }
-                };
-
-                if (gwLayer.nameResolver != undefined) {
-                    planetConfiguration.nameResolver = {
-                        "zoomFov": 200000, // in fact it must be distance,
-                                           // to be improved
-                        "baseUrl": gwLayer.nameResolver.baseUrl,
-                        "jsObject": gwLayer.nameResolver.jsObject
-                    }
-                }
-                ;
-
-                planetConfiguration.renderContext['shadersPath'] = "../mizar_lite/externals/GlobWeb/shaders/";
-                planetConfiguration = $.extend({}, options,
-                    planetConfiguration);
-                if (!planetDimension) {
-                    planetDimension = "3d";
-                }
-                planetConfiguration.mode = planetDimension;
-                planetContext = new PlanetContext(parentElement,
-                    planetConfiguration);
-                planetContext.setComponentVisibility("categoryDiv", true);
-                planetContext.setComponentVisibility("searchDiv", true);
-                planetContext.setComponentVisibility("posTracker",
-                    this.activatedContext.components.posTracker);
-                planetContext.setComponentVisibility("elevTracker",
-                    this.activatedContext.components.posTracker);
-                planetContext.setComponentVisibility("compassDiv", false);
-                planetContext.setComponentVisibility("measureContainer",
-                    true);
-                planetContext.setComponentVisibility("switch2DContainer",
-                    true);
-
-                // Propagate user-defined wish for displaying credits window
-                planetContext.credits = skyContext.credits;
-
-                // Planet tile error treshold is less sensetive than sky's
-                // one
-                this.sky.renderContext.tileErrorTreshold = 3;
-
-                this.activatedContext = planetContext;
-
-                // Store old view matrix & fov to be able to rollback to sky
-                // context
-                this.oldVM = this.sky.renderContext.viewMatrix;
-                this.oldFov = this.sky.renderContext.fov;
-
-                if (planetContext.mode == "3d") {
-                    // Compute planet view matrix
-                    var planetVM = mat4.create();
-                    planetContext.navigation.computeInverseViewMatrix();
-                    mat4.inverse(
-                        planetContext.navigation.inverseViewMatrix,
-                        planetVM);
-
-                    // Add smooth animation from sky context to planet
-                    // context
-                    this.navigation.toViewMatrix(planetVM, 45, 2000,
-                        function () {
-                            planetContext.show();
-                            planetContext.globe.refresh();
-                            self.publish("mizarMode:toggle", gwLayer);
-                        });
-                } else {
-                    planetContext.show();
-                    planetContext.globe.refresh();
-                    self.publish("mizarMode:toggle", gwLayer);
-                };
-
-                // desactive the sky measure tool
-                //if (this.measureToolSky.activated)
-                //    this.measureToolSky.toggle();
-
-                // planetContext.globe.isSky = true;
-                mizar.navigation.globe.isSky = true;
-                if (!this.measureToolPlanet) {
-                    self.publish("mizarMode:toggle", gwLayer);
-                //    this.measureToolPlanet = new MeasureToolPlanet({
-                //        globe: planetContext.globe,
-                //        navigation: planetContext.navigation,
-                //        planetLayer: planetContext.planetLayer,
-                //        isMobile: this.isMobile,
-                //        mode: this.mode
-                //    });
-                }
-
-                planetContext.setComponentVisibility(
-                    "measurePlanetContainer", true);
-            }
+            //this.publish("mizarMode:toggleActivated", gwLayer, planetDimension, callback);
+            mizar.getMizarGui().toggleMode(gwLayer, planetDimension, callback);
         };
 
         /** *********************************************************************************************************** */
@@ -715,7 +585,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
                 return;
             }
 
-            var dimension = planetContext.toggleDimension();
+            var dimension = this.activatedContext.toggleDimension();
             var callback = function () {
                 this.viewPlanet("Mars", dimension);
             }.bind(this);
@@ -729,7 +599,7 @@ define(["jquery", "underscore-min", "./context/PlanetContext",
             // planetContext = null;
 
             // this.viewPlanet("Mars", dimension);
-        }
+        };
 
         return MizarWidgetCore;
 

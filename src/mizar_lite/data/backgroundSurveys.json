@@ -6,13 +6,13 @@
 	"category": "Other",
 	"type": "GeoJSON",
 	"name": "Constellations",
-	"icon": "css/images/constellation_icon.png",
-	"attribution": "Constellation coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><object width='24' height='16' data=\"../mizar_gui/css/images/cds.svg\" type=\"image/svg+xml\"></object></a>",
+	"icon": "../mizar_lite/css/images/constellation_icon.png",
+	"attribution": "Constellation coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><object width='24' height='16' data=\"../mizar_lite/css/images/cds.svg\" type=\"image/svg+xml\"></object></a>",
 	"description": "Constellation shapes from VizieR Catalogue",
 	"data": {
 	  "type": "constellation",
-	  "nameUrl": "../mizar_gui/data/ConstellationNames.tsv",
-	  "catalogueUrl": "../mizar_gui/data/bound_20.dat"
+	  "nameUrl": "../mizar_lite/data/ConstellationNames.tsv",
+	  "catalogueUrl": "../mizar_lite/data/bound_20.dat"
 	},
 	"visible": false,
 	"pickable": false,
@@ -23,13 +23,13 @@
 	"category": "Other",
 	"type": "GeoJSON",
 	"name": "Brighten stars",
-	"icon": "../mizar_gui/css/images/star_icon.png",
-	"attribution": "The most brighten stars coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><object width='24' height='16' data=\"../mizar_gui/css/images/cds.svg\" type=\"image/svg+xml\"></object></a>",
+	"icon": "../mizar_lite/css/images/star_icon.png",
+	"attribution": "The most brighten stars coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><object width='24' height='16' data=\"../mizar_lite/css/images/cds.svg\" type=\"image/svg+xml\"></object></a>",
 	"description": "The most brighten stars from VizieR Catalogue",
 	"data": {
 	  "type": "star",
-	  "nameUrl": "../mizar_gui/data/Names.tsv",
-	  "catalogueUrl": "../mizar_gui/data/Catalogue.tsv"
+	  "nameUrl": "../mizar_lite/data/Names.tsv",
+	  "catalogueUrl": "../mizar_lite/data/Catalogue.tsv"
 	},
 	"visible": true,
 	"opacity": 100,
@@ -70,7 +70,7 @@
 	"name": "IRIS",
 	"baseUrl": "http://healpix.ias.u-psud.fr/IRISColor/",
 	"description": "TODO",
-	"icon": "../mizar_gui/css/images/star_icon.png",
+	"icon": "../mizar_lite/css/images/star_icon.png",
 	"visible": false,
 	"background": true,
 	"coordSystem": "GAL",
@@ -214,7 +214,7 @@
 	"dataType": "point",
 	"name": "USNO-B1.0",
 	"description": " The USNO-B1.0 is a catalog that presents positions, proper motions, magnitudes in various optical passbands, and star/galaxy estimators for 1,045,913,669 objects derived from 3,648,832,040 separate observations. The data were taken from scans of 7,435 Schmidt plates taken from various sky surveys during the last 50 years. The catalog is expected to be complete down to V=21; the estimated accuracies are 0.2arcsec for the positions at J2000, 0.3mag in up to 5 colors, and 85% accuracy for distinguishing stars from non-stellar objects.",
-	"attribution": "USNOB1 coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_gui/css/images/cds.svg\" /></a>",
+	"attribution": "USNOB1 coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_lite/css/images/cds.svg\" /></a>",
 	"serviceUrl": "http://demonstrator.telespazio.com/sitools/usnob1",
 	"visible": false,
 	"minOrder": 9,
@@ -236,7 +236,7 @@
   //	"dataType": "point",
   //	"name": "Hipparcos",
   //	"description":" The Hipparcos and Tycho Catalogues are the primary products of the  European Space Agency's astrometric mission, Hipparcos. The satellite, which operated for four years, returned high quality scientific data from November 1989 to March 1993.",
-  //	"attribution": "Hipparcos coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_gui/css/images/cds.svg\" /></a>",
+  //	"attribution": "Hipparcos coming from <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_lite/css/images/cds.svg\" /></a>",
   //	"serviceUrl": "/sitools/hipparcos",
   //	"visible": false,
   //	"minOrder": 5,
@@ -307,7 +307,7 @@
 	  "Moc",
 	  "XMatch"
 	],
-	"attribution": "<img width='28' height='16' src=\"http://demonstrator.telespazio.com/sitools/upload/corot.svg\"> data provided by <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_gui/css/images/cds.svg\" /></a>"
+	"attribution": "<img width='28' height='16' src=\"http://demonstrator.telespazio.com/sitools/upload/corot.svg\"> data provided by <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_lite/css/images/cds.svg\" /></a>"
   },
   /**
    *	OpenSearch ConeSearch COROT exo
@@ -328,7 +328,7 @@
 	  "Moc",
 	  "XMatch"
 	],
-	"attribution": "<img width='28' height='16' src=\"http://demonstrator.telespazio.com/sitools/upload/corot.svg\"> data provided by <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_gui/css/images/cds.svg\" /></a>"
+	"attribution": "<img width='28' height='16' src=\"http://demonstrator.telespazio.com/sitools/upload/corot.svg\"> data provided by <a href=\"http://cdsweb.u-strasbg.fr/index-fr.gml\" target=\"_blank\"><img width='24' height='16' src=\"../mizar_lite/css/images/cds.svg\" /></a>"
   },
   /**
    *	Planet layers
@@ -340,7 +340,7 @@
     "nameResolver" : {
       "zoomFov": 2,
       "jsObject" : "./name_resolver/DictionaryNameResolver",
-      "baseUrl" : "../mizar_gui/data/mars_resolver.json"
+      "baseUrl" : "../mizar_lite/data/mars_resolver.json"
     },
 	"elevation": {
 	  "baseUrl": "http://idoc-wcsmars.ias.u-psud.fr/wcsmap",

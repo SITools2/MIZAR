@@ -144,7 +144,9 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
 
         /**************************************************************************************************************/
 
-// Register the data provider
-        LayerManager.registerDataProvider("star", loadFiles);
+        // Register the data provider
+        if (mizar.mode == "sky") {
+            LayerManager.registerDataProvider("star", loadFiles);
+        }
 
     });

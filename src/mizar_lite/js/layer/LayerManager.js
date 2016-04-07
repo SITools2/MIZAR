@@ -21,7 +21,7 @@
 /**
  * LayerManager module
  */
-define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "./AtmosphereLayer", "string"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "gw/Layer/AtmosphereLayer", "string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
               MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManagerLite, Utils, JsonProcessor, AtmosphereLayer, String) {
 
@@ -214,14 +214,16 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
         }
 
         function onVisibilityChange (layer) {
+            var mizarCore = mizar.getMizarCore();
+
             if(layer.visible() && layer.properties && layer.properties.hasOwnProperty("initialRa") && layer.properties.hasOwnProperty("initialDec") && layer.properties.hasOwnProperty("initialFov")) {
-                if (mizar.mode === "sky") {
+                if (mizarCore.mode === "sky") {
                     //mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000);
-                    var fov = mizar.activatedContext.navigation.renderContext.fov;
-                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], fov, 3000);
+                    var fov = mizarCore.activatedContext.navigation.renderContext.fov;
+                    mizarCore.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], fov, 3000);
                 }
                 else {
-                    mizar.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000, null);
+                    mizarCore.activatedContext.navigation.zoomTo([layer.properties.initialRa, layer.properties.initialDec], layer.properties.initialFov, 3000, null);
                 }
             }
         }
@@ -374,11 +376,11 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
              *    @param conf
              *        Mizar configuration
              */
-            init: function (mizar, conf) {
-                this.mizar = mizar;
+            init: function (mizarCore, conf) {
+                this.mizar = mizarCore;
                 configuration = conf;
                 // Store the sky in the global module variable
-                sky = mizar.sky;
+                sky = this.mizar.sky;
 
                 // TODO : Call init layers
                 //initLayers(configuration.layers);
@@ -611,12 +613,16 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 else {
                     // Planet mode
                     gwLayer = _.findWhere(planetLayers, {name: survey});
-                    if (globe.baseImagery) {
-                        globe.baseImagery.visible(false);
+
+                    if (!_.isEmpty(gwLayer)) {
+                        if (globe.baseImagery) {
+                            globe.baseImagery.visible(false);
+                        }
+                        globe.setBaseImagery(gwLayer);
+                        gwLayer.visible(true);
+                        this.mizar.publish("backgroundLayer:change", gwLayer);
                     }
-                    globe.setBaseImagery(gwLayer);
-                    gwLayer.visible(true);
-                    this.mizar.publish("backgroundLayer:change", gwLayer);
+
                 }
 
             },
@@ -644,7 +650,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
                 gwLayer.addFeature(feature);
                 PickingManagerLite.addPickableLayer(gwLayer);
-                this.addLayer(gwLayer, mizar.activatedContext.planetLayer);
+                this.addLayer(gwLayer, this.mizar.activatedContext.planetLayer);
                 return gwLayer;
             },
 
@@ -660,7 +666,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 gwLayer.addFeatureCollection(geoJson);
                 PickingManagerLite.addPickableLayer(gwLayer);
 
-                this.addLayer(gwLayer, mizar.activatedContext.planetLayer);
+                this.addLayer(gwLayer, this.mizar.activatedContext.planetLayer);
                 return gwLayer;
             },
 

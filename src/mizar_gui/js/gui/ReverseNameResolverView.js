@@ -32,6 +32,7 @@ define(["jquery", "service/ReverseNameResolver", "gw/Utils/Numeric", "./IFrame",
         var timeStart;
         var mouseXStart;
         var mouseYStart;
+        var mizar;
 
 // Template generating the detailed description of choosen feature
         var featureDescriptionTemplate = _.template(featureDescriptionHTMLTemplate);

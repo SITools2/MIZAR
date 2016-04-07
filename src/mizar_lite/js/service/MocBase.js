@@ -169,7 +169,12 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
                         });
                         var nOrder = maxOrder+1;
 
-                        layer.coverage = Utils.roundNumber(getCoverage(nOrder, healpixMoc) * 100, 5) + "%";
+                        if (_.isNumber(response)) {
+                            layer.coverage = Utils.roundNumber(getCoverage(nOrder, healpixMoc) * 100, 5) + "%";
+                        }
+                        else {
+                            layer.coverage = "Not available";
+                        }
                         if (successCallback)
                             successCallback(layer);
                     });
@@ -180,7 +185,12 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/MocLayer", "../Uti
                         type: "GET",
                         url: mocServiceUrl,
                         success: function (response) {
-                            layer.coverage = Utils.roundNumber(parseFloat(response), 5) + "%";
+                            if (_.isNumber(response)) {
+                                layer.coverage = Utils.roundNumber(parseFloat(response), 5) + "%";
+                            }
+                            else {
+                                layer.coverage = "Not available";
+                            }
                             if (successCallback)
                                 successCallback(layer);
                         }
