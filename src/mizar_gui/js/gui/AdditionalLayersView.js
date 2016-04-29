@@ -152,6 +152,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function initializeSlider($layerDiv, gwLayer) {
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             // Slider initialisation
             $layerDiv.find('#slider_' + shortName).slider({
                 value: gwLayer.opacity() * 100,
@@ -319,6 +320,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function manageLayerVisibility($layerDiv, gwLayer, categoryId) {
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             // Open tools div when the user clicks on the layer label
             var toolsDiv = $layerDiv.find('.layerTools');
             $layerDiv.children('label').click(function () {
@@ -445,6 +447,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function removeView(gwLayer) {
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             var addLayerDiv = $(parentElement).find('#addLayer_' + shortName);
             if (addLayerDiv.parent().children().length === 1) {
                 // Last child to remove -> remove the category

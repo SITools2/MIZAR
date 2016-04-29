@@ -120,7 +120,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         mizar.setReverseNameResolverGui(true);
         mizar.setNameResolverGui(true);
         mizar.setCategoryGui(true);
-        mizar.setCompassGui(true);
+        mizar.setCompassGui(false);
         mizar.setShowCredits(true);
         mizar.setImageViewerGui(true);
         mizar.setSwitchTo2D(true);
@@ -740,10 +740,10 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         mizar.addLayer(emars_hirise_dtm, marsLayer);
     }
 
-    var mizar = new MizarWidgetGlobal('#mizarWidget-div', {
     mizar = new MizarWidgetGlobal('#mizarWidget-div', {
         guiActivated : true,
         mode : "sky",
+        defaultLayer : "MOLA",
         debug: false,
         navigation: {
             "initTarget": [0, 0]

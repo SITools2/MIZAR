@@ -21,8 +21,8 @@
 /**
  * Planet context
  */
-define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../gui/PositionTracker", "../gui/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "jquery.ui"],
-    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem) {
+define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../gui/PositionTracker", "../gui/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
+    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
 
         /**************************************************************************************************************/
 
@@ -43,12 +43,16 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             MizarContext.prototype.constructor.call(this, parentElement, options);
             this.mode = options.mode;
 
+            this.initCanvas(options.canvas, parentElement);
+
             // Initialize globe
             try {
                 this.globe = new Globe({
                     tileErrorTreshold: 3,
                     continuousRendering: false,
-                    renderContext: options.renderContext
+                    renderContext: options.renderContext,
+                    canvas : options.canvas,
+                    shadersPath : "../mizar_lite/externals/GlobWeb/shaders/"
                 });
             }
             catch (err) {
@@ -80,15 +84,22 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
                     element: "elevTracker",
                     globe: this.globe,
                     elevationTracker: options.elevationTracker,
-                    elevationLayer: options.planetLayer.elevationLayer
+                    //elevationLayer: options.planetLayer.elevationLayer
+                    //elevationLayer: options.planetLayer.elevationLayer
+                    //elevationLayer: new WCSElevationLayer({
+                    //    baseUrl : "http://idoc-wcsmars.ias.u-psud.fr/wcsmap"
+                    //})
                 });
                 this.navigation = new Navigation(this.globe, options.navigation);
-                this.navigation.zoomTo(options.initTarget, 18000000);
+                //this.navigation.zoomTo(options.initTarget, 18000000);
+                this.navigation.zoomTo([85.2500, -2.4608], 18000000);
             } else {
                 this.navigation = new FlatNavigation(this.globe, options.navigation);
                 this.globe.setCoordinateSystem(new MercatorCoordinateSystem());
                 this.navigation.pan(options.initTarget);
             }
+
+            this.globe.publish("baseLayersReady");
 
         };
 

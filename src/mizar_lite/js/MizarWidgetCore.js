@@ -170,7 +170,7 @@ define(["jquery", "underscore-min",
             Event.prototype.constructor.call(this);
 
             // Sky mode by default
-            this.mode = "sky";
+            //this.mode = "sky";
             this.mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
 
             var self = this;
@@ -187,61 +187,6 @@ define(["jquery", "underscore-min",
             }
 
             _applySharedParameters();
-
-            // Initialize sky&globe contexts
-            skyContext = new SkyContext(div, $.extend({
-                canvas: $(div).find('#GlobWebCanvas')[0]
-            }, options));
-            this.activatedContext = skyContext;
-
-            // TODO : Extend GlobWeb base layer to be able to publish events
-            // by itself
-            // to avoid the following useless call
-
-            skyContext.globe.subscribe("features:added", function (featureData) {
-                self.publish("features:added", featureData);
-            });
-
-            this.sky = skyContext.globe;
-            this.navigation = skyContext.navigation;
-
-            // Add stats
-            if (options.stats.visible) {
-                new Stats(this.sky.renderContext, {
-                    element: "fps",
-                    verbose: options.stats.verbose
-                });
-                $("#fps").show();
-            }
-
-            // TODO : Extend GlobWeb base layer to be able to publish events
-            // by itself
-            // to avoid the following useless call
-
-            this.sky.coordinateSystem.type = options.coordSystem;
-
-            // Add attribution handler
-            new AttributionHandler(this.sky, {
-                element: 'attributions'
-            });
-
-            // Initialize name resolver
-            NameResolver.init(this, this.activatedContext, options);
-
-            // Initialize reverse name resolver
-            ReverseNameResolver.init(this, this.activatedContext);
-
-            // Create layers from configuration file
-            LayerManager.init(this, options);
-
-            // UWS services initialization
-            UWSManager.init(options);
-
-            // Initialization of tools useful for different modules
-            Utils.init(this);
-
-            // Initialize moc base
-            MocBase.init(this, options);
 
             // Get background surveys only
             // Currently in background surveys there are not only background
@@ -286,6 +231,70 @@ define(["jquery", "underscore-min",
                 });
             }
 
+            LayerManager.init(this, options);
+
+            if (this.mode == "sky") {
+                // Initialize sky&globe contexts
+                skyContext = new SkyContext(div, $.extend({
+                    canvas: $(div).find('#GlobWebCanvas')[0]
+                }, options));
+                this.activatedContext = skyContext;
+
+                // TODO : Extend GlobWeb base layer to be able to publish events
+                // by itself
+                // to avoid the following useless call
+                skyContext.globe.subscribe("features:added", function (featureData) {
+                    self.publish("features:added", featureData);
+                });
+
+                this.sky = skyContext.globe;
+                this.navigation = skyContext.navigation;
+
+            } else { // planet
+                options.mode = "3d";
+                options.canvas = $(div).find('#GlobWebCanvas')[0];
+                planetContext = new PlanetContext(div, options);
+
+                this.activatedContext = planetContext;
+                this.sky = planetContext.globe;
+                this.navigation = planetContext.navigation;
+
+                planetContext.setComponentVisibility("categoryDiv", true);
+                planetContext.setComponentVisibility("searchDiv", false);
+                planetContext.setComponentVisibility("posTracker", this.activatedContext.components.posTracker);
+                planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
+                planetContext.setComponentVisibility("compassDiv", false);
+                planetContext.setComponentVisibility("measureContainer", true);
+                planetContext.setComponentVisibility("switch2DContainer", false);
+                planetContext.setComponentVisibility("measurePlanetContainer", true);
+
+                var planetVM = mat4.create();
+                planetContext.navigation.computeInverseViewMatrix();
+                mat4.inverse(planetContext.navigation.inverseViewMatrix, planetVM);
+
+                this.sky.renderContext.tileErrorTreshold = 3;
+                this.activatedContext = planetContext;
+                // Store old view matrix & fov to be able to rollback to sky context
+                this.oldVM = this.sky.renderContext.viewMatrix;
+                this.oldFov = this.sky.renderContext.fov;
+                this.navigation.globe.isSky = true;
+
+                //planetContext.globe.publish("baseLayersReady");
+                var defaultLayer = userOptions.defaultLayer || "Viking";
+
+                // Add smooth animation from sky context to planet context
+                this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
+                    planetContext.show();
+                    planetContext.globe.refresh();
+                    var marsLayer = mizar.getLayer("Mars");
+                    mizar.getMizarCore().getLayerManager().setBackgroundSurvey(defaultLayer);
+                    planetContext.globe.tileManager.tiling = mizar.getLayer("DSS").tiling;
+                    //planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
+                    self.publish("mizarMode:toggle", marsLayer);
+                    $(".backToSky").hide();
+                });
+            }
+
             // Add surveys
             for (var i = 0; i < layers.length; i++) {
                 var layer = layers[i];
@@ -299,6 +308,48 @@ define(["jquery", "underscore-min",
 
                 self.publish("backgroundSurveysReady");
             }
+
+            // Add stats
+            if (options.stats.visible) {
+                new Stats(this.sky.renderContext, {
+                    element: "fps",
+                    verbose: options.stats.verbose
+                });
+                $("#fps").show();
+            }
+
+            // TODO : Extend GlobWeb base layer to be able to publish events
+            // by itself
+            // to avoid the following useless call
+
+            this.sky.coordinateSystem.type = options.coordSystem;
+
+            // Add attribution handler
+            new AttributionHandler(this.sky, {
+                element: 'attributions'
+            });
+
+            // Initialize name resolver
+            NameResolver.init(this, this.activatedContext, options);
+
+            // Initialize reverse name resolver
+            ReverseNameResolver.init(this, this.activatedContext);
+
+            // Create layers from configuration file
+            //LayerManager.init(this, options);
+
+            // Create data manager
+            // TODO Split PickingManager
+            //PickingManager.init(this, options);
+
+            // UWS services initialization
+            UWSManager.init(options);
+
+            // Initialization of tools useful for different modules
+            Utils.init(this);
+
+            // Initialize moc base
+            MocBase.init(this, options);
 
             // Fullscreen mode
             document.addEventListener("keydown", function (event) {

@@ -331,6 +331,11 @@ define(["jquery", "gui_core/PickingManagerLite", "gw/Renderer/FeatureStyle", "gw
          *    Compute the selection at the picking point
          */
         function computePickSelection(pickPoint) {
+
+            if (!pickPoint) {
+                return;
+            }
+
             var newSelection = [];
             for (var i = 0; i < pickingManagerLite.getPickableLayers().length; i++) {
                 var selectedTile = sky.tileManager.getVisibleTile(pickPoint[0], pickPoint[1]);

@@ -160,13 +160,15 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                 $('#loading').show(300);
 
                 // Set shader callback for choosen layer
-                backgroundDiv.changeShaderCallback = function (contrast) {
-                    if (contrast === "raw") {
-                        layer.customShader.fragmentCode = layer.rawFragShader;
-                    } else {
-                        layer.customShader.fragmentCode = layer.colormapFragShader;
-                    }
-                };
+                if (!_.isEmpty(backgroundDiv)) {
+                    backgroundDiv.changeShaderCallback = function (contrast) {
+                        if (contrast === "raw") {
+                            layer.customShader.fragmentCode = layer.rawFragShader;
+                        } else {
+                            layer.customShader.fragmentCode = layer.colormapFragShader;
+                        }
+                    };
+                }
 
                 // Change dynamic image view button
                 updateBackgroundOptions(layer);

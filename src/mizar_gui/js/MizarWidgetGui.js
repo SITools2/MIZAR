@@ -525,6 +525,7 @@ define(["jquery", "underscore-min",
             var mizarGui = mizar.getMizarGui();
 
             mizarCore.mode = (mizarCore.mode === "sky") ? "planet" : "sky";
+            mizar.mode = mizarCore.mode;
 
             if (mizarCore.mode === "sky") {
                 console.log("Change planet to sky context");
