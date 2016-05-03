@@ -231,8 +231,6 @@ define(["jquery", "underscore-min",
                 });
             }
 
-            LayerManager.init(this, options);
-
             if (this.mode == "sky") {
                 // Initialize sky&globe contexts
                 skyContext = new SkyContext(div, $.extend({
@@ -294,6 +292,8 @@ define(["jquery", "underscore-min",
                     $(".backToSky").hide();
                 });
             }
+
+            LayerManager.init(this, options);
 
             // Add surveys
             for (var i = 0; i < layers.length; i++) {

@@ -21,7 +21,7 @@
 /**
  * BackgroundLayersView module
  */
-define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", "./PickingManager", "layer/HEALPixFITSLayer", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "text!../../templates/backgroundLayers.html", "jquery.ui"],
+define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", "./PickingManager", "gw/Layer/HEALPixFITSLayer", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "text!../../templates/backgroundLayers.html", "jquery.ui"],
     function ($, _, LayerManager, DynamicImageView, PickingManager, HEALPixFITSLayer, LayerServiceView, Samp, ErrorDialog, backgroundLayersHTML) {
 
         var nbBackgroundLayers = 0; // required because background id is always equal to 0

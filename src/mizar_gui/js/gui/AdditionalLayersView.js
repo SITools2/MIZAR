@@ -21,8 +21,8 @@
 /**
  * AdditionalLayersView module
  */
-define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer/LayerManager", "layer/HEALPixFITSLayer", "layer/MocLayer", "layer/PlanetLayer", "gw/Layer/VectorLayer", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
-    function ($, FeatureStyle, OpenSearchLayer, LayerManager, HEALPixFITSLayer, MocLayer, PlanetLayer, VectorLayer, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
+define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
+    function ($, AdditionalLayersLite, LayerManager, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
 
         var mizar;
         var sky;
@@ -36,58 +36,6 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
 
 // Template generating the additional layer div in sidemenu
         var additionalLayerTemplate = _.template(additionalLayerHTMLTemplate);
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Generate point legend in canvas 2d
-         *
-         *    @param gwLayer GlobWeb layer
-         *    @param canvas Canvas
-         *    @param imageUrl Image source url used for point texture
-         */
-        function generatePointLegend(gwLayer, canvas, imageUrl) {
-            var context = canvas.getContext('2d');
-            var icon = new Image();
-            icon.crossOrigin = '';
-            icon.onload = function () {
-                // var width = (icon.width > canvas.width) ? canvas.width : icon.width;
-                // var height = (icon.height > canvas.height) ? canvas.height : icon.height;
-                context.drawImage(icon, 5, 0, 10, 10);
-
-                // colorize icon
-                var data = context.getImageData(0, 0, canvas.width, canvas.height);
-                for (var i = 0, length = data.data.length; i < length; i += 4) {
-                    data.data[i] = gwLayer.style.fillColor[0] * 255;
-                    data.data[i + 1] = gwLayer.style.fillColor[1] * 255;
-                    data.data[i + 2] = gwLayer.style.fillColor[2] * 255;
-                }
-
-                context.putImageData(data, 0, 0);
-            };
-            icon.src = imageUrl;
-        }
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Generate line legend in canvas 2d
-         */
-        function generateLineLegend(gwLayer, canvas) {
-            var context = canvas.getContext('2d');
-
-            var margin = 2;
-            context.beginPath();
-            context.moveTo(margin, canvas.height - margin);
-            context.lineTo(canvas.width / 2 - margin, margin);
-            context.lineTo(canvas.width / 2 + margin, canvas.height - margin);
-            context.lineTo(canvas.width - margin, margin);
-            context.lineWidth = 1;
-
-            // set line color
-            context.strokeStyle = FeatureStyle.fromColorToString(gwLayer.style.fillColor);
-            context.stroke();
-        }
 
         /**************************************************************************************************************/
 
@@ -117,32 +65,6 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function updateScroll(categoryId) {
             $(parentElement).find('#' + categoryId).getNiceScroll().resize();
-        }
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Add legend for the given layer if possible
-         *    Legend represents the "line" for polygon data or image from "iconUrl" for point data
-         */
-        function addLegend($layerDiv, gwLayer) {
-            var $canvas = $layerDiv.find('.legend');
-            var canvas = $canvas[0];
-
-            if (gwLayer instanceof OpenSearchLayer || gwLayer instanceof MocLayer || gwLayer instanceof VectorLayer) {
-                if (gwLayer.dataType === "point") {
-                    generatePointLegend(gwLayer, canvas, gwLayer.style.iconUrl);
-                }
-                else if (gwLayer.dataType === "line") {
-                    generateLineLegend(gwLayer, canvas);
-                }
-                else {
-                    $canvas.css("display", "none");
-                }
-            }
-            else {
-                $canvas.css("display", "none");
-            }
         }
 
         /**************************************************************************************************************/
@@ -225,6 +147,32 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
         /**************************************************************************************************************/
 
         /**
+         *    Add legend for the given layer if possible
+         *    Legend represents the "line" for polygon data or image from "iconUrl" for point data
+         */
+        function addLegend($layerDiv, gwLayer) {
+            var $canvas = $layerDiv.find('.legend');
+            var canvas = $canvas[0];
+
+            if (Utils.isOpenSearchLayer(gwLayer) || Utils.isMocLayer(gwLayer) || Utils.isVectorLayer(gwLayer)) {
+                if (gwLayer.dataType === "point") {
+                    AdditionalLayersLite.generatePointLegend(gwLayer, canvas, gwLayer.style.iconUrl);
+                }
+                else if (gwLayer.dataType === "line") {
+                    AdditionalLayersLite.generateLineLegend(gwLayer, canvas);
+                }
+                else {
+                    $canvas.css("display", "none");
+                }
+            }
+            else {
+                $canvas.css("display", "none");
+            }
+        }
+
+        /**************************************************************************************************************/
+
+        /**
          *    Create dialog to modify contrast/colormap of fits layers
          */
         function createDynamicImageDialog(gwLayer) {
@@ -289,7 +237,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
             // jQuery UI button is not sexy enough :)
             // Toggle some classes when the user clicks on the visibility checkbox
             if (gwLayer.subLayers) {
-                setSublayersVisibility(gwLayer, isOn);
+                AdditionalLayersLite.setSublayersVisibility(gwLayer, isOn);
             }
 
             var toolsDiv = $("#addLayer_" + shortName).find('.layerTools');
@@ -334,7 +282,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
             // Layer visibility management
             $layerDiv.find('#visible_' + shortName).click(function () {
 
-                if (gwLayer instanceof PlanetLayer) {
+                if (Utils.isPlanetLayer(gwLayer)) {
                     // Temporary use visiblity button to change mizar context to "planet"
                     // TODO: change button,
                     mizar.toggleMode(gwLayer);
@@ -348,36 +296,11 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
         /**************************************************************************************************************/
 
         /**
-         *    Set sublayers visibility
-         */
-        function setSublayersVisibility(gwLayer, isOn) {
-            var i;
-            if (isOn) {
-                for (i = 0; i < gwLayer.subLayers.length; i++) {
-                    sky.addLayer(gwLayer.subLayers[i]);
-                }
-            }
-            else {
-                for (i = 0; i < gwLayer.subLayers.length; i++) {
-                    sky.removeLayer(gwLayer.subLayers[i]);
-                }
-            }
-        }
-
-        /**************************************************************************************************************/
-
-        /**
          *    Create the Html for addtionnal layer
          */
         function createHtmlForAdditionalLayer(gwLayer, categoryId) {
             var shortName = Utils.formatId(gwLayer.name);
-            var layerDiv = additionalLayerTemplate({
-                layer: gwLayer,
-                OpenSearchLayer: OpenSearchLayer,
-                HEALPixFITSLayer: HEALPixFITSLayer,
-                shortName: shortName,
-                isMobile: isMobile
-            });
+            var layerDiv = AdditionalLayersLite.createHTMLFromTemplate(additionalLayerTemplate, gwLayer, shortName, isMobile);
 
             var $layerDiv = $(layerDiv)
                 .appendTo('#' + categoryId)
@@ -393,7 +316,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
 
             updateButtonsUI($layerDiv);
 
-            if (gwLayer instanceof HEALPixFITSLayer && !isMobile) {
+            if (Utils.isHEALPixFITSLayer(gwLayer) && !isMobile) {
                 createDynamicImageDialog(gwLayer);
             }
         }
@@ -467,30 +390,6 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
         /**************************************************************************************************************/
 
         /**
-         *    Build visible tiles url
-         */
-        function buildVisibleTilesUrl(layer) {
-            // Find max visible order & visible pixel indices
-            var maxOrder = 3;
-            var pixelIndices = "";
-            for (var i = 0; i < sky.tileManager.visibleTiles.length; i++) {
-                var tile = sky.tileManager.visibleTiles[i];
-                if (maxOrder < tile.order) {
-                    maxOrder = tile.order;
-                }
-
-                pixelIndices += tile.pixelIndex;
-                if (i < sky.tileManager.visibleTiles.length - 1) {
-                    pixelIndices += ",";
-                }
-            }
-
-            return layer.serviceUrl + "/search?order=" + maxOrder + "&healpix=" + pixelIndices + "&coordSystem=EQUATORIAL";
-        }
-
-        /**************************************************************************************************************/
-
-        /**
          *    Delete layer handler
          */
         function deleteLayer() {
@@ -522,7 +421,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
         function exportLayer() {
             if (Samp.isConnected()) {
                 var layer = $(this).closest(".addLayer").data("layer");
-                var url = buildVisibleTilesUrl(layer);
+                var url = AdditionalLayersLite.buildVisibleTilesUrl(layer);
                 Samp.sendVOTable(layer, url);
             }
             else {
@@ -537,7 +436,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function downloadAsVO() {
             var layer = $(this).closest(".addLayer").data("layer");
-            var url = buildVisibleTilesUrl(layer);
+            var url = AdditionalLayersLite.buildVisibleTilesUrl(layer);
             url += "&media=votable";
             var posGeo = layer.globe.coordinateSystem.from3DToGeo(navigation.center3d);
             var astro = Utils.formatCoordinates(posGeo);
@@ -553,18 +452,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
          */
         function zoomTo() {
             var layer = $(this).closest(".addLayer").data("layer");
-            var sLon = 0;
-            var sLat = 0;
-            var nbGeometries = 0;
-
-            for (var i = 0; i < layer.features.length; i++) {
-                var barycenter = Utils.computeGeometryBarycenter(layer.features[i].geometry);
-                sLon += barycenter[0];
-                sLat += barycenter[1];
-                nbGeometries++;
-            }
-            //TODO : compute the fov of the zoomTo according to the shape.
-            mizar.activatedContext.navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries]);
+            AdditionalLayersLite.zoomTo(layer);
         }
 
         /**************************************************************************************************************/
@@ -641,6 +529,8 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "layer
                 sky = options.mizar.sky;
                 navigation = options.mizar.navigation;
                 isMobile = options.configuration.isMobile;
+
+                AdditionalLayersLite.init(mizar, sky, navigation);
 
                 // Append content to parent element
                 parentElement = options.configuration.element;

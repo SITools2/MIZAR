@@ -43,7 +43,9 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             MizarContext.prototype.constructor.call(this, parentElement, options);
             this.mode = options.mode;
 
-            this.initCanvas(options.canvas, parentElement);
+            if (options.canvas) {
+                this.initCanvas(options.canvas, parentElement);
+            }
 
             // Initialize globe
             try {
@@ -51,8 +53,8 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
                     tileErrorTreshold: 3,
                     continuousRendering: false,
                     renderContext: options.renderContext,
-                    canvas : options.canvas,
-                    shadersPath : "../mizar_lite/externals/GlobWeb/shaders/"
+                    canvas: options.canvas,
+                    shadersPath: "../mizar_lite/externals/GlobWeb/shaders/"
                 });
             }
             catch (err) {
@@ -79,7 +81,7 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             // Eye position tracker initialization
             PositionTracker.init({element: "posTracker", globe: this.globe, positionTracker: options.positionTracker});
 
-            if(this.mode == "3d") {
+            if (this.mode == "3d") {
                 ElevationTracker.init({
                     element: "elevTracker",
                     globe: this.globe,
@@ -117,6 +119,7 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
         };
 
         /**************************************************************************************************************/
+
         /**
          *    Destroy method
          */
@@ -127,14 +130,24 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             this.globe = null;
         };
 
+        /**************************************************************************************************************/
+
+        /**
+         * Change planet dimension
+         *
+         * @param gwLayer
+         * @returns the new mode dimension
+         */
         PlanetContext.prototype.toggleDimension = function (gwLayer) {
-            if(this.mode == "2d") {
+            if (this.mode == "2d") {
                 this.mode = "3d";
-            }else {
+            } else {
                 this.mode = "2d";
             }
             return this.mode;
         };
+
+        /**************************************************************************************************************/
 
         return PlanetContext;
 

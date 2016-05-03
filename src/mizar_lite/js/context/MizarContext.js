@@ -71,6 +71,10 @@ define(["jquery", "underscore-min", "../gui/ErrorDialog", "../gui/AboutDialog", 
 
         /**************************************************************************************************************/
 
+        /**
+         * Initialization of canvas element
+         * @param canvas
+         */
         MizarContext.prototype.initCanvas = function (canvas) {
             // Set canvas dimensions from width/height attributes
             var width = $(this.parentElement).attr("width");
@@ -250,6 +254,14 @@ define(["jquery", "underscore-min", "../gui/ErrorDialog", "../gui/AboutDialog", 
 
         /**************************************************************************************************************/
 
+        /**
+         * Overload in PlanetContext and SkyContext
+         */
+        MizarContext.prototype.getAdditionalLayers = function () {
+            return [];
+        };
+
+        /**************************************************************************************************************/
 
         return MizarContext;
 

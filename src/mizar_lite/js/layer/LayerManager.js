@@ -21,7 +21,7 @@
 /**
  * LayerManager module
  */
-define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "./MocLayer", "./PlanetLayer", "./HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "../provider/JsonProcessor", "gw/Layer/AtmosphereLayer", "string"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer", "gw/Layer/HEALPixFITSLayer", "../gui/PickingManagerLite", "../Utils", "gw/Parser/JsonProcessor", "gw/Layer/AtmosphereLayer", "string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
               MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManagerLite, Utils, JsonProcessor, AtmosphereLayer, String) {
 
@@ -296,6 +296,12 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             });
         }
 
+        /**
+         * Get service url from HIPS Layer
+         *
+         * @param hipsLayer
+         * @returns {Array}
+         */
         function getHipsServiceUrlArray(hipsLayer){
             var hipsServiceUrlArray = [];
 
@@ -311,6 +317,12 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             return hipsServiceUrlArray;
         }
 
+        /**
+         * Add HIPS Layer to Mizar
+         *
+         * @param hipsLayer
+         * @param hipsServiceUrl
+         */
         function addHIPSLayer(hipsLayer, hipsServiceUrl) {
             var imageFormat;
             if(hipsLayer.hips_tile_format) {
@@ -381,6 +393,8 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 configuration = conf;
                 // Store the sky in the global module variable
                 sky = this.mizar.sky;
+
+                PickingManagerLite.init(mizarCore);
 
                 // TODO : Call init layers
                 //initLayers(configuration.layers);

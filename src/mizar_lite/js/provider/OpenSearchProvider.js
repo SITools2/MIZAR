@@ -23,7 +23,7 @@
  *
  *    Module providing JSON file in GeoJSON format from OpenSearch response
  */
-define(["../jquery", "../layer/LayerManager", "./JsonProcessor"], function ($, LayerManager, JsonProcessor) {
+define(["../jquery", "../layer/LayerManager", "gw/Parser/JsonProcessor"], function ($, LayerManager, JsonProcessor) {
 
     /**
      *    Load JSON file, transform it in GeoJSON format and add to the layer

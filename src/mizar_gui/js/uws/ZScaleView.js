@@ -22,7 +22,7 @@
  * UWS ZScale View
  * TODO unify all UWS services
  */
-define(["../jquery", "UWSManager", "AnimatedButton"],
+define(["../jquery", "uws/UWSManager", "./AnimatedButton"],
     function ($, ZScale, AnimatedButton) {
 
         var runButton;
@@ -39,6 +39,10 @@ define(["../jquery", "UWSManager", "AnimatedButton"],
 
         /**************************************************************************************************************/
 
+        /**
+         * Find and return URL from selected data
+         * @returns url
+         */
         function findUrl() {
             var url = null;
             var selectedData = pickingManager.getSelectedData();
@@ -55,6 +59,9 @@ define(["../jquery", "UWSManager", "AnimatedButton"],
 
         /**************************************************************************************************************/
 
+        /**
+         * Execute ZScale
+         */
         function runJob() {
             var url = findUrl();
             if (url) {
@@ -106,6 +113,4 @@ define(["../jquery", "UWSManager", "AnimatedButton"],
 
             /**************************************************************************************************************/
         };
-
-
     });

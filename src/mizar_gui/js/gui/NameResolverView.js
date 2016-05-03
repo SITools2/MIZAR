@@ -21,8 +21,8 @@
 /**
  * Name resolver module : search object name and zoom to them
  */
-define(["jquery", "Utils", "service/NameResolver", "underscore-min", "text!templates/nameResolverResult.html", "layer/LayerManager", "layer/PlanetLayer", "jquery.ui", "jquery.once"],
-    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager, PlanetLayer) {
+define(["jquery", "Utils", "service/NameResolver", "underscore-min", "text!templates/nameResolverResult.html", "layer/LayerManager", "jquery.ui", "jquery.once"],
+    function ($, Utils, NameResolver, _, nameResolverResultHTMLTemplate, LayerManager) {
 
 
         var nameResolverHTML = '<form id="searchForm">\
@@ -314,7 +314,7 @@ define(["jquery", "Utils", "service/NameResolver", "underscore-min", "text!templ
                 $('#backgroundLayersSelect').val(layer.name).iconselectmenu("refresh");
                 //BackgroundLayersView.selectLayer(layer);
             }
-            else if(layer instanceof PlanetLayer) {
+            else if(Utils.isPlanetLayer(layer)) {
                 // Temporary use visiblity button to change mizar context to "planet"
                 // TODO: change button,
                 mizar.toggleMode(layer);

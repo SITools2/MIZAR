@@ -88,77 +88,13 @@ define(["jquery", "gw/Utils/Numeric", "uws/UWSManager", "../service/Samp", "gui_
                 });
 
                 $('#HEALPixCutBtn').button().click(function (event) {
-                    // Find RA/Dec of each corner of viewport
-                    var coords = [[0, 0], [globe.renderContext.canvas.width, 0], [globe.renderContext.canvas.width, globe.renderContext.canvas.height], [0, globe.renderContext.canvas.height]];
-                    for (var i = 0; i < coords.length; i++) {
-                        var geo = globe.getLonLatFromPixel(coords[i][0], coords[i][1]);
-                        // Convert to RA/Dec
-                        if (geo[0] < 0) {
-                            geo[0] += 360;
-                        }
-                        coords[i] = geo;
-                    }
 
-                    // Find angle between eye and north
-                    var geoEye = [];
-                    globe.coordinateSystem.from3DToGeo(navigation.center3d, geoEye);
+                    var astro = Utils.getAstroCoordinatesFromCursorLocation(globe, navigation);
 
-                    var LHV = [];
-                    globe.coordinateSystem.getLHVTransform(geoEye, LHV);
-
-                    var astro = Utils.formatCoordinates([geoEye[0], geoEye[1]]);
-
-                    var north = [LHV[4], LHV[5], LHV[6]];
-                    var cosNorth = vec3.dot(navigation.up, north);
-                    var radNorth = Math.acos(cosNorth);
-                    if (isNaN(radNorth)) {
-                        console.error("North is NaN'ed...");
-                        return;
-                    }
-                    var degNorth = radNorth * 180 / Math.PI;
-
-                    // Depending on z component of east vector find if angle is positive or negative
-                    if (globe.renderContext.viewMatrix[8] < 0) {
-                        degNorth *= -1;
-                    }
-
-                    var cdelt1 = parseFloat($('#cdelt1').val());
-                    var cdelt2 = parseFloat($('#cdelt2').val());
-
-                    // Get choosen layer
-                    var healpixLayer = globe.baseImagery;
-
-                    if (!context.fileName) {
-                        ErrorDialog.open("FITS fileName isn't defined for HealpixCut service<br/>");
-                    }
-
-                    if (isNaN(cdelt1) || isNaN(cdelt2)) {
-                        $('#HEALPixCut').find('input').each(function () {
-                            if (!$(this).val()) {
-                                $(this).addClass('inputError');
-                            }
-                        });
-                        return;
-                    }
-
-                    var parameters = {
-                        long1: coords[0][0],
-                        lat1: coords[0][1],
-                        long2: coords[1][0],
-                        lat2: coords[1][1],
-                        long3: coords[2][0],
-                        lat3: coords[2][1],
-                        long4: coords[3][0],
-                        lat4: coords[3][1],
-                        rotation: degNorth,
-                        coordSystem: "EQUATORIAL",
-                        cdelt1: cdelt1,
-                        cdelt2: cdelt2,
-                        filename: context.fileName,
-                        PHASE: "RUN"
-                    };
+                    var parameters = Utils.getHEALPixCutCoordinates(event, globe, navigation);
 
                     $('#HEALPixCut').find('.status').html('Healpix cut is in progress, be patient, it may take some time.').fadeIn().css('display: inline-block');
+
                     UWSManager.post('healpixcut', parameters, {
                         successCallback: function (response, jobId) {
                             var name = 'Viewport ( ' + astro[0] + ' x ' + astro[1] + ' )';
