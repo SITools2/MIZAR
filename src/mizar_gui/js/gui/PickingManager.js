@@ -21,8 +21,8 @@
 /**
  * PickingManager module
  */
-define(["jquery", "gui_core/PickingManagerLite", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
-    function ($, PickingManagerLite, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
+define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
+    function ($, _, PickingManagerLite, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
         var mizar;
         var context;
@@ -80,7 +80,7 @@ define(["jquery", "gui_core/PickingManagerLite", "./FeaturePopup", "./ImageManag
 
                 var newSelection = pickingManagerLite.computePickSelection(pickPoint);
 
-                if (newSelection.length > 0) {
+                if (!_.isEmpty(newSelection) && newSelection.length > 0) {
                     var navigation = context.navigation;
                     // Hide previous popup if any
                     FeaturePopup.hide(function () {

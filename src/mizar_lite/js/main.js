@@ -51,7 +51,7 @@ require.config({
 
         // Mizar_Gui requirements
         "mizar_gui" : "../../mizar_gui/js",
-        "uws_gui" : "../../mizar_gui/js/uws", // TODO what to do with this ?
+        "uws_gui" : "../../mizar_gui/js/uws",
 
         //"service_gui" : "service_gui",
 
@@ -116,7 +116,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         mizar.setAngleDistanceSkyGui(true);
         mizar.setSampGui(true);
         mizar.setShortenerUrlGui(true);
-        mizar.setMollweideMapGui(false);
+        mizar.setMollweideMapGui(true);
         mizar.setReverseNameResolverGui(true);
         mizar.setNameResolverGui(true);
         mizar.setCategoryGui(true);

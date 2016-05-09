@@ -165,7 +165,7 @@ define(["jquery", "underscore-min",
 
                         self.mizarWidgetGui = new MizarWidgetGui(div, {
                             isMobile: isMobile,
-                            mode: this.mode,
+                            mode: userOptions.mode,
                             mizarGlobal: self,
                             sky: self.mizarWidgetCore.sky,
                             navigation: self.mizarWidgetCore.navigation,
