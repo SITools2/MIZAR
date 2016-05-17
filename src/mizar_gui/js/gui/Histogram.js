@@ -21,139 +21,19 @@
 /**
  * Histogram module : create histogram to the given image
  */
-define([], function () {
+define(["gui_core/HistogramLite"], function (HistogramLite) {
 
-// Private variables
-    var nbBins;
+    // Private variables
+    //var nbBins;
 
-    var hist = [];
-    var hmax; // histogram max to scale in image space
+    //var hist = [];
+    //var hmax; // histogram max to scale in image space
 
-// Origin histogram point
-    var originX = 5.;
-    var originY;
-    var hwidth;
-    var paddingBottom = 15.;
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Get mouse position on canvas
-     */
-    function _getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
-    }
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Isoscele triangle object for thresholds manipulation
-     *
-     *    @param a Pointer of threshold pointing on histogram
-     *    @param b Isoscele point 1
-     *    @param c Isoscele point 2
-     */
-    var Triangle = function (a, b, c) {
-        this.initA = a.slice(0);
-        this.initB = b.slice(0);
-        this.initC = c.slice(0);
-
-        this.a = a; // Pointer to histogram
-        this.b = b; // Isoscele point 1
-        this.c = c; // Isoscele point 2
-
-        this.dragging = false;
-        this.hover = false;
-        this.halfWidth = Math.abs((c[0] - b[0]) / 2);
-    };
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Reset to initial position
-     */
-    Triangle.prototype.reset = function () {
-        this.a = this.initA.slice(0);
-        this.b = this.initB.slice(0);
-        this.c = this.initC.slice(0);
-    };
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Test if triangle contains the given point
-     */
-    Triangle.prototype.contains = function (p) {
-        return _pointInTriangle(p, this.a, this.b, this.c);
-    };
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Draw the triangle
-     */
-    Triangle.prototype.draw = function (ctx) {
-        if (this.dragging) {
-            ctx.fillStyle = "#FF0";
-        }
-        else {
-            ctx.fillStyle = "#F00";
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(this.a[0], this.a[1]);
-        ctx.lineTo(this.b[0], this.b[1]);
-        ctx.lineTo(this.c[0], this.c[1]);
-        ctx.closePath();
-        ctx.fill();
-
-        if (!this.dragging && this.hover) {
-            ctx.strokeStyle = "#FF0";
-            ctx.stroke();
-        }
-    };
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Modify triangle's position by the given "pointer" point
-     *    (could be modified only by X-axis)
-     */
-    Triangle.prototype.modifyPosition = function (point) {
-        this.a[0] = point[0];
-        this.b[0] = point[0] - this.halfWidth;
-        this.c[0] = point[0] + this.halfWidth;
-    };
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Test returning true if p1 and p2 are both lying on the same side of a-b, false otherwise
-     */
-    function _sameSide(p1, p2, a, b) {
-        var temp1 = [];
-        var temp2 = [];
-        var temp3 = [];
-        var cp1 = [];
-        var cp2 = [];
-        vec3.cross(vec3.subtract(b, a, temp1), vec3.subtract(p1, a, temp2), cp1);
-        vec3.cross(temp1, vec3.subtract(p2, a, temp3), cp2);
-        return vec3.dot(cp1, cp2) >= 0;
-    }
-
-    /**************************************************************************************************************/
-
-    /**
-     *    Private function to check if point is inside the given triangle
-     *    If the point was on the same side of a-b as c and is also on the same side of b-c as a and on the same side of c-a as b, then it is in the triangle
-     */
-    function _pointInTriangle(p, a, b, c) {
-        return (_sameSide(p, a, b, c) && _sameSide(p, b, a, c) && _sameSide(p, c, a, b));
-    }
+    // Origin histogram point
+    //var originX = 5.;
+    //var originY;
+    //var hwidth;
+    //var paddingBottom = 15.;
 
     /**************************************************************************************************************/
 
@@ -169,98 +49,46 @@ define([], function () {
      *        </ul>
      */
     var Histogram = function (options) {
-        nbBins = options.nbBins || 256;
+        //nbBins = options.nbBins || 256;
         this.image = options.image;
         this.onUpdate = options.onUpdate;
         this.accuracy = options.accuracy || 6;
+
+        HistogramLite.init(options);
 
         // Init canvas
         var canvas = document.getElementById(options.canvas);
         this.ctx = canvas.getContext('2d');
 
-        // Init origins
-        originY = canvas.height - paddingBottom;
-        hwidth = nbBins + originX > canvas.width ? canvas.width : nbBins + originX; // clamp to canvas.width
-        var triangleHalfWidth = 5;
-        this.minThreshold = new Triangle(
-            [originX, originY + 1, 0],
-            [originX - triangleHalfWidth, originY + paddingBottom - 1, 0],
-            [originX + triangleHalfWidth, originY + paddingBottom - 1, 0]
-        );
-        this.maxThreshold = new Triangle(
-            [hwidth, originY + 1, 0],
-            [hwidth - triangleHalfWidth, originY + paddingBottom - 1, 0],
-            [hwidth + triangleHalfWidth, originY + paddingBottom - 1, 0]
-        );
+        HistogramLite.initThresholds();
+
+        //// Init origins
+        //originY = canvas.height - paddingBottom;
+        //hwidth = nbBins + originX > canvas.width ? canvas.width : nbBins + originX; // clamp to canvas.width
+        //var triangleHalfWidth = 5;
+        //
+        //this.minThreshold = new Triangle(
+        //    [originX, originY + 1, 0],
+        //    [originX - triangleHalfWidth, originY + paddingBottom - 1, 0],
+        //    [originX + triangleHalfWidth, originY + paddingBottom - 1, 0]
+        //);
+        //
+        //this.maxThreshold = new Triangle(
+        //    [hwidth, originY + 1, 0],
+        //    [hwidth - triangleHalfWidth, originY + paddingBottom - 1, 0],
+        //    [hwidth + triangleHalfWidth, originY + paddingBottom - 1, 0]
+        //);
 
 
         // Show bin pointed by mouse
         var self = this;
-        canvas.addEventListener('mousemove', function (evt) {
-            var mousePos = _getMousePos(canvas, evt);
-
-            self.ctx.clearRect(0., originY, canvas.width, paddingBottom);
-
-            self.minThreshold.hover = self.minThreshold.contains([mousePos.x, mousePos.y, 0]);
-
-            self.maxThreshold.hover = self.maxThreshold.contains([mousePos.x, mousePos.y, 0]);
-
-            // Draw threshold controls
-            if (self.minThreshold.dragging && mousePos.x >= self.minThreshold.initA[0] && mousePos.x < self.maxThreshold.a[0]) {
-                self.minThreshold.modifyPosition([mousePos.x, self.minThreshold.a[1]]);
-            }
-
-            if (self.maxThreshold.dragging && mousePos.x <= self.maxThreshold.initA[0] && mousePos.x > self.minThreshold.a[0]) {
-                self.maxThreshold.modifyPosition([mousePos.x, self.maxThreshold.a[1]]);
-            }
-            self.drawThresholdControls();
-
-            // Don't draw histogram values if the mouse is out of histogram canvas
-            if (mousePos.y > canvas.height || mousePos.y < 0. || mousePos.x > originX + nbBins || mousePos.x < originX) {
-                return;
-            }
-
-            // Draw the text indicating the histogram value on mouse position
-            self.ctx.font = '8pt Calibri';
-            self.ctx.fillStyle = 'yellow';
-            var thresholdValue = self.getHistValue([mousePos.x, mousePos.y]);
-            self.ctx.fillText(thresholdValue, canvas.width / 2 - 15., originY + paddingBottom);
-            // Draw a tiny line indicating the mouse position on X-axis
-            self.ctx.fillRect(mousePos.x, originY, 1, 2);
-        });
+        canvas.addEventListener('mousemove', HistogramLite._handleMouseMove);
 
         // Handle threshold controller selection
-        canvas.addEventListener('mousedown', function (evt) {
-            var mousePos = _getMousePos(canvas, evt);
-
-            if (self.minThreshold.contains([mousePos.x, mousePos.y, 0])) {
-                self.minThreshold.dragging = true;
-                self.minThreshold.draw(self.ctx);
-            }
-
-            if (self.maxThreshold.contains([mousePos.x, mousePos.y, 0])) {
-                self.maxThreshold.dragging = true;
-                self.maxThreshold.draw(self.ctx);
-            }
-        });
+        canvas.addEventListener('mousedown', HistogramLite._handleMouseDown);
 
         // Update histogram on mouseup
-        canvas.addEventListener('mouseup', function (evt) {
-            self.minThreshold.dragging = false;
-            self.maxThreshold.dragging = false;
-
-            if (self.onUpdate) {
-                var min = self.getHistValue(self.minThreshold.a);
-                var max = self.getHistValue(self.maxThreshold.a);
-
-                self.minThreshold.reset();
-                self.maxThreshold.reset();
-
-                self.onUpdate(min, max);
-            }
-
-
-        });
+        canvas.addEventListener('mouseup', HistogramLite._handleMouseUp);
     };
 
     /**************************************************************************************************************/
@@ -268,113 +96,42 @@ define([], function () {
     /**
      *    Get histogram value from the given X-position on canvas
      */
-    Histogram.prototype.getHistValue = function (position) {
-        return Math.floor((((position[0] - originX) / 256.) * (this.image.tmax - this.image.tmin) + this.image.tmin) * Math.pow(10, this.accuracy)) / Math.pow(10, this.accuracy);
-    };
+    Histogram.prototype.getHistValue = HistogramLite.getHistValue;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw threshold controls(two triangles which represents min/max of current histogram)
      */
-    Histogram.prototype.drawThresholdControls = function () {
-        this.minThreshold.draw(this.ctx);
-        this.maxThreshold.draw(this.ctx);
-    };
+    Histogram.prototype.drawThresholdControls = HistogramLite.drawThresholdControls;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw histogram
      */
-    Histogram.prototype.drawHistogram = function () {
-        this.ctx.fillStyle = "blue";
-        for (var i = 0; i < hist.length; i++) {
-            // Scale to y-axis height
-            var rectHeight = (hist[i] / hmax) * originY;
-            this.ctx.fillRect(originX + i, originY, 1, -rectHeight);
-        }
-    };
+    Histogram.prototype.drawHistogram = HistogramLite.drawHistogram;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw histogram axis
      */
-    Histogram.prototype.drawAxes = function () {
-
-        var leftY, rightX;
-        leftY = 0;
-        rightX = originX + hwidth;
-        // Draw y axis.
-        this.ctx.beginPath();
-        this.ctx.moveTo(originX, leftY);
-        this.ctx.lineTo(originX, originY);
-
-        // Draw x axis.
-        this.ctx.moveTo(originX, originY);
-        this.ctx.lineTo(rightX, originY);
-
-        // Define style and stroke lines.
-        this.ctx.closePath();
-        this.ctx.strokeStyle = "#fff";
-        this.ctx.stroke();
-    };
+    Histogram.prototype.drawAxes = HistogramLite.drawAxes;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw transfer function(linear, log, asin, sqrt, sqr)
      */
-    Histogram.prototype.drawTransferFunction = function () {
-        // Draw transfer functions
-        // "Grey" colormap for now(luminance curve only)
-        this.ctx.fillStyle = "red";
-        for (var i = 0; i < nbBins; i++) {
-            var value = i;
-            var posX = originX + value;
-
-            var scaledValue;
-            switch (this.image.transferFn) {
-                case "linear":
-                    scaledValue = (value / nbBins) * originY;
-                    break;
-                case "log":
-                    scaledValue = Math.log(value / 10. + 1) / Math.log(nbBins / 10. + 1) * originY;
-                    break;
-                case "sqrt":
-                    scaledValue = Math.sqrt(value / 10.) / Math.sqrt(nbBins / 10.) * originY;
-                    break;
-                case "sqr":
-                    scaledValue = Math.pow(value, 2) / Math.pow(nbBins, 2) * originY;
-                    break;
-                case "asin":
-                    scaledValue = Math.log(value + Math.sqrt(Math.pow(value, 2) + 1.)) / Math.log(nbBins + Math.sqrt(Math.pow(nbBins, 2) + 1.)) * originY;
-                    break;
-                default:
-                    break;
-            }
-
-            if (!this.image.inverse) {
-                scaledValue = originY - scaledValue
-            }
-
-            this.ctx.fillRect(posX, scaledValue, 1, 1);
-        }
-    };
+    Histogram.prototype.drawTransferFunction = HistogramLite.drawTransferFunction;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw the histogram in canvas
      */
-    Histogram.prototype.draw = function () {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.drawHistogram();
-        this.drawTransferFunction();
-        this.drawAxes();
-        this.drawThresholdControls();
-    };
+    Histogram.prototype.draw = HistogramLite.draw;
 
     /**************************************************************************************************************/
 
@@ -382,53 +139,14 @@ define([], function () {
      *    TODO : create different module
      *    Compute histogram values
      */
-    Histogram.prototype.compute = function () {
-        var image = this.image;
-        // Initialize histogram
-        hist = new Array(nbBins);
-        for (var i = 0; i < hist.length; i++) {
-            hist[i] = 0;
-        }
-
-        // Compute histogram
-        hmax = Number.MIN_VALUE;
-        for (var i = 0; i < image.pixels.length; i++) {
-            var val = image.pixels[i];
-
-            // Skip NaN
-            if (isNaN(val))
-                continue;
-            // Take only values which belongs to the interval [tmin,tmax]
-            if (val < image.tmin)
-                continue;
-            if (val >= image.tmax)
-                continue;
-
-            // Scale to [0,255]
-            var bin = Math.floor(nbBins * (val - image.tmin) / (image.tmax - image.tmin));
-            hist[bin]++;
-
-            // Compute histogram max value
-            if (hist[bin] > hmax) {
-                hmax = hist[bin];
-            }
-        }
-
-        // Logarithmic scale for better layout
-        for (var i = 0; i < hist.length; i++) {
-            hist[i] = Math.log(1 + hist[i]);
-        }
-        hmax = Math.log(1 + hmax);
-    };
+    Histogram.prototype.compute = HistogramLite.compute;
 
     /**************************************************************************************************************/
 
     /**
      *    Set image
      */
-    Histogram.prototype.setImage = function (image) {
-        this.image = image;
-    };
+    Histogram.prototype.setImage = HistogramLite.setImage;
 
     /**************************************************************************************************************/
 

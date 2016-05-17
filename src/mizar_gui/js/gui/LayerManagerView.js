@@ -30,7 +30,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog"
         var mizar;
         var configuration;
 
-// GeoJSON data providers
+        // GeoJSON data providers
         var votable2geojsonBaseUrl;
         var parentElement;
         var $el;
@@ -50,7 +50,12 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog"
             evt.preventDefault();
 
             var files = evt.dataTransfer.files; // FileList object.
+
             // Files is a FileList of File objects.
+            loadLayersFromFITSFile(files);
+        }
+
+        function loadLayersFromFITSFile(files) {
             $.each(files, function (index, f) {
 
                 var name = f.name;
@@ -100,13 +105,10 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog"
                                 $('#loading').hide();
                                 return false;
                             }
-
                         }
-
                     };
                     reader.readAsText(f);
                 }
-
             });
         }
 

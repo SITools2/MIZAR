@@ -21,32 +21,13 @@
 /**
  *    ImageProcessing module
  */
-define(["jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView", "gw/Renderer/FeatureStyle", "jquery.ui"],
-    function ($, SelectionTool, CutOutViewFactory, DynamicImageView, FeatureStyle) {
+define(["jquery", "gui_core/ImageProcessingLite", "./CutOutViewFactory", "./DynamicImageView", "jquery.ui"],
+    function ($, ImageProcessingLite, CutOutViewFactory, DynamicImageView) {
 
         /**************************************************************************************************************/
 
-        var feature;
-        var layer;
-        var disable;
         var unselect;
-        var $dialog;
-        var histogramElement;
         var cutOutElement;
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Toggle visibility of dialog
-         */
-        function toggle() {
-            if ($dialog.dialog("isOpen")) {
-                $dialog.dialog("close");
-            }
-            else {
-                $dialog.dialog("open");
-            }
-        }
 
         /**************************************************************************************************************/
 
@@ -54,100 +35,26 @@ define(["jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView"
          *    Remove view
          */
         function remove() {
-            if (unselect) {
-                unselect();
-            }
-
-            if (disable) {
-                disable();
-            }
-
-            if (histogramElement)
-                histogramElement.remove();
-
             CutOutViewFactory.removeView(cutOutElement);
-            $dialog.remove();
         }
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Set data to process
-         *
-         *    @param selectedData Object containing feature and layer extracted by <PickingManager>
-         */
-        function setData(selectedData) {
-            if (feature && feature.properties.identifier == selectedData.feature.properties.identifier) {
-                this.toggle();
-            }
-            else {
-                if (!$dialog.dialog("isOpen")) {
-                    this.toggle();
-                }
-            }
-
-            feature = selectedData.feature;
-            layer = selectedData.layer;
-
-            if (selectedData.feature.services) {
-                cutOutElement.setUrl(selectedData.feature.services.download.url);
-            }
-            else {
-                // TODO : disable cutOutElement if feature's url isn't defined
-            }
-
-            var image = selectedData.feature.properties.style.uniformValues;
-            if (!image) {
-                $dialog.find('.histogramContent').children('div').fadeOut(function () {
-                    $(this).siblings('p').fadeIn();
-                });
-            }
-            else {
-                this.setImage(image);
-            }
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         * Set image on the Histogram element
-         *
-         * @param image
-         */
-        function setImage(image) {
-            histogramElement.setImage(image);
-            if (image.url) {
-                cutOutElement.setUrl(image.url);
-            }
-
-            $dialog.find('.histogramContent').children('p').fadeOut(function () {
-                $(this).siblings('div').fadeIn();
-            });
-        };
 
         /**************************************************************************************************************/
 
         return {
 
             /**
-             *    Init
+             *    Init ImageProcessing
              *
              *    @param options
              *        <ul>
-             *            <li>feature: The feature to process
-             *            <li>layer: The layer to which the feature belongs to
-             *            <li>disable: Disable callback</li>
              *            <li>unselect: Unselect callback</li>
              *        </ul>
              */
             init: function (options) {
                 if (options) {
                     //this.id = options.id;
-                    feature = options.feature || null;
-                    layer = options.layer || null;
 
                     // Callbacks
-                    disable = options.disable || null;
                     unselect = options.unselect || null;
                 }
 
@@ -164,7 +71,7 @@ define(["jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView"
                         </div>\
                     </div>';
 
-                $dialog = $(dialog).appendTo('body').dialog({
+                var $dialog = $(dialog).appendTo('body').dialog({
                     title: 'Image processing',
                     autoOpen: false,
                     show: {
@@ -193,51 +100,15 @@ define(["jquery", "./SelectionTool", "./CutOutViewFactory", "./DynamicImageView"
                     heightStyle: "content"
                 }).end();
 
-                histogramElement = new DynamicImageView("histogramView", {
+                var histogramElement = new DynamicImageView("histogramView", {
                     id: "featureImageProcessing",
-                    changeShaderCallback: function (contrast) {
-                        if (contrast == "raw") {
-                            var targetStyle = new FeatureStyle(feature.properties.style);
-                            targetStyle.fillShader = {
-                                fragmentCode: null,
-                                updateUniforms: null
-                            };
-                            layer.modifyFeatureStyle(feature, targetStyle);
-                        }
-                        else {
-                            var targetStyle = new FeatureStyle(feature.properties.style);
-                            targetStyle.fillShader = {
-                                fragmentCode: this.image.fragmentCode,
-                                updateUniforms: this.image.updateUniforms
-                            };
-                            layer.modifyFeatureStyle(feature, targetStyle);
-                        }
-                    }
+                    changeShaderCallback: ImageProcessingLite.changeShaderCallback
                 });
                 cutOutElement = CutOutViewFactory.addView("cutOutView");
 
-                options.mizar.subscribe("image:set", setImage);
+                ImageProcessingLite.init(options, $dialog, histogramElement, cutOutElement);
 
-            },
-
-            setData: setData,
-            setImage: setImage,
-            toggle: toggle,
-            isOpened: function () {
-                return $dialog.dialog("isOpen");
-            },
-            removeData: function (data) {
-                if (feature && data.feature.properties.identifier == feature.properties.identifier) {
-                    if (this.isOpened()) {
-                        this.toggle();
-                    }
-                    $dialog.find('.histogramContent').children('div').fadeOut(function () {
-                        $(this).siblings('p').fadeIn();
-                    });
-                    feature = null;
-                    layer = null;
-                }
+                options.mizar.subscribe("image:set", ImageProcessingLite.setImage);
             }
         };
-
     });

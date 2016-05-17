@@ -100,14 +100,13 @@ define(["jquery", "underscore-min",
             // TODO : Extend GlobWeb base layer to be able to publish events by itself
             // to avoid the following useless call
             var self = this;
-            mizarGui = this;
             skyContext.globe.subscribe("features:added", function (featureData) {
                 self.publish("features:added", featureData);
             });
 
-            //self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
-            //    self.addFitsEvent(layerDesc, planetLayer);
-            //});
+            self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
+                self.addFitsEvent(layerDesc, planetLayer);
+            });
 
             // TODO : Extend GlobWeb base layer to be able to publish events by itself
             // to avoid the following useless call
@@ -205,34 +204,6 @@ define(["jquery", "underscore-min",
                     }
                 };
             }
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Return current fov
-         */
-        MizarWidgetGui.prototype.getCurrentFov = function () {
-            return this.navigation.getFov();
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Set zoom(in other words fov)
-         */
-        MizarWidgetGui.prototype.setZoom = function (fovInDegrees, callback) {
-            var geoPos = this.sky.coordinateSystem.from3DToGeo(this.navigation.center3d);
-            this.navigation.zoomTo(geoPos, fovInDegrees, 1000, callback);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Set the credits popup
-         */
-        MizarWidgetGui.prototype.setShowCredits = function (visible) {
-            skyContext.showCredits(visible);
         };
 
         /**************************************************************************************************************/
@@ -468,52 +439,6 @@ define(["jquery", "underscore-min",
             // Publish modified event to update compass north
             this.navigation.publish('modified');
         };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Get layer with the given name
-         */
-        MizarWidgetGui.prototype.getLayer = function (layerName) {
-            var layers = mizarCore.getLayers();
-            return _.findWhere(layers, {name: layerName});
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Highlight the given feature
-         *
-         *    @param featureData
-         *        Feature data is an object composed by feature and its layer
-         *    @param options
-         *        Focus feature options(isExclusive and color)
-         *
-         *    // TODO : maybe it's more intelligent to store layer reference on feature ?
-         */
-        MizarWidgetGui.prototype.highlightObservation = function (featureData, options) {
-            PickingManager.focusFeature(featureData, options);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Add fits image to the given feature data
-         */
-        MizarWidgetGui.prototype.requestFits = function (featureData) {
-            featureData.isFits = true; // TODO: Refactor it
-            ImageManager.addImage(featureData);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
-         *    Remove fits image to the given feature data
-         */
-        MizarWidgetGui.prototype.removeFits = function (featureData) {
-            ImageManager.removeImage(featureData);
-        };
-
 
         /**************************************************************************************************************/
 

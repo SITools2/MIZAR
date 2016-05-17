@@ -297,9 +297,9 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**
          * Calculate intermediaries elevation points to increase drawing precision
          *
-         * @param firstPoint
-         * @param secondPoint
-         * @returns {Array} intermediatePoints
+         * @param {Array} firstPoint
+         * @param {Array} secondPoint
+         * @return {Array} intermediatePoints
          */
         function calculateIntermediateElevationPoint(firstPoint, secondPoint) {
             var scale = 50;
@@ -319,12 +319,13 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         };
 
         /**
+         * Calculate distance elevation from a point
          *
          * url calcul distance : http://www.movable-type.co.uk/scripts/latlong.html
          *
-         * @param firstPoint
-         * @param secondPoint
-         * @returns {number}
+         * @param {Array} firstPoint
+         * @param {Array} secondPoint
+         * @returns {number} distance elevation in meters
          */
         function calculateDistanceElevation(firstPoint, secondPoint) {
             var R = 3390000; // metres TODO Utiliser le système de ref de JC

@@ -368,6 +368,23 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
 
         /**************************************************************************************************************/
 
+        /**
+         *    Highlight the given feature
+         *
+         *    @param featureData
+         *        Feature data is an object composed by feature and its layer
+         *    @param options
+         *        Focus feature options(isExclusive and color)
+         *
+         *    // TODO : maybe it's more intelligent to store layer reference on feature ?
+         */
+        function highlightObservation(featureData, options) {
+            selection.push(featureData);
+            focusFeatureByIndex(selection - 1, options);
+        };
+
+        /**************************************************************************************************************/
+
         return {
             selectedStyle: selectedStyle,
             stackSelectionIndex: stackSelectionIndex,
@@ -378,7 +395,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             addPickableLayer: addPickableLayer,
             removePickableLayer: removePickableLayer,
             getPickableLayers: getPickableLayers,
-            blurSelectedFeature : blurSelectedFeature,
+            blurSelectedFeature: blurSelectedFeature,
             focusFeatureByIndex: focusFeatureByIndex,
             getSelection: getSelection,
             blurSelection: blurSelection,
@@ -387,6 +404,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             fixDateLine: fixDateLine,
             featureIsPicked: featureIsPicked,
             computePickSelection: computePickSelection,
-            setSelection: setSelection
+            setSelection: setSelection,
+            highlightObservation: highlightObservation
         };
     });

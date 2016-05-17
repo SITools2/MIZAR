@@ -27,21 +27,152 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
 
 
         /**
+         *    @constructor
+         *    @param options Configuration options
+         *        <ul>
+         *            <li>globe: Globe</li>
+         *            <li>navigation: Navigation</li>
+         *            <li>onselect: On selection callback</li>
+         *            <li>style: Selection tool style</li>
+         *        </ul>
+         */
+        var SelectionToolLite = function (options) {
+            // Required options
+            var globe = options.globe;
+            var navigation = options.navigation;
+            var onselect = options.onselect;
+
+            this.activated = options.activated || false;
+            this.renderContext = globe.renderContext;
+            this.coordinateSystem = globe.coordinateSystem;
+
+            // Set style
+            var style;
+            if (options && options['style']) {
+                style = options['style'];
+            }
+            else {
+                style = new FeatureStyle();
+            }
+            style.zIndex = 2;
+
+            // Layer containing selection feature
+            this.selectionLayer = new VectorLayer({
+                style: style
+            });
+            globe.addLayer(this.selectionLayer);
+
+            this.selectionFeature = null;
+
+            // Selection attributes
+            this.radius;	// Window radius
+            this.pickPoint; // Window pick point
+            this.geoRadius; // Radius in geographic reference
+            this.geoPickPoint; // Pick point in geographic reference
+
+            var self = this;
+            var dragging = false;
+            var state;
+
+            this.renderContext.canvas.addEventListener("mousedown", function (event) {
+
+                var pickPoint = [event.layerX, event.layerY];
+                var geoPickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
+
+                if (!self.activated && !self.selectionFeature) {
+                    return;
+                }
+
+                // Dragging : moving/resizing OR drawing selection
+                if (self.activated) {
+                    // Draw
+                    navigation.stop();
+                    dragging = true;
+                    self.pickPoint = pickPoint;
+                    self.geoPickPoint = geoPickPoint;
+                    self.radius = 0.;
+                    state = "resize";
+                }
+                else {
+                    var pickIsInside = Utils.pointInRing(geoPickPoint, self.selectionFeature.geometry.coordinates[0]);
+                    if (!pickIsInside) {
+                        return;
+                    }
+                    navigation.stop();
+                    dragging = true;
+                    // Resize/move
+                    var inside = false;
+                    // Check if user clicked on one of control points
+                    for (var i = 0; i < self.selectionFeature.geometry.coordinates[0].length; i++) {
+                        var controlPoint = self.selectionFeature.geometry.coordinates[0][i];
+                        inside |= Utils.pointInSphere(geoPickPoint, controlPoint, 20);
+                    }
+
+                    if (inside) {
+                        state = "resize";
+                    }
+                    else {
+                        state = "move";
+                    }
+                }
+            });
+
+            this.renderContext.canvas.addEventListener("mousemove", function (event) {
+                if (!dragging)
+                    return;
+
+                var geoPickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
+                if (state === "resize") {
+                    // Update radius
+                    self.radius = Math.sqrt(Math.pow(event.layerX - self.pickPoint[0], 2) + Math.pow(event.layerY - self.pickPoint[1], 2));
+                    self.computeGeoRadius(geoPickPoint);
+                }
+                else if (state === "move") {
+                    // Update pick point position
+                    self.pickPoint = [event.layerX, event.layerY];
+                    self.geoPickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
+
+                    // TODO: scale radius of selection shape if fov has been changed(or not?)
+                }
+                self.updateSelection();
+            });
+
+            this.renderContext.canvas.addEventListener("mouseup", function (event) {
+                if (!dragging)
+                    return;
+
+                // Compute geo radius
+                var stopPickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
+
+                var coordinates = self.computeSelection();
+                if (self.activated && onselect) {
+                    onselect(coordinates);
+                }
+
+                // Reactivate standard navigation events
+                navigation.start();
+                dragging = false;
+            });
+        };
+
+        /**********************************************************************************************/
+
+        /**
          *    Compute selection tool radius between pickPoint and the given point
          */
-        function computeGeoRadius(pt) {
+        SelectionToolLite.prototype.computeGeoRadius = function (pt) {
             // Find angle between start and stop vectors which is in fact the radius
             var dotProduct = vec3.dot(vec3.normalize(this.coordinateSystem.fromGeoTo3D(pt)), vec3.normalize(this.coordinateSystem.fromGeoTo3D(this.geoPickPoint)));
             var theta = Math.acos(dotProduct);
             this.geoRadius = Numeric.toDegree(theta);
-        }
+        };
 
         /**********************************************************************************************/
 
         /**
          *    Compute selection for the given pick point depending on radius
          */
-        function computeSelection() {
+        SelectionToolLite.prototype.computeSelection = function () {
             var rc = this.renderContext;
             var tmpMat = mat4.create();
 
@@ -78,14 +209,14 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
             }
 
             return points;
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
          *    Update selection coordinates
          */
-        function updateSelection() {
+        SelectionToolLite.prototype.updateSelection = function () {
             if (this.selectionFeature)
                 this.selectionLayer.removeFeature(this.selectionFeature);
 
@@ -103,14 +234,30 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
             };
 
             this.selectionLayer.addFeature(this.selectionFeature);
-        }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         *    Activate/desactivate the tool
+         */
+        SelectionToolLite.prototype.toggle = function () {
+            this.activated = !this.activated;
+            if (this.activated) {
+                // TODO : Find more sexy image for cursor
+                $(this.renderContext.canvas).css('cursor', 'url(css/images/selectionCursor.png)');
+            }
+            else {
+                $(this.renderContext.canvas).css('cursor', 'default');
+            }
+        };
 
         /**************************************************************************************************************/
 
         /**
          *    Clear selection
          */
-        function clear() {
+        SelectionToolLite.prototype.clear = function () {
             if (this.selectionFeature)
                 this.selectionLayer.removeFeature(this.selectionFeature);
 
@@ -122,15 +269,6 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
 
         /**************************************************************************************************************/
 
-        return {
-            init : function (options) {
-                this.renderContext = options.globe.renderContext;
-                this.coordinateSystem = options.globe.coordinateSystem;
-            },
-            computeGeoRadius :computeGeoRadius,
-            computeSelection : computeSelection,
-            updateSelection : updateSelection,
-            clear : clear
-        };
+        return SelectionToolLite;
 
     });

@@ -21,7 +21,7 @@
 /**
  * Image manager
  */
-define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/Layer/FitsLoader", "../Utils", "fits"],
+define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/Layer/FitsLoader", "Utils", "fits"],
     function ($, FeatureStyle, DynamicImage, FitsLoader, Utils) {
 
         var sky = null;
@@ -82,9 +82,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
                 image.url = feature.services.download.url;
             }
 
-            // Set image on image processing popup
-            //ImageProcessing.setImage(image);
-            this.mizar.publish("image:set", image); // Fire event catch by ImageProcessing
+            return image;
         }
 
         /**********************************************************************************************/
@@ -135,6 +133,80 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
                 sitoolsBaseUrl = configuration.sitoolsBaseUrl;
                 // Enable float texture extension to have higher luminance range
                 var ext = sky.renderContext.gl.getExtension("OES_texture_float");
+            },
+
+            /**********************************************************************************************/
+
+            /**
+             *    Hide image
+             */
+            hideImage: function (featureData) {
+                var style = new FeatureStyle(featureData.feature.properties.style);
+                style.fill = false;
+                featureData.layer.modifyFeatureStyle(featureData.feature, style);
+            },
+
+            /**********************************************************************************************/
+
+            /**
+             *    Show image
+             */
+            showImage: function (featureData) {
+                // Attach texture to style
+                var targetStyle = new FeatureStyle(featureData.feature.properties.style);
+                targetStyle.fill = true;
+                featureData.layer.modifyFeatureStyle(featureData.feature, targetStyle);
+            },
+
+            /**********************************************************************************************/
+
+            /**
+             *    Remove image from renderer
+             */
+            removeImage: function (featureData) {
+
+                // Publish event that the image of the given feature will be removed
+                this.mizar.publish("image:remove", featureData);
+                if (featureData.isFits) {
+                    removeFitsFromRenderer(featureData);
+                    $('#quicklookFits').removeClass('selected');
+                }
+                else {
+                    var style = featureData.feature.properties.style;
+                    style.fill = false;
+                    style.fillTextureUrl = null;
+                    featureData.layer.modifyFeatureStyle(featureData.feature, style);
+                    $('#quicklook').removeClass('selected');
+                }
+                sky.refresh();
+            },
+
+            /**********************************************************************************************/
+
+            /**
+             *    Start download of texture
+             */
+            addImage: function (featureData) {
+                var feature = featureData.feature;
+                // Set fill to true while loading
+                var style = new FeatureStyle(feature.properties.style);
+                style.fill = true;
+
+                // Publish event that the image for the given feature will be loaded
+                this.mizar.publish("image:add", featureData);
+
+                if (featureData.isFits) {
+                    var url = sitoolsBaseUrl + "/proxy?external_url=" + encodeURIComponent(feature.services.download.url);
+                    this.computeFits(featureData, url);
+                    $('#quicklookFits').addClass('selected');
+                }
+                else {
+                    style.fillTextureUrl = sitoolsBaseUrl + "/proxy?external_url=" + feature.properties.quicklook + "&rewrite_redirection=true";
+                    // For DEBUG : 'upload/ADP_WFI_30DOR_RGB_V1.0_degraded.jpg';
+                    $('#quicklook').addClass('selected');
+                }
+                featureData.layer.modifyFeatureStyle(feature, style);
+                sky.refresh();
             },
 
             computeFits: computeFits,

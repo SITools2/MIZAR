@@ -382,6 +382,20 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
                 };
             },
 
+            /**
+             * Get mouse position on canvas
+             * @param {HTMLElement} canvas
+             * @param {Event} evt
+             * @returns {{x: number, y: number}}
+             */
+            _getMousePos : function(canvas, evt) {
+                var rect = canvas.getBoundingClientRect();
+                return {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+            },
+
             // Functions used by Mizar_Gui to avoid direct dependencies to GlobWeb
 
             isHEALPixFITSLayer: function (obj) {

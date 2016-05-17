@@ -27,8 +27,9 @@ define(["jquery", "underscore-min", "service/SampLite", "Utils", "gw/Parser/Json
         var mizar;
         var sky;
         var navigation;
-//var additionalLayersView;
         var imageManager;
+        var layerManager;
+
 //var tables = {};
 //var highlightStyle = new FeatureStyle( {
 //	strokeColor: [1., 1., 1., 1.],

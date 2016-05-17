@@ -196,7 +196,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
                     // CutOutView factory ... TODO : move it/refactor it/do something with it...
                     CutOutViewFactory.init(sky, context.navigation, this);
                 }
-                FeaturePopup.init(this, ImageManager, sky, configuration);
+                FeaturePopup.init(mizar, this, ImageManager, sky, configuration);
             },
 
             /**************************************************************************************************************/

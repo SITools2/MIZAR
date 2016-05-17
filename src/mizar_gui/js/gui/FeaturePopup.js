@@ -21,16 +21,14 @@
 /**
  * FeaturePopup module
  */
-define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProcessing", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
-    function ($, IFrame, JsonProcessor, Utils, ImageProcessing, FeatureStyle, VectorLayer, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
+define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProcessing", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
+    function ($, FeaturePopupLite, IFrame, JsonProcessor, Utils, ImageProcessing, FeatureStyle, VectorLayer, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var featureListHTML = '';
         var pickingManager = null;
         var imageManager = null;
         var globe = null;
         var configuration;
-
-        var isMobile;
 
 // Create selected feature div
         /*jshint multistr: true */
@@ -62,173 +60,6 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
 
         /**********************************************************************************************/
 
-        /**
-         *    Selected feature div position calculations
-         *
-         *    @param clientX event.clientX
-         *    @param clientY event.clientY
-         */
-        function computeDivPosition(clientX, clientY) {
-
-            var mousex = clientX; //Get X coodrinates
-            var mousey = clientY; //Get Y coordinates
-
-            mousex += 20;
-            mousey -= 100;
-
-            // Positionning
-            $('#selectedFeatureDiv').css(
-                {
-                    position: 'absolute',
-                    left: mousex + 'px',
-                    top: mousey + 'px'
-                }
-            );
-        }
-
-        /**
-         *    Compute optimal height of current viewport
-         */
-        function computeHeight() {
-            return 2 * $('#' + globe.renderContext.canvas.id).height() / 5;
-        }
-
-        /**********************************************************************************************/
-
-        /**
-         *    Appropriate layout of properties depending on displayProperties
-         *
-         *    @param properties Feature properties to modify
-         *    @param {String[]} displayProperties Array containing properties which must be displayed at first
-         *
-         *    @return Properties matching displayProperties
-         */
-        function buildProperties(properties, displayProperties) {
-            if (displayProperties) {
-                var handledProperties = {};
-
-                handledProperties.identifier = properties.identifier;
-                handledProperties.title = properties.title ? properties.title : "";
-                handledProperties.style = properties.style;
-
-                // Fill handledProperties in order
-                for (var j = 0; j < displayProperties.length; j++) {
-                    var key = displayProperties[j];
-                    if (properties[key]) {
-                        handledProperties[key] = properties[key];
-                    }
-                }
-
-                handledProperties.others = {};
-                // Handle the rest into sub-section "others"
-                for (var key in properties) {
-                    if (!handledProperties[key]) {
-                        handledProperties.others[key] = properties[key];
-                    }
-                }
-
-                return handledProperties;
-            }
-            else {
-                return properties;
-            }
-        }
-
-        /**********************************************************************************************/
-
-        /**
-         *    Add property description to the dictionary
-         *
-         *    @param describeUrl Open Search describe document url
-         *    @param property Property
-         *    @param dictionary Dictionary to complete
-         */
-        function addPropertyDescription(describeUrl, property, dictionary) {
-            $.ajax({
-                type: "GET",
-                url: describeUrl + property,
-                dataType: 'text',
-                success: function (response) {
-                    dictionary[property] = response;
-                    $('#' + property).attr("title", response);
-                },
-                error: function (xhr) {
-                    console.error(xhr);
-                }
-            });
-        }
-
-        /**********************************************************************************************/
-
-        /**
-         *    Create dictionary
-         *
-         *    @param layer Layer
-         *    @param properties Feature properties
-         */
-        function createDictionary(layer, properties) {
-            layer.dictionary = {};
-            // Get dictionary template from open search description document
-            $.ajax({
-                type: "GET",
-                url: layer.serviceUrl,
-                dataType: "xml",
-                success: function (xml) {
-                    var dicodesc = $(xml).find('Url[rel="dicodesc"]');
-                    var describeUrl = $(dicodesc).attr("template");
-
-                    if (describeUrl) {
-                        // Cut unused part
-                        var splitIndex = describeUrl.indexOf("{");
-                        if (splitIndex !== -1) {
-                            describeUrl = describeUrl.substring(0, splitIndex);
-                        }
-                        for (var key in properties) {
-                            addPropertyDescription(describeUrl, key, layer.dictionary);
-                        }
-                    }
-                    //else
-                    //{
-                    // No dico found
-                    //}
-                },
-                error: function (xhr) {
-                    // No dico found
-                    //console.error(xhr);
-                }
-            });
-        }
-
-        /**********************************************************************************************/
-
-        /**
-         *    Insert HTML code of choosen feature
-         */
-        function createHTMLSelectedFeatureDiv(layer, feature) {
-            if (!layer.hasOwnProperty('dictionary')) {
-                createDictionary(layer, feature.properties);
-            }
-
-            var output = featureDescriptionTemplate({
-                dictionary: layer.dictionary,
-                services: feature.services,
-                properties: buildProperties(feature.properties, layer.displayProperties),
-                descriptionTableTemplate: descriptionTableTemplate,
-                isMobile: isMobile
-            });
-
-            $rightDiv.html(output);
-
-            // Stay in canvas
-            $rightDiv.find('.featureProperties').css('max-height', computeHeight());
-
-            $selectedFeatureDiv.find('.featureProperties').niceScroll({
-                autohidemode: false
-            }).hide();
-        }
-
-        /**********************************************************************************************/
-
         return {
 
             /**
@@ -237,20 +68,21 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
              *    @param pm <PickingManager>
              *    @param gl <GlobWeb.Globe>
              */
-            init: function (pm, im, gl, conf) {
+            init: function (mizar, pm, im, gl, conf) {
                 pickingManager = pm;
                 imageManager = im;
                 globe = gl;
                 configuration = conf;
-                isMobile = conf.isMobile;
 
                 $selectedFeatureDiv = $(selectedFeatureDiv).appendTo('body');
                 $leftDiv = $('#leftDiv');
                 $rightDiv = $('#rightDiv');
 
+                FeaturePopupLite.init($selectedFeatureDiv, pm, im, gl, conf);
+
                 // Initialize image processing popup
                 ImageProcessing.init({
-                    mizar : im.mizar,
+                    mizar: mizar,
                     disable: function () {
                         $('#dynamicImageView').removeClass('dynamicAvailable').addClass('dynamicNotAvailable');
                     },
@@ -260,147 +92,22 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
                 });
 
                 // Show/hide quicklook
-                $selectedFeatureDiv.on("click", '#quicklook', function () {
-                    var selectedData = pickingManager.getSelectedData();
+                $selectedFeatureDiv.on("click", '#quicklook', FeaturePopupLite.showOrHideQuicklook);
 
-                    var otherQuicklookOn = selectedData.feature.properties.style.fill && !selectedData.feature.properties.style.fillTextureUrl;
-                    if (otherQuicklookOn) {
-                        // Remove fits quicklook
-                        imageManager.removeImage(selectedData);
-                    }
-
-                    selectedData.isFits = false;
-                    if (selectedData.feature.properties.style.fill === true) {
-                        imageManager.removeImage(selectedData);
-                    }
-                    else {
-                        imageManager.addImage(selectedData);
-                    }
-                });
-
-                $selectedFeatureDiv.on('click', "#quicklookFits", function () {
-                    var selectedData = pickingManager.getSelectedData();
-
-                    var otherQuicklookOn = selectedData.feature.properties.style.fill && selectedData.feature.properties.style.fillTextureUrl;
-                    if (otherQuicklookOn) {
-                        // Remove quicklook
-                        imageManager.removeImage(selectedData);
-                    }
-
-                    selectedData.isFits = true;
-                    if (selectedData.feature.properties.style.fill === true) {
-                        imageManager.removeImage(selectedData);
-                    }
-                    else {
-                        imageManager.addImage(selectedData);
-                    }
-                });
+                // Show/hide quicklook fits
+                $selectedFeatureDiv.on('click', "#quicklookFits", FeaturePopupLite.showOrHideQuicklookFits);
 
                 // Show/hide Dynamic image service
-                $selectedFeatureDiv.on("click", '#dynamicImageView', function () {
-                    $(this).toggleClass('selected');
-                    var selectedData = pickingManager.getSelectedData();
-                    ImageProcessing.setData(selectedData);
-                });
+                $selectedFeatureDiv.on("click", '#dynamicImageView', FeaturePopupLite.showOrHideDynamicImageService);
 
                 // Send image by Samp
-                $selectedFeatureDiv.on("click", '#sendImage', function () {
-                    var selectedData = pickingManager.getSelectedData();
-                    var message = Samp.sendImage(selectedData.feature.services.download.url);
-                    $('#serviceStatus').html(message).slideDown().delay(1500).slideUp();
-                });
+                $selectedFeatureDiv.on("click", '#sendImage', FeaturePopupLite.sendImageBySamp);
 
                 // Show/hide HEALPix service
-                $selectedFeatureDiv.on("click", '#healpix', function (event) {
-                    var selectedData = pickingManager.getSelectedData();
-                    var healpixLayer = selectedData.feature.services.healpix.layer;
-
-                    if ($('#healpix').is('.selected')) {
-                        $('#healpix').removeClass('selected');
-                        healpixLayer.visible(false);
-                    }
-                    else {
-                        $('#healpix').addClass('selected');
-                        healpixLayer.visible(true);
-                    }
-                });
+                $selectedFeatureDiv.on("click", '#healpix', FeaturePopupLite.showOrHideHEALPixService);
 
                 // Show/hide Solar object service
-                $selectedFeatureDiv.on("click", '#solarObjects', function () {
-                    var selectedData = pickingManager.getSelectedData();
-                    var selection = pickingManager.getSelection();
-
-                    var solarObjectsLayer;
-                    var layer = selectedData.layer;
-
-                    if (selectedData.feature.services.solarObjects) {
-                        solarObjectsLayer = selectedData.feature.services.solarObjects.layer;
-                    }
-                    else {
-                        // Create solar object layer
-                        var defaultVectorStyle = new FeatureStyle({
-                            iconUrl: configuration.mizarBaseUrl + "css/images/star.png",
-                            zIndex: 2
-                        });
-
-                        var options = {
-                            name: "SolarObjectsSublayer",
-                            style: defaultVectorStyle
-                        };
-
-                        solarObjectsLayer = new VectorLayer(options);
-                        globe.addLayer(solarObjectsLayer);
-                        pickingManager.addPickableLayer(solarObjectsLayer);
-
-                        var url = configuration.solarObjects.baseUrl;
-                        if (globe.baseImagery.tiling.coordSystem === "EQ") {
-                            url += "EQUATORIAL";
-                        }
-                        else {
-                            url += "GALACTIC";
-                        }
-
-                        $('#solarObjectsSpinner').show();
-                        $.ajax({
-                            type: "GET",
-                            url: url,
-                            data: {
-                                order: selection.selectedTile.order,
-                                healpix: selection.selectedTile.pixelIndex,
-                                EPOCH: selectedData.feature.properties['date-obs']
-                                // coordSystem: (globe.tileManager.imageryProvider.tiling.coordSystem == "EQ" ? "EQUATORIAL" : "GALACTIC")
-                            },
-                            success: function (response) {
-                                JsonProcessor.handleFeatureCollection(solarObjectsLayer, response);
-                                $('#serviceStatus').html(response.totalResults + ' objects found').slideDown().delay(400).slideUp();
-                                solarObjectsLayer.addFeatureCollection(response);
-                            },
-                            complete: function () {
-                                $('#solarObjectsSpinner').hide();
-                            },
-                            error: function () {
-                                $('#serviceStatus').html('No data found').slideDown().delay(400).slideUp();
-                            }
-                        });
-
-                        if (!layer.subLayers) {
-                            layer.subLayers = [];
-                        }
-                        selectedData.feature.services.solarObjects = {
-                            layer: solarObjectsLayer
-                        };
-                        layer.subLayers.push(solarObjectsLayer);
-                    }
-
-                    if ($('#solarObjects').is('.selected')) {
-                        $('#solarObjects').removeClass('selected');
-                        solarObjectsLayer.visible(false);
-                    }
-                    else {
-                        $('#solarObjects').addClass('selected');
-                        solarObjectsLayer.visible(true);
-                    }
-                });
+                $selectedFeatureDiv.on("click", '#solarObjects', FeaturePopupLite.showOrHideSolarObjectService);
 
                 // Arrow scroll events
                 $selectedFeatureDiv.on("mousedown", '#scroll-arrow-down.clickable', function () {
@@ -449,22 +156,7 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
 
                 // Choose feature by clicking on its title
                 var self = this;
-                $selectedFeatureDiv.on("click", '.featureTitle', function () {
-                    pickingManager.blurSelectedFeature();
-                    $('#featureList div.selected').removeClass('selected');
-
-                    var featureIndexToFocus = $(this).index();
-                    pickingManager.focusFeatureByIndex(featureIndexToFocus, {isExclusive: true});
-                    var selectedData = pickingManager.getSelectedData();
-
-                    $('#featureList div:eq(' + featureIndexToFocus + ')').addClass('selected');
-                    self.showFeatureInformation(selectedData.layer, selectedData.feature);
-
-                    globe.renderContext.requestFrame();
-
-                    // TODO highlight is not fully implemented
-                    // Samp.highlightFeature(selectedData.layer, selectedData.feature);
-                });
+                $selectedFeatureDiv.on("click", '.featureTitle', FeaturePopupLite.selectFeatureOnTitle);
 
                 // Show/hide external resource
                 $selectedFeatureDiv.on("click", '.propertiesTable a', function (event) {
@@ -473,86 +165,21 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
                 });
 
                 $rightDiv.css('max-width', $('#' + globe.renderContext.canvas.id).width() / 4);
+
                 // Make rightDiv always visible depending on viewport
                 $(window).on('resize', function () {
-                    $rightDiv.find('.featureProperties').css('max-height', computeHeight());
+                    $rightDiv.find('.featureProperties').css('max-height', FeaturePopupLite.computeHeight());
                     $rightDiv.css('max-width', $('#' + globe.renderContext.canvas.id).width() / 4);
                 });
 
             },
 
-            /**********************************************************************************************/
+            // Exposing FeaturePopupLite methods to keep existing API
+            hide: FeaturePopupLite.hide,
+            show: FeaturePopupLite.show,
+            createFeatureList: FeaturePopupLite.createFeatureList,
+            showFeatureInformation: FeaturePopupLite.showFeatureInformation,
 
-            /**
-             *    Hide popup
-             *
-             *    @param callback Callback
-             */
-            hide: function (callback) {
-                if ($selectedFeatureDiv.css('display') !== 'none') {
-                    $selectedFeatureDiv.find('.featureProperties').getNiceScroll().hide();
-
-                    $selectedFeatureDiv.fadeOut(300, function () {
-                        $selectedFeatureDiv.find('.featureProperties').getNiceScroll().remove();
-
-                        if (callback) {
-                            callback();
-                        }
-                    });
-                }
-                else if (callback) {
-                    callback();
-                }
-            },
-
-            /**********************************************************************************************/
-
-            /**
-             *    Show popup
-             *
-             *    @param x X in window coordinate system
-             *    @param y Y in window coordinate system
-             *    @param callback Callback
-             */
-            show: function (x, y, callback) {
-                computeDivPosition(x, y);
-                $selectedFeatureDiv.fadeIn(500, function () {
-                    $selectedFeatureDiv.find('.featureProperties').getNiceScroll().resize();
-                    if (callback) {
-                        callback();
-                    }
-                });
-                var maxHeight = computeHeight();
-                var popupMaxHeight = maxHeight - 60;
-                $('#featureListDiv').css('max-height', popupMaxHeight);
-                if ($leftDiv.find('#featureList').height() > popupMaxHeight) {
-                    $leftDiv.find('.scroll-arrow-up, .scroll-arrow-down').css('display', 'block');
-                }
-            },
-
-            /**********************************************************************************************/
-
-            /**
-             *    Insert HTML code of selected features
-             *
-             *    @param {<GlobWeb.Feature>[]} seleciton Array of features
-             */
-            createFeatureList: function (selection) {
-                featureListHTML = featureListTemplate({selection: selection});
-                $leftDiv.html(featureListHTML);
-
-                if (selection[0].layer.name === "Planets" && selection[0].feature.properties.name === "Mars") {
-                    var button = $('#goToMarsBtn');
-
-                    button.button().once().click(function(event) {
-                        var marsLayer = mizar.getLayer("Mars");
-                        if (marsLayer != undefined) {
-                            mizar.toggleMode(marsLayer);
-                            $('#selectedFeatureDiv').hide();
-                        }
-                    });
-                }
-            },
 
             /**********************************************************************************************/
 
@@ -561,37 +188,6 @@ define(["jquery", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProces
              */
             createHelp: function () {
                 $rightDiv.html(pileStashHelp);
-            },
-
-            /**********************************************************************************************/
-
-            /**
-             *    Show feature information
-             */
-            showFeatureInformation: function (layer, feature) {
-                $rightDiv.find('.featureProperties').getNiceScroll().hide();
-                $rightDiv.fadeOut(300, function () {
-                    $rightDiv.find('.featureProperties').getNiceScroll().remove();
-                    createHTMLSelectedFeatureDiv(layer, feature);
-                    $(this).fadeIn(300, function () {
-                        $selectedFeatureDiv.find('.featureProperties').getNiceScroll().resize();
-                        $selectedFeatureDiv.find('.featureProperties').getNiceScroll().show();
-                    });
-                });
-            },
-
-            /**********************************************************************************************/
-
-            /**
-             *    Generate feature meta data for the given feature
-             */
-            generateFeatureMetadata: function (layer, feature) {
-                return featureDescriptionTemplate({
-                    dictionary: layer.hasOwnProperty('dictionary') ? layer.dictionary : createDictionary(layer, feature.properties),
-                    services: false,
-                    properties: buildProperties(feature.properties, layer.displayProperties),
-                    descriptionTableTemplate: descriptionTableTemplate
-                });
             }
 
             /**********************************************************************************************/

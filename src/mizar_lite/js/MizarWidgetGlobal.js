@@ -255,8 +255,8 @@ define(["jquery", "underscore-min",
          *    Set the credits popup
          */
         MizarWidgetGlobal.prototype.setShowCredits = function (visible) {
-            if (this.mizarWidgetGui) {
-                this.mizarWidgetGui.setShowCredits(visible);
+            if (this.mizarWidgetCore) {
+                this.mizarWidgetCore.setShowCredits(visible);
             }
         };
 
