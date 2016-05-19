@@ -109,7 +109,9 @@ define(["./Triangle", "Utils"], function (Triangle, Utils) {
     /**************************************************************************************************************/
 
     /**
-     *    Get histogram value from the given X-position on canvas
+     * Get histogram value from the given X-position on canvas
+     * @param {Array} position
+     * @returns {number} value
      */
     function getHistValue(position) {
         return Math.floor((((position[0] - originX) / 256.) * (this.image.tmax - this.image.tmin) + this.image.tmin) * Math.pow(10, this.accuracy)) / Math.pow(10, this.accuracy);
@@ -141,14 +143,19 @@ define(["./Triangle", "Utils"], function (Triangle, Utils) {
     /**************************************************************************************************************/
 
     function drawThresholdControls() {
-        this.minThreshold.draw(this.ctx);
-        this.maxThreshold.draw(this.ctx);
+        this.minThreshold.draw(this.ctx,  {});
+        this.maxThreshold.draw(this.ctx, {});
     };
 
     /**************************************************************************************************************/
 
     /**
-     *    Draw histogram
+     * Draw histogram
+     * @param {Object} options
+     *        <ul>
+     *            <li>color: inside graph color</li>
+     *        </ul>
+     *
      */
     function drawHistogram(options) {
         this.ctx.fillStyle = options.color || "blue";
@@ -188,11 +195,15 @@ define(["./Triangle", "Utils"], function (Triangle, Utils) {
 
     /**
      *    Draw transfer function(linear, log, asin, sqrt, sqr)
+     *    @param {Object} options
+     *        <ul>
+     *            <li>color: transfer stroke color</li>
+     *        </ul>
      */
-    function drawTransferFunction() {
+    function drawTransferFunction(options) {
         // Draw transfer functions
         // "Grey" colormap for now(luminance curve only)
-        this.ctx.fillStyle = "red";
+        this.ctx.fillStyle = options.color || "red";
         for (var i = 0; i < nbBins; i++) {
             var value = i;
             var posX = originX + value;
@@ -221,7 +232,6 @@ define(["./Triangle", "Utils"], function (Triangle, Utils) {
             if (!this.image.inverse) {
                 scaledValue = originY - scaledValue
             }
-
             this.ctx.fillRect(posX, scaledValue, 1, 1);
         }
     };
@@ -306,6 +316,9 @@ define(["./Triangle", "Utils"], function (Triangle, Utils) {
          *            <li>nbBins: Number of bins, representing the sampling of histogram(optional)</li>
          *            <li>onUpdate: On update callback
          *            <li>accuracy: The accuracy of histogram(numbers after floating point)
+         *            <li>paddingBottom: space at the bottom
+         *            <li>triangleHalfWidth: half width of the triangle to draw
+         *            <li>originX
          *        </ul>
          */
         init : function (options) {

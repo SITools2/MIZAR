@@ -21,8 +21,8 @@
 /**
  * Layer manager view module
  */
-define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gw/Layer/FitsLoader", "./ImageManager", "jquery.ui"],
-    function ($, _, LayerManager, ErrorDialog, LayerServiceView, BackgroundLayersView, AdditionalLayersView, FitsLoader, ImageManager) {
+define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gui_core/ImageManagerLite", "./ImageProcessing", "jquery.ui"],
+    function ($, _, LayerManager, ErrorDialog, LayerServiceView, BackgroundLayersView, AdditionalLayersView, ImageManagerLite, ImageProcessing) {
 
         /**
          * Private variables
@@ -66,7 +66,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog"
                     // Handle fits image
                     reader.onloadend = function (e) {
                         var arrayBuffer = this.result;
-                        var fits = FitsLoader.parseFits(arrayBuffer);
+                        var fits = ImageManagerLite.parseFits(arrayBuffer);
 
                         var gwLayer = LayerManager.createLayerFromFits(name, fits);
 
@@ -78,7 +78,9 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog"
                         };
                         var fitsData = fits.getHDU().data;
                         mizar.publish("image:add", featureData);
-                        ImageManager.handleFits(fitsData, featureData);
+
+                        var image = ImageManagerLite.handleFits(fitsData, featureData);
+                        ImageProcessing.setImage(image);
 
                         $('#loading').hide();
                     };

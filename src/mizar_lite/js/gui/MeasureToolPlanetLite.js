@@ -29,6 +29,11 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
 
         /**********************************************************************************************/
 
+        /**
+         * Get first Geo pick point in terms of cursor position
+         * @param event
+         * @returns {Array} geoPickPoint geo position on the planet
+         */
         function _handleMouseDown(event) {
             event.preventDefault();
             if (!self.activated) {
@@ -49,9 +54,13 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
                 self.pickPoint = [event.layerX, event.layerY];
             }
             self.geoPickPoint = globe.getLonLatFromPixel(self.pickPoint[0], self.pickPoint[1]);
-
+            return self.geoPickPoint;
         };
 
+        /**
+         * Close the measure with the last point
+         * @param event
+         */
         function _handleMouseUp(event) {
             event.preventDefault();
 
@@ -82,6 +91,10 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
             dragging = false;
         };
 
+        /**
+         * Update drawing and label in terms of current point
+         * @param event
+         */
         function _handleMouseMove(event) {
             event.preventDefault();
             if (!self.activated || !dragging) {
@@ -115,6 +128,11 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
 
         /**************************************************************************************************************/
 
+        /**
+         * Transform coordinates to the right world space dimension
+         * @param points
+         * @returns {Array} points  points transformed
+         */
         function computeIntersection(points) {
             var rc = self.renderContext;
             var tmpMat = mat4.create();
@@ -169,7 +187,8 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**********************************************************************************************/
 
         /**
-         *    Computes the measure for the given pick point depending on the second point
+         * Computes the measure for the given pick point depending on the second point (used to draw)
+         * @returns {Array} points to draw
          */
         function computeMeasure() {
             var rc = self.renderContext;
@@ -281,7 +300,7 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**************************************************************************************************************/
 
         /**
-         *    Clear measure
+         *    Clear measureFeature and measureLabel
          */
         function clear() {
             if (self.measureFeature) {
@@ -297,12 +316,16 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**
          * Calculate intermediaries elevation points to increase drawing precision
          *
+         * @param {Object} options
+         *              <ul>
+         *                  <li>scale : number of intermediary points to compute</li>
+         *              </ul>
          * @param {Array} firstPoint
          * @param {Array} secondPoint
          * @return {Array} intermediatePoints
          */
-        function calculateIntermediateElevationPoint(firstPoint, secondPoint) {
-            var scale = 50;
+        function calculateIntermediateElevationPoint(options, firstPoint, secondPoint) {
+            var scale = options.scale | 50;
             var intervalX = (firstPoint[0] - secondPoint[0]) / scale;
             var intervalY = (firstPoint[1] - secondPoint[1]) / scale;
 
@@ -346,9 +369,9 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         };
 
         /**
-         *
-         * @param firstPoint
-         * @param secondPoint
+         * Calculate distance and elevation for a given point and store it
+         * @param {Array} firstPoint
+         * @param {Array} secondPoint
          */
         function storeDistanceAndElevation(firstPoint, secondPoint) {
             var distance = self.calculateDistanceElevation(firstPoint, secondPoint);

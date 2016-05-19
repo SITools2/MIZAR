@@ -159,6 +159,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
 
         /**
          *    Compute selection tool radius between pickPoint and the given point
+         *    @param {Array} pt point
          */
         SelectionToolLite.prototype.computeGeoRadius = function (pt) {
             // Find angle between start and stop vectors which is in fact the radius
@@ -171,6 +172,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
 
         /**
          *    Compute selection for the given pick point depending on radius
+         *    @return {Array} points
          */
         SelectionToolLite.prototype.computeSelection = function () {
             var rc = this.renderContext;

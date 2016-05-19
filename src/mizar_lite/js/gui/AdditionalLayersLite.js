@@ -57,7 +57,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
                 context.putImageData(data, 0, 0);
             };
             icon.src = imageUrl;
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -78,10 +78,18 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
             // set line color
             context.strokeStyle = FeatureStyle.fromColorToString(gwLayer.style.fillColor);
             context.stroke();
-        }
+        };
 
         /**************************************************************************************************************/
 
+        /**
+         * Generate HTML from layer and template
+         * @param template
+         * @param gwLayer
+         * @param shortName
+         * @param isMobile
+         * @returns {*}
+         */
         function createHTMLFromTemplate(template, gwLayer, shortName, isMobile) {
             return template({
                 layer: gwLayer,
@@ -95,7 +103,9 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
         /**************************************************************************************************************/
 
         /**
-         *    Set sublayers visibility
+         * Set sublayers visibility
+         * @param gwLayer
+         * @param isOn
          */
         function setSublayersVisibility(gwLayer, isOn) {
             var i;
@@ -109,7 +119,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
                     sky.removeLayer(gwLayer.subLayers[i]);
                 }
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -131,15 +141,15 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
                     pixelIndices += ",";
                 }
             }
-
             return layer.serviceUrl + "/search?order=" + maxOrder + "&healpix=" + pixelIndices + "&coordSystem=EQUATORIAL";
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
-         *    Zoom to barycenter of all features contained by layer
+         * Zoom to barycenter of all features contained by layer
          *    (available for GlobWeb.VectorLayers only)
+         * @param {Layer} layer
          */
         function zoomTo(layer) {
             var sLon = 0;
@@ -154,7 +164,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
             }
             //TODO : compute the fov of the zoomTo according to the shape.
             mizar.activatedContext.navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries]);
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -171,5 +181,4 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
             setSublayersVisibility : setSublayersVisibility,
             zoomTo : zoomTo
         };
-
     });

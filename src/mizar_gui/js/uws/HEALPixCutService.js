@@ -21,8 +21,8 @@
 /**
  * Moc display & Moc xMatch services
  */
-define(["jquery", "gw/Utils/Numeric", "uws/UWSManager", "../service/Samp", "gui_core/ErrorDialog", "Utils", "underscore-min", "text!templates/healpixCutService.html", "text!templates/cutResultItem.html", "jquery.ui"],
-    function ($, Numeric, UWSManager, Samp, ErrorDialog, Utils, _, healpixCutServiceHTMLTemplate, healpixCutServiceItemHTMLTemplate) {
+define(["jquery", "uws/UWSManager", "../service/Samp", "gui_core/ErrorDialog", "Utils", "underscore-min", "text!templates/healpixCutService.html", "text!templates/cutResultItem.html", "jquery.ui"],
+    function ($, UWSManager, Samp, ErrorDialog, Utils, _, healpixCutServiceHTMLTemplate, healpixCutServiceItemHTMLTemplate) {
 
         var globe;
         var navigation;

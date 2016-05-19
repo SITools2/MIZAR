@@ -40,7 +40,8 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
         /**************************************************************************************************************/
 
         /**
-         *    Add pickable layer
+         *    Add pickable layer to the pickableLayers list
+         *    @param {Layer} layer
          */
         function addPickableLayer(layer) {
             if (pickableLayers.indexOf(layer) == -1) {
@@ -49,29 +50,30 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             else {
                 console.log("WARN:" + layer.name + " has been already added");
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
          *    Remove pickable layers
+         *    @param {Layer} layer
          */
         function removePickableLayer(layer) {
             for (var i = 0; i < pickableLayers.length; i++) {
                 if (layer.id == pickableLayers[i].id)
                     pickableLayers.splice(i, 1);
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
          * Get the list of pickable layers
-         * @returns {Array}
+         * @returns {Array} pickableLayers
          */
         function getPickableLayers() {
             return pickableLayers;
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -97,7 +99,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 style.zIndex = selectedData.layer.style.zIndex;
                 selectedData.layer.modifyFeatureStyle(selectedData.feature, style);
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -136,7 +138,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 selectedData.layer.modifyFeatureStyle(selectedData.feature, style);
             }
             sky.refresh();
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -146,7 +148,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
          */
         function getSelection() {
             return selection;
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -176,12 +178,13 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                     selectedData.layer.modifyFeatureStyle(selectedData.feature, style);
                 }
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
-         *    Apply selectedStyle to selection
+         *    Apply style to selection
+         *    @param {Array} newSelection selection of data
          */
         function focusSelection(newSelection) {
             var style;
@@ -209,7 +212,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 style.zIndex = this.selectedStyle.zIndex;
                 selectedData.layer.modifyFeatureStyle(selectedData.feature, style);
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
@@ -219,12 +222,15 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
         function clearSelection() {
             this.blurSelection();
             this.setSelection([]);
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
-         *    Check if a geometry crosses the date line
+         * Check if a geometry crosses the date line
+         * @param {Array} pickPoint
+         * @param {Array}coords
+         * @returns {Array} coords
          */
         function fixDateLine(pickPoint, coords) {
             var crossDateLine = false;
@@ -266,12 +272,15 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             else {
                 return coords;
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
-         *    Picking test for feature
+         * Picking test for feature depending on its geometry type
+         * @param {Object} feature
+         * @param {Array} pickPoint
+         * @returns {Boolean} isPicked
          */
         function featureIsPicked(feature, pickPoint) {
             switch (feature['geometry'].type) {
@@ -295,17 +304,19 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                     console.log("Picking for " + feature['geometry'].type + " is not implemented yet");
                     return false;
             }
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
-         *    Compute the selection at the picking point
+         * Compute the selection at the picking point
+         * @param {Array} pickPoint
+         * @return {Array} newSelection
          */
         function computePickSelection(pickPoint) {
 
             if (!pickPoint) {
-                return;
+                return [];
             }
 
             var newSelection = [];
@@ -353,18 +364,18 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             }
 
             return newSelection;
-        }
+        };
 
         /**************************************************************************************************************/
 
         /**
          * Set selection list with passed selection
-         * @param sel
+         * @param {Array} sel selection
          */
         function setSelection(sel) {
             selection = sel;
             return selection;
-        }
+        };
 
         /**************************************************************************************************************/
 

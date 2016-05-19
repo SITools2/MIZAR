@@ -18,8 +18,8 @@
  ******************************************************************************/
 /*global define: false */
 
-define(['jquery', 'underscore-min', "gw/Renderer/FeatureStyle", "./Histogram", "uws/UWSManager", "uws_gui/AnimatedButton", "gui_core/ErrorDialog", "text!../../templates/dynamicImageView.html", /*"jquery.ui.selectmenu"*/ "jquery.ui"],
-    function ($, _, FeatureStyle, Histogram, UWSManager, AnimatedButton, ErrorDialog, dynamicImageViewHTML) {
+define(['jquery', 'underscore-min', "./Histogram", "uws/UWSManager", "uws_gui/AnimatedButton", "gui_core/ErrorDialog", "text!../../templates/dynamicImageView.html", "jquery.ui"],
+    function ($, _, Histogram, UWSManager, AnimatedButton, ErrorDialog, dynamicImageViewHTML) {
 
         /**************************************************************************************************************/
 

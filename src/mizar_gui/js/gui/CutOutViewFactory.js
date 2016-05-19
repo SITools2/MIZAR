@@ -47,7 +47,6 @@ define(["jquery", "gui_core/SelectionToolLite", "./CutOutView"],
                         selectionTool.toggle();
                     }
                 });
-
                 views = [];
             },
 
@@ -61,8 +60,6 @@ define(["jquery", "gui_core/SelectionToolLite", "./CutOutView"],
                 var index = views.indexOf(view);
                 views.splice(index, 1);
             }
-
-
         };
 
     });

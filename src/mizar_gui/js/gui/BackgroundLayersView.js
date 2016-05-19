@@ -21,8 +21,8 @@
 /**
  * BackgroundLayersView module
  */
-define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", "./PickingManager", "gw/Layer/HEALPixFITSLayer", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "text!../../templates/backgroundLayers.html", "jquery.ui"],
-    function ($, _, LayerManager, DynamicImageView, PickingManager, HEALPixFITSLayer, LayerServiceView, Samp, ErrorDialog, backgroundLayersHTML) {
+define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", "./PickingManager", "./LayerServiceView", "../service/Samp", "gui_core/ErrorDialog", "Utils", "text!../../templates/backgroundLayers.html", "jquery.ui"],
+    function ($, _, LayerManager, DynamicImageView, PickingManager, LayerServiceView, Samp, ErrorDialog, Utils, backgroundLayersHTML) {
 
         var nbBackgroundLayers = 0; // required because background id is always equal to 0
         var sky; // TODO: remove sky parameter, use activatedContext instead..
@@ -40,7 +40,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
          */
         function updateBackgroundOptions(layer) {
             if ($el.find("#backgroundOptions").is(":visible")) {
-                if (layer instanceof HEALPixFITSLayer) {
+                if (Utils.isHEALPixFITSLayer(layer)) {
                     $el.find("#fitsType").removeAttr('disabled').removeAttr('checked').button("refresh");
                     // Dynamic image view button visibility
                     if (layer.format === 'jpeg') {

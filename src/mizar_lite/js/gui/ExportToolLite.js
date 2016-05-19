@@ -49,7 +49,7 @@ define(["jquery", "underscore-min", "jszip", "saveAs"],
         /**
          * Export data included in the passed coordinates selection
          *
-         * @param event.data =
+         * @param event.data = coordinates
          */
         function exportSelection(event) {
 
@@ -317,5 +317,4 @@ define(["jquery", "underscore-min", "jszip", "saveAs"],
             getBase64Image: getBase64Image,
             filterServicesAvailableOnLayers: filterServicesAvailableOnLayers
         };
-
     });

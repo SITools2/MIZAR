@@ -21,8 +21,8 @@
 /**
  * FeaturePopup module
  */
-define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "gw/Parser/JsonProcessor", "Utils", "./ImageProcessing", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
-    function ($, FeaturePopupLite, IFrame, JsonProcessor, Utils, ImageProcessing, FeatureStyle, VectorLayer, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
+define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProcessing", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
+    function ($, FeaturePopupLite, IFrame, Utils, ImageProcessing, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var featureListHTML = '';
         var pickingManager = null;

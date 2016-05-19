@@ -41,7 +41,7 @@
 		waitSeconds: 0
 	});
 	
-require(['jquery.ui', 'ImageRenderer', 'gw/RenderContext', 'gw/DynamicImage', '../src/mizar/js/DynamicImageView', '../src/mizar/js/FitsLoader', 'fits'], function ($, ImageRenderer, RenderContext, DynamicImage, DynamicImageView, FitsLoader)
+require(['jquery.ui', 'ImageRenderer', 'gw/RenderContext', 'gw/DynamicImage', '../src/mizar/js/DynamicImageView', 'gw/Layer/FitsLoader', 'fits'], function ($, ImageRenderer, RenderContext, DynamicImage, DynamicImageView, FitsLoader)
 {
 
 	var renderContext = new RenderContext( { canvas: "imgCanvas", backgroundColor: [1.0,1.0,1.0,1.0], continuousRendering: false  });

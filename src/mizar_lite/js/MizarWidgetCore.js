@@ -43,6 +43,7 @@ define(["jquery", "underscore-min",
         "gw/Renderer/PointSpriteRenderer",
         "gw/Renderer/LineStringRenderable",
         "gw/Renderer/PointRenderer",
+        "gw/Renderer/glMatrix", // load for all the application
 
         // Providers
         "./provider/StarProvider", "./provider/ConstellationProvider",
@@ -372,6 +373,7 @@ define(["jquery", "underscore-min",
 
         /**
          * Set a predefined background survey
+         * @param {String} survey the layerName
          */
         MizarWidgetCore.prototype.setBackgroundSurvey = function (survey) {
             LayerManager.setBackgroundSurvey(survey);
@@ -411,8 +413,7 @@ define(["jquery", "underscore-min",
         /**
          * Remove the given layer
          *
-         * @param layer
-         *            Layer returned by addLayer()
+         * @param {Layer} layer to remove
          */
         MizarWidgetCore.prototype.removeLayer = function (layer) {
             LayerManager.removeLayer(layer);
@@ -423,10 +424,11 @@ define(["jquery", "underscore-min",
         /**
          * Point to a given location
          *
-         * @param location
+         * @param {String} location
          *            Could be: 1) Coordinates in hms/dms : "0:42:14.33
          *            41:16:7.5" 2) Coordinates in decimal degree : "11.11
          *            41.3" 3) Astronomical object name : m31, Mars, Polaris
+         *  @param {Function} callback
          */
         MizarWidgetCore.prototype.goTo = function (location, callback) {
             NameResolver.goTo(location, callback);
@@ -445,6 +447,8 @@ define(["jquery", "underscore-min",
 
         /**
          * Set zoom(in other words fov)
+         * @param {Number} fovInDegrees
+         * @param {Function} callback
          */
         MizarWidgetCore.prototype.setZoom = function (fovInDegrees, callback) {
             var geoPos = this.sky.coordinateSystem
@@ -484,6 +488,7 @@ define(["jquery", "underscore-min",
 
         /**
          * Get layer with the given name
+         * @param {String} layerName
          */
         MizarWidgetCore.prototype.getLayer = function (layerName) {
             var layers = this.getLayers();
@@ -506,6 +511,8 @@ define(["jquery", "underscore-min",
 
         /**
          * Convert votable to json from url
+         * @param {String} url
+         * @param {Function} callback
          */
         MizarWidgetCore.prototype.convertVotable2JsonFromURL = function (url, callback) {
             var xhr = new XMLHttpRequest();
@@ -531,6 +538,8 @@ define(["jquery", "underscore-min",
 
         /**
          * Convert votable to json from xml
+         * @param {Object} xml xml votable
+         * @param {Function} callback
          */
         MizarWidgetCore.prototype.convertVotable2JsonFromXML = function (xml, callback) {
             try {
@@ -557,7 +566,9 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         * Request moc layer for the given layer TODO: Refactor MocBase !
+         * Request moc layer for the given layer
+         * @param {Layer} layer
+         * @param {Function} callback
          */
         MizarWidgetCore.prototype.requestMoc = function (layer, callback) {
             var mocLayer = MocBase.findMocSublayer(layer);

@@ -22,8 +22,8 @@
  * Tool designed to measure the distance between two points in planet mode
  */
 
-define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "gw/Utils/Numeric", "jquery.ui"],
-    function ($, _, MeasureToolPlanetLite, Utils, Numeric) {
+define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "jquery.ui"],
+    function ($, _, MeasureToolPlanetLite, Utils) {
 
         var globe, navigation, onselect, scale, self;
 

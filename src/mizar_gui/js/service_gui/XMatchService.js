@@ -21,8 +21,8 @@
 /**
  *    Moc xMatch service
  */
-define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "service/MocBase", "gw/Layer/OpenSearchLayer", "gui_core/ErrorDialog", "underscore-min", "text!templates/mocServiceItem.html", "jquery.ui"],
-    function ($, LayerManager, FeatureStyle, MocLayer, MocBase, OpenSearchLayer, ErrorDialog, _, mocServiceHTMLTemplate) {
+define(["jquery", "underscore-min", "layer/LayerManager", "service/MocBase", "gui_core/ErrorDialog", "Utils", "text!templates/mocServiceItem.html", "jquery.ui"],
+    function ($, _, LayerManager, MocBase, ErrorDialog, Utils, mocServiceHTMLTemplate) {
 
 // Template generating the services html
         var mocServiceTemplate = _.template(mocServiceHTMLTemplate);
@@ -40,7 +40,7 @@ define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/Mo
             var layer = $(this).parent().data("layer");
 
             var serviceLayer;
-            if (!(layer instanceof MocLayer)) {
+            if (!(Utils.isMocLayer(layer))) {
                 serviceLayer = MocBase.findMocSublayer(layer);
             } else {
                 serviceLayer = layer;
@@ -184,7 +184,7 @@ define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/Mo
 
                 var allLayers = LayerManager.getLayers();
                 var allOSLayers = _.filter(allLayers, function (layer) {
-                    return (layer instanceof OpenSearchLayer)
+                    return Utils.isOpenSearchLayer(layer)
                 });
 
                 for (var i = 0; i < allOSLayers.length; i++) {
@@ -219,8 +219,8 @@ define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/Mo
                             if (checkedInputs.length < 2) {
                                 $('#intersectResult').html('Check at least two layers')
                                     .slideDown().delay(700).slideUp(function () {
-                                        $('#intersectMocBtn').removeAttr("disabled").button("refresh");
-                                    });
+                                    $('#intersectMocBtn').removeAttr("disabled").button("refresh");
+                                });
                             }
                             else {
                                 $('#intersectResult').html('');
@@ -239,7 +239,6 @@ define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/Mo
 
             /**
              *    Remove service from jQueryUI tabs
-             *
              *    @param tabs jQueryUI tabs selector
              */
             removeService: function (tabs) {
@@ -251,7 +250,7 @@ define(["jquery", "layer/LayerManager", "gw/Renderer/FeatureStyle", "gw/Layer/Mo
 
                 var allLayers = LayerManager.getLayers();
                 var allOSLayers = _.filter(allLayers, function (layer) {
-                    return (layer instanceof OpenSearchLayer)
+                    return Utils.isOpenSearchLayer(layer)
                 });
 
                 for (var i = 0; i < allOSLayers.length; i++) {

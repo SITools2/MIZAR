@@ -22,8 +22,8 @@
  * Tool designed to measure the distance between two points
  */
 
-define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "gw/Utils/Numeric", "jquery.ui"],
-    function ($, _, MeasureToolSkyLite, Utils, Numeric) {
+define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "jquery.ui"],
+    function ($, _, MeasureToolSkyLite, Utils) {
 
         var globe, navigation, onselect, scale, self;
 

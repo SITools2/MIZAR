@@ -29,6 +29,11 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
 
         /**********************************************************************************************/
 
+        /**
+         * Get first Geo pick point in terms of cursor position
+         * @param event
+         * @returns {Array} geoPickPoint geo position on the planet
+         */
         function _handleMouseDown(event) {
             event.preventDefault();
             if (!self.activated) {
@@ -52,6 +57,10 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
 
         };
 
+        /**
+         * Close the measure with the last point
+         * @param event
+         */
         function _handleMouseUp(event) {
             event.preventDefault();
             if (!self.activated) {
@@ -81,6 +90,10 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
             dragging = false;
         };
 
+        /**
+         * Update drawing and label in terms of current point
+         * @param event
+         */
         function _handleMouseMove(event) {
             event.preventDefault();
             if (!self.activated || !dragging) {
@@ -109,6 +122,11 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
 
         /**************************************************************************************************************/
 
+        /**
+         * Transform coordinates to the right world space dimension
+         * @param points
+         * @returns {Array} points  points transformed
+         */
         function computeIntersection(points) {
             var rc = self.renderContext;
             var tmpMat = mat4.create();
@@ -162,7 +180,8 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**********************************************************************************************/
 
         /**
-         *    Computes the measure for the given pick point depending on the second point
+         * Computes the measure for the given pick point depending on the second point (used to draw)
+         * @returns {Array} points to draw
          */
         function computeMeasure() {
             var rc = self.renderContext;
@@ -259,7 +278,7 @@ define(["jquery", "underscore-min", "Utils", "gw/Layer/VectorLayer", "gw/Rendere
         /**************************************************************************************************************/
 
         /**
-         *    Clear measure
+         *    Clear measureFeature and measureLabel
          */
         function clear() {
             if (self.measureFeature) {

@@ -19,7 +19,7 @@
 /*global define: false */
 
 /**
- * Planet context
+ * Planet context (inherited from MizarContext)
  */
 define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../gui/PositionTracker", "../gui/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
     function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {

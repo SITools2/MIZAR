@@ -120,7 +120,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         mizar.setReverseNameResolverGui(true);
         mizar.setNameResolverGui(true);
         mizar.setCategoryGui(true);
-        mizar.setCompassGui(false);
+        mizar.setCompassGui(true);
         mizar.setShowCredits(true);
         mizar.setImageViewerGui(true);
         mizar.setSwitchTo2D(true);

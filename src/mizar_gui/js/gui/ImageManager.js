@@ -41,15 +41,28 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
 
         /**********************************************************************************************/
 
+        /**
+         *    Parse fits file
+         *
+         *    @param response XHR response containing fits
+         *
+         *    @return Parsed data
+         */
+        function parseFits(response) {
+            ImageManagerLite.parseFits
+        };
+
+        /**********************************************************************************************/
+
         return {
 
             /**
              *    Initialize
              */
-            init: function (mizar, pm, configuration) {
+            init: function (mizar, configuration) {
                 sky = mizar.sky;
 
-                ImageManagerLite.init(mizar, pm, configuration);
+                ImageManagerLite.init(mizar, configuration);
 
                 // Enable float texture extension to have higher luminance range
                 var ext = sky.renderContext.gl.getExtension("OES_texture_float");
@@ -84,7 +97,7 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
             addImage: ImageManagerLite.addImage,
 
             computeFits: ImageManagerLite.computeFits,
-            handleFits: ImageManagerLite.handleFits
+            handleFits: handleFits
         };
 
         /**********************************************************************************************/

@@ -19,7 +19,7 @@
 /*global define: false */
 
 /**
- * Sky context
+ * Sky context (inherited from MizarContext)
  */
 define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNavigation", "gw/Utils/Utils",
         "./MizarContext", "../layer/LayerManager", "../gui/PositionTracker", "jquery.ui"],

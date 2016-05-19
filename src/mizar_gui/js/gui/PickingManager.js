@@ -190,7 +190,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
                 mizar.subscribe("mizarMode:toggle", this.updateContext);
 
                 // Initialize the fits manager
-                ImageManager.init(mizar, this, configuration);
+                ImageManager.init(mizar, configuration);
 
                 if (configuration.cutOut) {
                     // CutOutView factory ... TODO : move it/refactor it/do something with it...

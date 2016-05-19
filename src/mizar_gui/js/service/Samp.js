@@ -21,8 +21,8 @@
 /**
  * Samp module : performing communication between applications using SAMP protocol
  */
-define(["jquery", "underscore-min", "service/SampLite", "Utils", "gw/Parser/JsonProcessor", "samp", "jquery.ui"],
-    function ($, _, SampLite, Utils, JsonProcessor) {
+define(["jquery", "underscore-min", "service/SampLite", "Utils", "samp", "jquery.ui"],
+    function ($, _, SampLite, Utils) {
 
         var mizar;
         var sky;

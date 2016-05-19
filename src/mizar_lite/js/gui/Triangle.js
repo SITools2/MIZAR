@@ -61,6 +61,7 @@ define([], function () {
 
     /**
      *    Test if triangle contains the given point
+     *    @param {Array} p point
      */
     Triangle.prototype.contains = function (p) {
         return _pointInTriangle(p, this.a, this.b, this.c);
@@ -69,14 +70,19 @@ define([], function () {
     /**************************************************************************************************************/
 
     /**
-     *    Draw the triangle
+     * Draw the triangle
+     * @param ctx the context
+     * @param options
+     *      <ul>
+     *          <li>draggingColor : color used when moving triangle</li>
+     *          <li>noDraggingColor : color used when triangle do not move</li>
      */
-    Triangle.prototype.draw = function (ctx) {
+    Triangle.prototype.draw = function (ctx, options) {
         if (this.dragging) {
-            ctx.fillStyle = "#FF0";
+            ctx.fillStyle = options.draggingColor | "#FF0";
         }
         else {
-            ctx.fillStyle = "#F00";
+            ctx.fillStyle = options.noDraggingColor | "#F00";
         }
 
         ctx.beginPath();
@@ -87,7 +93,7 @@ define([], function () {
         ctx.fill();
 
         if (!this.dragging && this.hover) {
-            ctx.strokeStyle = "#FF0";
+            ctx.strokeStyle = options.draggingColor | "#FF0";
             ctx.stroke();
         }
     };
@@ -97,6 +103,7 @@ define([], function () {
     /**
      *    Modify triangle's position by the given "pointer" point
      *    (could be modified only by X-axis)
+     *    @param {Array} point point
      */
     Triangle.prototype.modifyPosition = function (point) {
         this.a[0] = point[0];

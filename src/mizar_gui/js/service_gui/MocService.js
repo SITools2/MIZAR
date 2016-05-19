@@ -21,10 +21,10 @@
 /**
  * Moc display & Moc xMatch services
  */
-define(["jquery", "gw/Layer/MocLayer", "service/MocBase", "underscore-min", "text!templates/mocServiceItem.html"],
-    function ($, MocLayer, MocBase, _, mocServiceHTMLTemplate) {
+define(["jquery", "underscore-min", "service/MocBase", "Utils", "text!templates/mocServiceItem.html"],
+    function ($, _, MocBase, Utils, mocServiceHTMLTemplate) {
 
-// Template generating the services html
+        // Template generating the services html
         var mocServiceTemplate = _.template(mocServiceHTMLTemplate);
 
         var globe = null;
@@ -39,7 +39,7 @@ define(["jquery", "gw/Layer/MocLayer", "service/MocBase", "underscore-min", "tex
             var layer = $(this).parent().data("layer");
 
             var serviceLayer;
-            if (!(layer instanceof MocLayer))
+            if (!(Utils.isMocLayer(layer)))
                 serviceLayer = MocBase.findMocSublayer(layer);
             else
                 serviceLayer = layer;

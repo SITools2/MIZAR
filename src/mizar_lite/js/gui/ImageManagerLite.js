@@ -31,9 +31,9 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
         /**
          *    Send XHR request for FITS file
-         *
          *    @param featureData Feature data(layer,feature)
-         *    @param url Url of fits file
+         *    @param {String} url Url of fits file
+         *    @param {Function} preprocessing function if needed
          */
         function computeFits(featureData, url, preprocessing) {
 
@@ -54,7 +54,10 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
         /**********************************************************************************************/
 
         /**
-         *    Handle fits data on the given feature
+         * Handle fits data on the given feature
+         * @param fitsData
+         * @param featureData
+         * @returns {Image} image
          */
         function handleFits(fitsData, featureData) {
             // Create new image coming from Fits
@@ -87,8 +90,15 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
         /**********************************************************************************************/
 
+        function parseFits(response) {
+            return FitsLoader.parseFits(response);
+        };
+
+        /**********************************************************************************************/
+
         /**
-         *    Remove fits texture from feature
+         * Remove fits texture from feature
+         * @param featureData
          */
         function removeFitsFromRenderer(featureData) {
             // Abort xhr if inprogress
@@ -125,9 +135,14 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
         return {
 
             /**
-             *    Initialize
+             * Initialize ImageManagerLite
+             * @param mizar
+             * @param configuration
+             *      <ul>
+             *          <li>sitoolsBaseUrl : the base sitools url used as proxy here
+             *      </ul>
              */
-            init: function (mizar, pm, configuration) {
+            init: function (mizar, configuration) {
                 this.mizar = mizar;
                 sky = mizar.sky;
                 sitoolsBaseUrl = configuration.sitoolsBaseUrl;
@@ -138,7 +153,8 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
             /**********************************************************************************************/
 
             /**
-             *    Hide image
+             * Hide image
+             * @param {Feature} featureData
              */
             hideImage: function (featureData) {
                 var style = new FeatureStyle(featureData.feature.properties.style);
@@ -149,7 +165,8 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
             /**********************************************************************************************/
 
             /**
-             *    Show image
+             * Show image
+             * @param {Feature} featureData
              */
             showImage: function (featureData) {
                 // Attach texture to style
@@ -161,7 +178,8 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
             /**********************************************************************************************/
 
             /**
-             *    Remove image from renderer
+             * Remove image from renderer
+             * @param {Feature} featureData
              */
             removeImage: function (featureData) {
 
@@ -185,6 +203,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
             /**
              *    Start download of texture
+             *    @param {Feature} featureData
              */
             addImage: function (featureData) {
                 var feature = featureData.feature;
@@ -210,7 +229,8 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
             },
 
             computeFits: computeFits,
-            handleFits: handleFits
+            handleFits: handleFits,
+            parseFits: parseFits
         };
 
         /**********************************************************************************************/

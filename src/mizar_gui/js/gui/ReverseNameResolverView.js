@@ -21,8 +21,8 @@
 /**
  * Reverse name resolver view using ReverseNameResolver services
  */
-define(["jquery", "service/ReverseNameResolver", "gw/Utils/Numeric", "./IFrame", "Utils", "gui_core/ErrorDialog", "underscore-min", "text!templates/featureDescription.html", "text!templates/descriptionTable.html", "jquery.ui"],
-    function ($, ReverseNameResolver, Numeric, IFrame, Utils, ErrorDialog, _, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
+define(["jquery", "service/ReverseNameResolver", "./IFrame", "Utils", "gui_core/ErrorDialog", "underscore-min", "text!templates/featureDescription.html", "text!templates/descriptionTable.html", "jquery.ui"],
+    function ($, ReverseNameResolver, IFrame, Utils, ErrorDialog, _, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var context;
         var geoPick = [];

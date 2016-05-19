@@ -44,7 +44,9 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
         /**************************************************************************************************************/
 
         /**
-         *    Create simple vector layer
+         * Create simple vector layer
+         * @param {String} name
+         * @returns {Layer} layer
          */
         function createSimpleLayer(name) {
             // Generate random color
@@ -76,7 +78,9 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
         /**************************************************************************************************************/
 
         /**
-         *    Create layer from configuration file
+         * Create layer from configuration file
+         * @param {Object} layerDesc
+         * @returns {Layer} layer
          */
         function createLayerFromConf(layerDesc) {
             var gwLayer;
@@ -213,7 +217,11 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             return gwLayer;
         }
 
-        function onVisibilityChange (layer) {
+        /**
+         * Execute when layer visibility is changed
+         * @param {Layer} layer
+         */
+        function onVisibilityChange(layer) {
             var mizarCore = mizar.getMizarCore();
 
             if(layer.visible() && layer.properties && layer.properties.hasOwnProperty("initialRa") && layer.properties.hasOwnProperty("initialDec") && layer.properties.hasOwnProperty("initialFov")) {
@@ -232,6 +240,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
         /**
          *    Fill the LayerManager table
+         *    @param {Layer} layer
          */
         function initLayers(layers) {
             for (var i = 0; i < layers.length; i++) {
@@ -245,8 +254,8 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
         /**
          *    Load HIPS layers from passed service url
          *
-         * @param hipsServiceUrlArray HIPS service URL
-         * @param imageFormat HIPS format
+         * @param {Array} hipsServiceUrlArray HIPS service URL
+         * @param {String}imageFormat HIPS format
          * @param callback
          */
         function checkHipsServiceIsAvailable(hipsServiceUrlArray, imageFormat, callback) {
@@ -272,7 +281,9 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
         /**************************************************************************************************************/
 
         /**
-         *    load HIPS layers from passed service url
+         * Load HIPS layers from passed service url
+         * @param layerManager
+         * @param {String} hipsServiceUrl
          */
         function loadHIPSLayers(layerManager, hipsServiceUrl) {
             $.ajax({
@@ -413,6 +424,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
             /**
              *    Get current layers
+             *    @return {Array} layers
              */
             getLayers: function () {
                 return gwLayers;
@@ -420,11 +432,16 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
             /**
              *    Get current layers
+             *    @returns {Array} layers
              */
             getAllLayers: function () {
                 return _.union(this.getLayers(), this.getPlanetLayers());
             },
 
+            /**
+             * Get only planet layers
+             * @returns {Array} layers
+             */
             getPlanetLayers: function() {
                 var layers = planetLayers;
                 var planetLayer = _.filter(gwLayers, function (layer) {

@@ -70,14 +70,14 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
             $selectedFeatureDiv.find('.featureProperties').niceScroll({
                 autohidemode: false
             }).hide();
-        }
+        };
 
         /**********************************************************************************************/
 
         /**
          *    Insert HTML code of selected features
          *
-         *    @param {<GlobWeb.Feature>[]} seleciton Array of features
+         *    @param {<GlobWeb.Feature>[]} selection Array of features
          */
         function createFeatureList(selection) {
             featureListHTML = featureListTemplate({selection: selection});
@@ -118,7 +118,7 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
                 left: mousex + 'px',
                 top: mousey + 'px'
             });
-        }
+        };
 
         /**********************************************************************************************/
 
@@ -475,7 +475,9 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
         /**********************************************************************************************/
 
         /**
-         *    Show feature information
+         * Show feature information
+         * @param {Layer} layer
+         * @param {Feature} feature
          */
         function showFeatureInformation(layer, feature) {
             $rightDiv.find('.featureProperties').getNiceScroll().hide();
@@ -492,7 +494,9 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
         /**********************************************************************************************/
 
         /**
-         *    Generate feature meta data for the given feature
+         * Generate feature meta data for the given feature
+         * @param {Layer} layer
+         * @param {Feature} feature
          */
         function generateFeatureMetadata(layer, feature) {
             return featureDescriptionTemplate({
@@ -533,5 +537,4 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
             hide: hide,
             show: show
         }
-
     });

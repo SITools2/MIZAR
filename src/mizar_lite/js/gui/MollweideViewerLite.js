@@ -38,7 +38,9 @@ define(["jquery", "Utils", "gw/Renderer/Ray", "gw/Renderer/glMatrix"], function 
 
     /**
      *  Newton-Raphson method to find auxiliary theta needed for mollweide x/y computation
+     *  @param lat latitude
      *  @see https://en.wikipedia.org/wiki/Mollweide_projection
+     *  @return theta
      */
     function _findTheta(lat) {
         // Avoid divide by zero
@@ -65,12 +67,15 @@ define(["jquery", "Utils", "gw/Renderer/Ray", "gw/Renderer/glMatrix"], function 
 
     /**
      *  Canvas 2D point
+     *  @param {Object} options
+     *      <ul>
+     *          <li>options : x,y, color, size</li>
      */
     var Point = function (options) {
-        this.x = 0;
-        this.y = 0;
-        this.color = "rgb(255,0,0)";
-        this.size = 2;
+        this.x = options.x | 0;
+        this.y = options.y | 0;
+        this.color = options.color | "rgb(255,0,0)";
+        this.size = options.size | 2;
         for (x in options) {
             this[x] = options[x];
         }
@@ -80,6 +85,8 @@ define(["jquery", "Utils", "gw/Renderer/Ray", "gw/Renderer/glMatrix"], function 
 
     /**
      *  Compute mollweide position for given 3D position
+     *  @param {Array} pos position
+     *  @return {Array} x,y coordinates
      */
     function computeMollweidePosition(pos) {
         var coordinateSystem = globe.coordinateSystem;
@@ -109,6 +116,7 @@ define(["jquery", "Utils", "gw/Renderer/Ray", "gw/Renderer/glMatrix"], function 
 
     /**
      *  Update navigation eye for the given mouse coordinates
+     *  @param {Array} moll
      */
     function updateNavigation(moll) {
         // Transform to Mollweide space
