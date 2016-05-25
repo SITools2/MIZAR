@@ -36,6 +36,7 @@ define(["jquery", "underscore-min",
         // GlobWeb
         "gw/Layer/TileWireframeLayer",
         "gw/Utils/Stats", "gw/AttributionHandler", "gw/Utils/Event",
+
         "gw/Navigation/TouchNavigationHandler",
         "gw/Navigation/MouseNavigationHandler",
         "gw/Navigation/KeyboardNavigationHandler",
@@ -45,19 +46,13 @@ define(["jquery", "underscore-min",
         "gw/Renderer/PointRenderer",
         "gw/Renderer/glMatrix", // load for all the application
 
-        // Providers
-        "./provider/StarProvider", "./provider/ConstellationProvider",
-        "./provider/JsonProvider", "./provider/OpenSearchProvider",
-        "./provider/PlanetProvider",
-
         "./name_resolver/NameResolverManager",
         "./reverse_name_resolver/ReverseNameResolverManager"],
     function ($, _, PlanetContext, SkyContext,
               backgroundSurveys, LayerManager, NameResolver,
               ReverseNameResolver, MocBase, Utils,
               ErrorDialog, AboutDialog, UWSManager, ImageManagerLite, TileWireframeLayer, Stats,
-              AttributionHandler, Event, TouchNavigationHandler,
-              MouseNavigationHandler, KeyboardNavigationHandler) {
+              AttributionHandler, Event) {
 
         /**
          * Private variables
@@ -66,6 +61,7 @@ define(["jquery", "underscore-min",
         var options;
         var planetContext;
         var skyContext;
+        var self;
 
         /**************************************************************************************************************/
 
@@ -167,6 +163,8 @@ define(["jquery", "underscore-min",
 
         /**
          * Mizar widget constructor
+         * @class
+         * @constructor
          */
         var MizarWidgetCore = function (div, globalOptions, userOptions) {
             Event.prototype.constructor.call(this);
@@ -175,7 +173,7 @@ define(["jquery", "underscore-min",
             //this.mode = "sky";
             this.mode = (!_.isEmpty(userOptions.mode)) ? userOptions.mode : "sky";
 
-            var self = this;
+            self = this;
 
             parentElement = div;
             options = globalOptions;
@@ -233,69 +231,10 @@ define(["jquery", "underscore-min",
                 });
             }
 
-            if (this.mode == "sky") {
-                // Initialize sky&globe contexts
-                skyContext = new SkyContext(div, $.extend({
-                    canvas: $(div).find('#GlobWebCanvas')[0]
-                }, options));
-                this.activatedContext = skyContext;
-
-                // TODO : Extend GlobWeb base layer to be able to publish events
-                // by itself
-                // to avoid the following useless call
-                skyContext.globe.subscribe("features:added", function (featureData) {
-                    self.publish("features:added", featureData);
-                });
-
-                this.sky = skyContext.globe;
-                this.navigation = skyContext.navigation;
-
-            } else { // planet
-                options.mode = "3d";
-                options.canvas = $(div).find('#GlobWebCanvas')[0];
-                planetContext = new PlanetContext(div, options);
-
-                this.activatedContext = planetContext;
-                this.sky = planetContext.globe;
-                this.navigation = planetContext.navigation;
-
-                planetContext.setComponentVisibility("categoryDiv", true);
-                planetContext.setComponentVisibility("searchDiv", false);
-                planetContext.setComponentVisibility("posTracker", this.activatedContext.components.posTracker);
-                planetContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
-                planetContext.setComponentVisibility("compassDiv", false);
-                planetContext.setComponentVisibility("measureContainer", true);
-                planetContext.setComponentVisibility("switch2DContainer", false);
-                planetContext.setComponentVisibility("measurePlanetContainer", true);
-
-                var planetVM = mat4.create();
-                planetContext.navigation.computeInverseViewMatrix();
-                mat4.inverse(planetContext.navigation.inverseViewMatrix, planetVM);
-
-                this.sky.renderContext.tileErrorTreshold = 3;
-                this.activatedContext = planetContext;
-                // Store old view matrix & fov to be able to rollback to sky context
-                this.oldVM = this.sky.renderContext.viewMatrix;
-                this.oldFov = this.sky.renderContext.fov;
-                this.navigation.globe.isSky = true;
-
-                //planetContext.globe.publish("baseLayersReady");
-                var defaultLayer = userOptions.defaultLayer || "Viking";
-
-                // Add smooth animation from sky context to planet context
-                this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
-                    planetContext.show();
-                    planetContext.globe.refresh();
-                    var marsLayer = mizar.getLayer("Mars");
-                    mizar.getMizarCore().getLayerManager().setBackgroundSurvey(defaultLayer);
-                    planetContext.globe.tileManager.tiling = mizar.getLayer("DSS").tiling;
-                    //planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
-                    self.publish("mizarMode:toggle", marsLayer);
-                    $(".backToSky").hide();
-                });
-            }
-
+            this.loadContext(this.mode, div, userOptions);
             LayerManager.init(this, options);
+
+
 
             // Add surveys
             for (var i = 0; i < layers.length; i++) {
@@ -320,10 +259,6 @@ define(["jquery", "underscore-min",
                 $("#fps").show();
             }
 
-            // TODO : Extend GlobWeb base layer to be able to publish events
-            // by itself
-            // to avoid the following useless call
-
             this.sky.coordinateSystem.type = options.coordSystem;
 
             // Add attribution handler
@@ -336,13 +271,6 @@ define(["jquery", "underscore-min",
 
             // Initialize reverse name resolver
             ReverseNameResolver.init(this, this.activatedContext);
-
-            // Create layers from configuration file
-            //LayerManager.init(this, options);
-
-            // Create data manager
-            // TODO Split PickingManager
-            //PickingManager.init(this, options);
 
             // UWS services initialization
             UWSManager.init(options);
@@ -368,6 +296,87 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         Utils.inherits(Event, MizarWidgetCore);
+
+        /**************************************************************************************************************/
+
+        /**
+         * Load Context according to mode
+         *
+         * @param {string} mode sky/planet
+         * @param {string} div mizar Element ID
+         * @param {object} userOptions
+         */
+        MizarWidgetCore.prototype.loadContext = function (mode, div, userOptions) {
+            switch (mode) {
+                case "sky":
+                    // Initialize sky&globe contexts
+                    skyContext = new SkyContext(div, $.extend({
+                        canvas: $(div).find('#GlobWebCanvas')[0]
+                    }, options));
+
+                    this.activatedContext = skyContext;
+                    this.sky = skyContext.globe;
+                    this.navigation = skyContext.navigation;
+
+                    // Load providers
+                    this.activatedContext.loadProviders();
+
+                    // TODO : Extend GlobWeb base layer to be able to publish events
+                    // by itself
+                    // to avoid the following useless call
+                    this.activatedContext.globe.subscribe("features:added", function (featureData) {
+                        self.publish("features:added", featureData);
+                    });
+                    break;
+
+                case "planet":
+                    options.mode = "3d";
+                    options.canvas = $(div).find('#GlobWebCanvas')[0];
+                    planetContext = new PlanetContext(div, options);
+
+                    this.activatedContext = planetContext;
+                    this.sky = planetContext.globe;
+                    this.navigation = planetContext.navigation;
+
+                    // Load providers
+                    this.activatedContext.loadProviders();
+
+                    this.activatedContext.setComponentVisibility("categoryDiv", true);
+                    this.activatedContext.setComponentVisibility("searchDiv", false);
+                    this.activatedContext.setComponentVisibility("posTracker", this.activatedContext.components.posTracker);
+                    this.activatedContext.setComponentVisibility("elevTracker", this.activatedContext.components.posTracker);
+                    this.activatedContext.setComponentVisibility("compassDiv", false);
+                    this.activatedContext.setComponentVisibility("measureContainer", true);
+                    this.activatedContext.setComponentVisibility("switch2DContainer", false);
+                    this.activatedContext.setComponentVisibility("measurePlanetContainer", true);
+
+                    var planetVM = mat4.create();
+                    this.activatedContext.navigation.computeInverseViewMatrix();
+                    mat4.inverse(this.activatedContext.navigation.inverseViewMatrix, planetVM);
+
+                    this.sky.renderContext.tileErrorTreshold = 3;
+                    // Store old view matrix & fov to be able to rollback to sky context
+                    this.oldVM = this.sky.renderContext.viewMatrix;
+                    this.oldFov = this.sky.renderContext.fov;
+                    this.navigation.globe.isSky = true;
+
+                    //planetContext.globe.publish("baseLayersReady");
+                    var defaultLayer = userOptions.defaultLayer || "Viking";
+
+                    // Add smooth animation from sky context to planet context
+                    this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
+                        planetContext.show();
+                        planetContext.globe.refresh();
+                        var marsLayer = mizar.getLayer("Mars");
+                        mizar.getMizarCore().getLayerManager().setBackgroundSurvey(defaultLayer);
+                        planetContext.globe.tileManager.tiling = mizar.getLayer("DSS").tiling;
+                        //planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
+                        self.publish("mizarMode:toggle", marsLayer);
+                        $(".backToSky").hide();
+                    });
+                    break;
+            }
+        };
 
         /**************************************************************************************************************/
 
@@ -517,7 +526,7 @@ define(["jquery", "underscore-min",
         MizarWidgetCore.prototype.convertVotable2JsonFromURL = function (url, callback) {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", url);
-            var self = this;
+            self = this;
             xhr.onload = function () {
                 var xml = xhr.responseXML;
                 if (xml) {
@@ -633,7 +642,7 @@ define(["jquery", "underscore-min",
          *    Set the credits popup
          */
         MizarWidgetCore.prototype.setShowCredits = function (visible) {
-            skyContext.showCredits(visible);
+            this.activatedContext.showCredits(visible);
         };
 
 

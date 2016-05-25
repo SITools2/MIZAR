@@ -27,9 +27,41 @@
  *    Providing planet positions based on ephemeris computations
  *    @see http://www.abecedarical.com/javascript/script_planet_orbits.html
  */
-define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
-    function ($, FeatureStyle, LayerManager) {
+define(["jquery", "../provider/AbstractProvider", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
+    function ($, AbstractProvider, FeatureStyle, LayerManager) {
 
+
+        var self;
+
+        /**
+         * PlanetProvider context constructor
+         * @param {object} options
+         * @constructor
+         */
+        var PlanetProvider = function (options) {
+            self = this;
+            AbstractProvider.prototype.constructor.call(this, options);
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Calculate planets position and add them to the passed layer
+         * @param {object} gwLayer
+         * @param {object} configuration
+         *                  <ul>
+         *                      <li>interval : ime between recompute planet position</li>
+         *                  </ul>
+         */
+        PlanetProvider.prototype.handleFeatures = function (gwLayer, configuration) {
+            var interval = configuration.interval ? configuration.interval : 60000; // Recompute planet position every minute if not defined
+            computePositions(gwLayer);
+            mizarBaseUrl = configuration.mizarBaseUrl;
+            setInterval(function () {
+                gwLayer.removeFeatureCollection(poiFeatureCollection);
+                computePositions(gwLayer);
+            }, interval);
+        };
 
         /**************************************************************************************************************/
 
@@ -37,14 +69,14 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
         var RADS = Math.PI / 180;                  // convert degrees to radians
         var EPS = 1.0e-12;                      // machine error constant
 
-// right ascension, declination coordinate structure
+        // right ascension, declination coordinate structure
         function Coord() {
             this.ra = parseFloat("0");              // right ascension [deg]
             this.dec = parseFloat("0");              // declination [deg]
             this.rvec = parseFloat("0");              // distance [AU]
         }
 
-// orbital element structure
+        // orbital element structure
         function Elem() {
             this.color = "";				 // color of the planet
             this.a = parseFloat("0");                 // semi-major axis [AU]
@@ -60,15 +92,15 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             "Uranus", "Neptune", "Pluto");
 
 
-// day number to/from J2000 (Jan 1.5, 2000)
+        // day number to/from J2000 (Jan 1.5, 2000)
         function day_number(y, m, d, hour, mins) {
             var h = hour + mins / 60;
             return 367 * y - Math.floor(7 * (y + Math.floor((m + 9) / 12)) / 4) + Math.floor(275 * m / 9) + d - 730531.5 + h / 24;
         }
 
 
-// compute RA, DEC, and distance of planet-p for day number-d
-// result returned in structure obj in degrees and astronomical units
+        // compute RA, DEC, and distance of planet-p for day number-d
+        // result returned in structure obj in degrees and astronomical units
         function get_coord(obj, p, d) {
             var planet = new Elem();
             mean_elements(planet, p, d);
@@ -134,8 +166,8 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
         }
 
 
-// Compute the elements of the orbit for planet-i at day number-d
-// result is returned in structure p
+        // Compute the elements of the orbit for planet-i at day number-d
+        // result is returned in structure p
         function mean_elements(p, i, d) {
             var cy = d / 36525;                    // centuries since J2000
 
@@ -226,9 +258,9 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             }
         }
 
-// compute the true anomaly from mean anomaly using iteration
-//  M - mean anomaly in radians
-//  e - orbit eccentricity
+        // compute the true anomaly from mean anomaly using iteration
+        //  M - mean anomaly in radians
+        //  e - orbit eccentricity
         function true_anomaly(M, e) {
             var V, E1;
 
@@ -252,30 +284,30 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             return V;
         }
 
-// converts hour angle in degrees into hour angle string
-//function ha2str( x )
-//{
-//    if ((x < 0)||(360 < x)) { window.alert("function ha2str() range error!"); }
-//    
-//    var ra = x/15;                       // degrees to hours
-//    var h = Math.floor(ra);
-//    var m = 60*(ra - h);
-//    return cintstr(h, 3) + "h " + frealstr( m, 4, 1 ) + "m";
-//}
+        // converts hour angle in degrees into hour angle string
+        //function ha2str( x )
+        //{
+        //    if ((x < 0)||(360 < x)) { window.alert("function ha2str() range error!"); }
+        //
+        //    var ra = x/15;                       // degrees to hours
+        //    var h = Math.floor(ra);
+        //    var m = 60*(ra - h);
+        //    return cintstr(h, 3) + "h " + frealstr( m, 4, 1 ) + "m";
+        //}
 
-// converts declination angle in degrees into string
-//function dec2str( x )
-//{
-//    if ((x < -90)||(+90 < x)) {window.alert("function dec2str() range error!");}
-//    
-//    var dec = Math.abs(x);
-//    var sgn = (x < 0) ? "-" : " ";
-//    var d = Math.floor(dec);
-//    var m = 60*(dec - d);
-//    return sgn + cintstr(d, 2) + " " + frealstr(m, 4, 1) + "'";
-//}
+        // converts declination angle in degrees into string
+        //function dec2str( x )
+        //{
+        //    if ((x < -90)||(+90 < x)) {window.alert("function dec2str() range error!");}
+        //
+        //    var dec = Math.abs(x);
+        //    var sgn = (x < 0) ? "-" : " ";
+        //    var d = Math.floor(dec);
+        //    var m = 60*(dec - d);
+        //    return sgn + cintstr(d, 2) + " " + frealstr(m, 4, 1) + "'";
+        //}
 
-// return the integer part of a number
+        // return the integer part of a number
         function abs_floor(x) {
             var r;
             if (x >= 0.0) {
@@ -287,7 +319,7 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             return r;
         }
 
-// return an angle in the range 0 to 2pi radians
+        // return an angle in the range 0 to 2pi radians
         function mod2pi(x) {
             var b = x / (2 * Math.PI);
             var a = (2 * Math.PI) * (b - abs_floor(b));
@@ -297,117 +329,117 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             return a;
         }
 
-//
-// "mean_sidereal_time" returns the Mean Sidereal Time in units of degrees. 
-// Use lon = 0 to get the Greenwich MST. 
-// East longitudes are positive; West longitudes are negative
-//
-// returns: time in degrees
-//
-//function mean_sidereal_time( d, lon )
-//{
-//    var year   = d.getUTCFullYear();
-//    var month  = d.getUTCMonth() + 1;
-//    var day    = d.getUTCDate(); 
-//    var hour   = d.getUTCHours(); 
-//    var minute = d.getUTCMinutes();
-//    var second = d.getUTCSeconds();    
-//
-//    if ((month === 1)||(month === 2))
-//    {
-//        year  = year - 1;
-//        month = month + 12;
-//    }
-//
-//    var a = Math.floor(year/100);
-//    var b = 2 - a + Math.floor(a/4);
-//    var c = Math.floor(365.25*year);
-//    d = Math.floor(30.6001*(month + 1));
-//
-        // days since J2000.0
-//    var jd = b + c + d - 730550.5 + day + (hour + minute/60.0 + second/3600.0)/24.0;
-//    
-        // julian centuries since J2000.0
-//    var jt = jd/36525.0;
-//
-        // mean sidereal time
-//    var mst = 280.46061837 + 360.98564736629*jd + 0.000387933*jt*jt - jt*jt*jt/38710000 + lon;
-//
-//    if (mst > 0.0)
-//    {
-//        while (mst > 360.0) {mst = mst - 360.0;}
-//    }
-//    else
-//    {
-//        while (mst < 0.0) {mst = mst + 360.0;}
-//    }
-//        
-//    return mst;
-//}
+        //
+        // "mean_sidereal_time" returns the Mean Sidereal Time in units of degrees.
+        // Use lon = 0 to get the Greenwich MST.
+        // East longitudes are positive; West longitudes are negative
+        //
+        // returns: time in degrees
+        //
+        //function mean_sidereal_time( d, lon )
+        //{
+        //    var year   = d.getUTCFullYear();
+        //    var month  = d.getUTCMonth() + 1;
+        //    var day    = d.getUTCDate();
+        //    var hour   = d.getUTCHours();
+        //    var minute = d.getUTCMinutes();
+        //    var second = d.getUTCSeconds();
+        //
+        //    if ((month === 1)||(month === 2))
+        //    {
+        //        year  = year - 1;
+        //        month = month + 12;
+        //    }
+        //
+        //    var a = Math.floor(year/100);
+        //    var b = 2 - a + Math.floor(a/4);
+        //    var c = Math.floor(365.25*year);
+        //    d = Math.floor(30.6001*(month + 1));
+        //
+                // days since J2000.0
+        //    var jd = b + c + d - 730550.5 + day + (hour + minute/60.0 + second/3600.0)/24.0;
+        //
+                // julian centuries since J2000.0
+        //    var jt = jd/36525.0;
+        //
+                // mean sidereal time
+        //    var mst = 280.46061837 + 360.98564736629*jd + 0.000387933*jt*jt - jt*jt*jt/38710000 + lon;
+        //
+        //    if (mst > 0.0)
+        //    {
+        //        while (mst > 360.0) {mst = mst - 360.0;}
+        //    }
+        //    else
+        //    {
+        //        while (mst < 0.0) {mst = mst + 360.0;}
+        //    }
+        //
+        //    return mst;
+        //}
 
-// convert angle (deg, min, sec) to degrees as real
-//function dms2real( deg, min, sec )
-//{
-//    var rv;
-//    if (deg < 0) {rv = deg - min/60 - sec/3600;}
-//    else         {rv = deg + min/60 + sec/3600;}
-//    return rv;
-//}
+        // convert angle (deg, min, sec) to degrees as real
+        //function dms2real( deg, min, sec )
+        //{
+        //    var rv;
+        //    if (deg < 0) {rv = deg - min/60 - sec/3600;}
+        //    else         {rv = deg + min/60 + sec/3600;}
+        //    return rv;
+        //}
 
-// format an integer
-//function cintstr( num, width )
-//{
-//    var str = num.toString(10);
-//    var len = str.length;
-//    var intgr = "";
-//    var i;
-//
-//    for (i = 0; i < width - len; i++) {    // append leading spaces
-//        intgr += ' ';
-//    }
-//    for (i = 0; i < len; i++) {           // append digits
-//        intgr += str.charAt(i);
-//    }
-//    return intgr;
-//}
+        // format an integer
+        //function cintstr( num, width )
+        //{
+        //    var str = num.toString(10);
+        //    var len = str.length;
+        //    var intgr = "";
+        //    var i;
+        //
+        //    for (i = 0; i < width - len; i++) {    // append leading spaces
+        //        intgr += ' ';
+        //    }
+        //    for (i = 0; i < len; i++) {           // append digits
+        //        intgr += str.charAt(i);
+        //    }
+        //    return intgr;
+        //}
 
 
-// converts angle in degrees into string
-//function degr2str( x )
-//{   
-//    var dec = Math.abs(x);
-//    var sgn = (x < 0) ? "-" : " ";
-//    var d = Math.floor(dec);
-//    var m = 60*(dec - d);
-//    return sgn + cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'";
-//}
+        // converts angle in degrees into string
+        //function degr2str( x )
+        //{
+        //    var dec = Math.abs(x);
+        //    var sgn = (x < 0) ? "-" : " ";
+        //    var d = Math.floor(dec);
+        //    var m = 60*(dec - d);
+        //    return sgn + cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'";
+        //}
 
-// converts latitude in signed degrees into string
-//function lat2str( x )
-//{   
-//    var dec = Math.abs(x);
-//    var sgn = (x < 0) ? " S" : " N";
-//    var d = Math.floor(dec);
-//    var m = 60*(dec - d);
-//    return cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'" + sgn;
-//}
+        // converts latitude in signed degrees into string
+        //function lat2str( x )
+        //{
+        //    var dec = Math.abs(x);
+        //    var sgn = (x < 0) ? " S" : " N";
+        //    var d = Math.floor(dec);
+        //    var m = 60*(dec - d);
+        //    return cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'" + sgn;
+        //}
 
-// converts longitude in signed degrees into string
-//function lon2str( x )
-//{   
-//    var dec = Math.abs(x);
-//    var sgn = (x < 0) ? " W" : " E";
-//    var d = Math.floor(dec);
-//    var m = 60*(dec - d);
-//    return cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'" + sgn;
-//}
+        // converts longitude in signed degrees into string
+        //function lon2str( x )
+        //{
+        //    var dec = Math.abs(x);
+        //    var sgn = (x < 0) ? " W" : " E";
+        //    var d = Math.floor(dec);
+        //    var m = 60*(dec - d);
+        //    return cintstr(d, 3) + "&deg; " + frealstr(m, 4, 1) + "'" + sgn;
+        //}
 
-// format two digits with leading zero if needed
-//function d2( n )
-//{
-//    if ((n < 0)||(99 < n)) {return "xx";}
-//    return (n < 10) ? ("0" + n) : n;
-//}
+        // format two digits with leading zero if needed
+        //function d2( n )
+        //{
+        //    if ((n < 0)||(99 < n)) {return "xx";}
+        //    return (n < 10) ? ("0" + n) : n;
+        //}
 
         function frealstr(num, width, fract) {
             var str = num.toFixed(fract);
@@ -431,7 +463,6 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
 
         var poiFeatureCollection;
         var mizarBaseUrl;
-
 
         /**************************************************************************************************************/
 
@@ -472,7 +503,9 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
 
             gwLayer.addFeatureCollection(poiFeatureCollection);
         };
+
         /**************************************************************************************************************/
+
         /*
          * Json template for a point
          */
@@ -505,19 +538,6 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "../layer/LayerManager"],
             };
         }
 
-
-        /**************************************************************************************************************/
-
-// Register the data provider
-        LayerManager.registerDataProvider("planets", function (gwLayer, configuration) {
-
-            var interval = configuration.interval ? configuration.interval : 60000; // Recompute planet position every minute if not defined
-            computePositions(gwLayer);
-            mizarBaseUrl = configuration.mizarBaseUrl;
-            setInterval(function () {
-                gwLayer.removeFeatureCollection(poiFeatureCollection);
-                computePositions(gwLayer);
-            }, interval);
-        });
+        return PlanetProvider;
 
     });

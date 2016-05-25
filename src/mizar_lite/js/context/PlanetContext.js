@@ -21,8 +21,8 @@
 /**
  * Planet context (inherited from MizarContext)
  */
-define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../gui/PositionTracker", "../gui/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
-    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
+define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../layer/LayerManager", "../provider/JsonProvider", "../gui/tracker/PositionTracker", "../gui/tracker/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
+    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, LayerManager, JsonProvider, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
 
         /**************************************************************************************************************/
 
@@ -78,20 +78,23 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             }
             // Don't update view matrix on creation, since we want to use animation on context change
             options.navigation.updateViewMatrix = false;
+
             // Eye position tracker initialization
-            PositionTracker.init({element: "posTracker", globe: this.globe, positionTracker: options.positionTracker});
+
+            this.positionTracker = new PositionTracker({
+                element: "posTracker",
+                globe: this.globe,
+                positionTracker: options.positionTracker
+            });
 
             if (this.mode == "3d") {
-                ElevationTracker.init({
+                this.elevationTracker = new ElevationTracker({
                     element: "elevTracker",
                     globe: this.globe,
                     elevationTracker: options.elevationTracker,
-                    //elevationLayer: options.planetLayer.elevationLayer
-                    //elevationLayer: options.planetLayer.elevationLayer
-                    //elevationLayer: new WCSElevationLayer({
-                    //    baseUrl : "http://idoc-wcsmars.ias.u-psud.fr/wcsmap"
-                    //})
+                    elevationLayer: (!options.planetLayer) ? options.planetLayer.elevationLayer : undefined
                 });
+
                 this.navigation = new Navigation(this.globe, options.navigation);
                 //this.navigation.zoomTo(options.initTarget, 18000000);
                 this.navigation.zoomTo([85.2500, -2.4608], 18000000);
@@ -145,6 +148,15 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
                 this.mode = "2d";
             }
             return this.mode;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Load specific planet providers and register them to the LayerManager
+         */
+        PlanetContext.prototype.loadProviders = function () {
+            MizarContext.prototype.loadProviders.call(this);
         };
 
         /**************************************************************************************************************/

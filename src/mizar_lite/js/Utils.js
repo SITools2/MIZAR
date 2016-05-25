@@ -24,7 +24,7 @@
 define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFITSLayer", "gw/Layer/HEALPixLayer", "gw/Layer/PlanetLayer", "gw/Layer/VectorLayer", "gw/Layer/MocLayer"],
     function (wcs, _, OpenSearchLayer, HEALPixFITSLayer, HEALPixLayer, PlanetLayer, VectorLayer, MocLayer) {
 
-        var mizar;
+        var mizarCore;
 
         /**
          *    HSV values in [0..1[
@@ -91,9 +91,8 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
         }
 
         return {
-
             init: function (m) {
-                mizar = m;
+                mizarCore = m;
             },
 
             roundNumber: function (num, dec) {
@@ -134,11 +133,11 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
                         astro[1] += "&deg;";
                         break;
                     case "sky":
-                        if (mizar.sky.coordinateSystem.type === "EQ") {
-                            mizar.sky.coordinateSystem.fromGeoToEquatorial([geo[0], geo[1]], astro);
+                        if (mizarCore.sky.coordinateSystem.type === "EQ") {
+                            mizarCore.sky.coordinateSystem.fromGeoToEquatorial([geo[0], geo[1]], astro);
                         }
                         else {
-                            geo = mizar.sky.coordinateSystem.convert(geo, 'EQ', mizar.sky.coordinateSystem.type);
+                            geo = mizarCore.sky.coordinateSystem.convert(geo, 'EQ', mizarCore.sky.coordinateSystem.type);
                             astro[0] = this.roundNumber(geo[0], 4);
                             astro[0] += "&deg;";
                             astro[1] = this.roundNumber(geo[1], 4);
@@ -267,10 +266,10 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
                 var sphere3D = [];
 
                 // Compute pixel size vector to offset the points from the earth
-                var pixelSizeVector = mizar.sky.renderContext.computePixelSizeVector();
+                var pixelSizeVector = mizarCore.sky.renderContext.computePixelSizeVector();
 
-                mizar.sky.coordinateSystem.fromGeoTo3D(point, point3D);
-                mizar.sky.coordinateSystem.fromGeoTo3D(sphere, sphere3D);
+                mizarCore.sky.coordinateSystem.fromGeoTo3D(point, point3D);
+                mizarCore.sky.coordinateSystem.fromGeoTo3D(sphere, sphere3D);
 
                 var radius = pointTextureHeight * (pixelSizeVector[0] * sphere3D[0] + pixelSizeVector[1] * sphere3D[1] + pixelSizeVector[2] * sphere3D[2] + pixelSizeVector[3]);
 

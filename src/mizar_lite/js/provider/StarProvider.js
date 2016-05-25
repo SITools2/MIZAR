@@ -24,13 +24,28 @@
  *    Specific star catalogue provider of the Brightest Stars (Ochsenbein+ 1988) from VizieR database
  *    @see Search Catalogue of the Brightest Stars (Ochsenbein+ 1988) in VizieR database for more details
  */
-define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
-    function ($, FeatureStyle, LayerManager) {
-
-        /**************************************************************************************************************/
+define(["jquery", "provider/AbstractProvider", "gw/Renderer/FeatureStyle", "../layer/LayerManager", "Utils"],
+    function ($, AbstractProvider, FeatureStyle, LayerManager, Utils) {
 
         var namesFile;
         var catalogueFile;
+        var self;
+
+        /**
+         * ConstellationProvider context constructor
+         * @param {object} options
+         * @constructor
+         */
+        var StarProvider = function (options) {
+            AbstractProvider.prototype.constructor.call(this, options);
+            self = this;
+        };
+
+        /**************************************************************************************************************/
+
+        Utils.inherits(AbstractProvider, StarProvider);
+
+        /**************************************************************************************************************/
 
         /**
          *    Asynchronous requests to load star database
@@ -41,7 +56,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
          *            <li>catalogueUrl : Url providing all information about each star(necessary option)</li>
          *        </ul>
          */
-        function loadFiles(gwLayer, configuration) {
+        StarProvider.prototype.loadFiles = function (gwLayer, configuration) {
             if (configuration.nameUrl && configuration.catalogueUrl) {
                 var nameRequest = {
                     type: "GET",
@@ -66,11 +81,10 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
                 };
 
                 // Synchronizing two asynchronious requests with the same callback
-                var self = this;
-                $.when($.ajax(nameRequest), $.ajax(catalogueRequest))
+                $.proxy($.when($.ajax(nameRequest), $.ajax(catalogueRequest))
                     .then(function () {
-                        handleFeatures(gwLayer);
-                    }, failure);
+                        self.handleFeatures(gwLayer);
+                    }, failure));
             }
             else {
                 console.error("Not valid options");
@@ -83,7 +97,7 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
         /**
          *    Handle features on layer
          */
-        function handleFeatures(gwLayer) {
+        StarProvider.prototype.handleFeatures = function (gwLayer) {
             // Extract the table data
             var tmpTab = namesFile.slice(namesFile.indexOf("897;Acamar"), namesFile.indexOf('1231;Zaurak') + 11);
             var namesTab = tmpTab.split("\n");
@@ -144,9 +158,6 @@ define(["../jquery", "../gw/Renderer/FeatureStyle", "../layer/LayerManager"],
 
         /**************************************************************************************************************/
 
-        // Register the data provider
-        if (mizar.mode == "sky") {
-            LayerManager.registerDataProvider("star", loadFiles);
-        }
+        return StarProvider;
 
     });

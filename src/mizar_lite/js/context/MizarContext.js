@@ -22,8 +22,8 @@
  *    Abstract class for mizar context
  *    Implemented by SkyContext and PlanetContext
  */
-define(["jquery", "underscore-min", "../gui/ErrorDialog", "../gui/AboutDialog", "jquery.ui"],
-    function ($, _, ErrorDialog, AboutDialog) {
+define(["jquery", "underscore-min", "../layer/LayerManager", "../provider/JsonProvider", "../provider/PlanetProvider", "../gui/ErrorDialog", "../gui/AboutDialog", "jquery.ui"],
+    function ($, _, LayerManager, JsonProvider, PlanetProvider, ErrorDialog, AboutDialog) {
 
         /**************************************************************************************************************/
 
@@ -259,6 +259,18 @@ define(["jquery", "underscore-min", "../gui/ErrorDialog", "../gui/AboutDialog", 
          */
         MizarContext.prototype.getAdditionalLayers = function () {
             return [];
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Load common providers to sky/planet and register them to the LayerManager
+         */
+        MizarContext.prototype.loadProviders = function () {
+            var jsonProvider = new JsonProvider();
+            var planetProvider = new PlanetProvider();
+            LayerManager.registerDataProvider("JSON", jsonProvider.loadFiles);
+            LayerManager.registerDataProvider("planets", planetProvider.handleFeatures);
         };
 
         /**************************************************************************************************************/

@@ -23,36 +23,55 @@
  *
  *    Module providing JSON file in GeoJSON format from OpenSearch response
  */
-define(["../jquery", "../layer/LayerManager", "gw/Parser/JsonProcessor"], function ($, LayerManager, JsonProcessor) {
+define(["jquery", "provider/AbstractProvider", "../layer/LayerManager", "gw/Parser/JsonProcessor"],
+    function ($, AbstractProvider, LayerManager, JsonProcessor) {
 
-    /**
-     *    Load JSON file, transform it in GeoJSON format and add to the layer
-     *
-     *    @param gwLayer GlobWeb layer
-     *    @param url Url to JSON containing feature collection in equatorial coordinates
-     */
-    function handleJSONFeatureFromOpenSearch(gwLayer, configuration, startIndex) {
-        $.ajax({
-            type: "GET",
-            url: configuration.url + "startIndex=" + startIndex + "&count=500",
-            success: function (response) {
-                JsonProcessor.handleFeatureCollection(gwLayer, response);
-                gwLayer.addFeatureCollection(response);
-                if (startIndex + response.features.length < response.totalResults) {
-                    handleJSONFeatureFromOpenSearch(gwLayer, configuration.url, startIndex + response.features.length);
+        var self;
+
+        /**
+         * OpenSearchProvider context constructor
+         * @param {object} options
+         * @constructor
+         */
+        var OpenSearchProvider = function (options) {
+            self = this;
+            AbstractProvider.prototype.constructor.call(this, options);
+        };
+
+        /***************************************************************************************************/
+
+        /**
+         *    Load JSON file and call handleFeatures
+         *
+         *    @param gwLayer GlobWeb layer
+         *    @param configuration Url to JSON containing feature collection in equatorial coordinates
+         *
+         */
+        OpenSearchProvider.prototype.loadFiles = function (gwLayer, configuration, startIndex) {
+            $.ajax({
+                type: "GET",
+                url: configuration.url + "startIndex=" + startIndex + "&count=500",
+                success: function (response) {
+                    self.handleFeatures(gwLayer, configuration, startIndex, response)
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.error(xhr.responseText);
+            });
+        };
+
+        /***************************************************************************************************/
+
+        OpenSearchProvider.prototype.handleFeatures = function (gwLayer, configuration, startIndex, response) {
+            JsonProcessor.handleFeatureCollection(gwLayer, response);
+            gwLayer.addFeatureCollection(response);
+            if (startIndex + response.features.length < response.totalResults) {
+                self.loadFiles(gwLayer, configuration.url, startIndex + response.features.length);
             }
-        });
-    }
+        };
 
-    /***************************************************************************************************/
+        /***************************************************************************************************/
 
-// Register the data provider
-    LayerManager.registerDataProvider("OpenSearch", function (gwLayer, configuration) {
-        handleJSONFeatureFromOpenSearch(gwLayer, configuration, 1);
+        return OpenSearchProvider;
+
     });
-
-});

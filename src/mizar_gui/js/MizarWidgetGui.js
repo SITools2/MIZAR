@@ -92,26 +92,17 @@ define(["jquery", "underscore-min",
             this.isMobile = globalOptions.isMobile;
 
             this.activatedContext = mizarCore.activatedContext;
-            this.sky = this.activatedContext;
+            skyContext = this.activatedContext.globe;
 
-            this.navigation = this.sky.navigation;
-            skyContext = this.sky;
+            this.navigation = mizarCore.navigation;
 
-            // TODO : Extend GlobWeb base layer to be able to publish events by itself
-            // to avoid the following useless call
             var self = this;
-            skyContext.globe.subscribe("features:added", function (featureData) {
-                self.publish("features:added", featureData);
-            });
 
             self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
                 self.addFitsEvent(layerDesc, planetLayer);
             });
 
-            // TODO : Extend GlobWeb base layer to be able to publish events by itself
-            // to avoid the following useless call
-
-            this.sky.globe.coordinateSystem.type = globalOptions.options.coordSystem;
+            this.activatedContext.globe.coordinateSystem.type = globalOptions.options.coordSystem;
 
             // Create data manager
             PickingManager.init(mizarCore, globalOptions.options);
@@ -131,14 +122,21 @@ define(["jquery", "underscore-min",
                 Samp.init(mizarCore, lm, ImageManagerLite, globalOptions.options);
             }
 
-            // Initialization of tools useful for different modules
-            Utils.init(mizarCore);
+            this.addMouseEvents();
 
-            // TODO Subscribe all events to MizarWidgetGlobal
-            //MizarWidgetGlobal.subscribe('mizarGui:')
+        };
 
-            /*** Refactor into common ? ***/
-                // Fade hover styled image effect
+        /**************************************************************************************************************/
+
+        Utils.inherits(Event, MizarWidgetGui);
+
+        /**************************************************************************************************************/
+
+        /**
+         * Register all mouse events
+         */
+        MizarWidgetGui.prototype.addMouseEvents = function() {
+            // Fade hover styled image effect
             $("body").on("mouseenter", "span.defaultImg", function () {
                 //stuff to do on mouseover
                 $(this).stop().animate({"opacity": "0"}, 100);
@@ -164,10 +162,6 @@ define(["jquery", "underscore-min",
                 }
             });
         };
-
-        /**************************************************************************************************************/
-
-        Utils.inherits(Event, MizarWidgetGui);
 
         /**************************************************************************************************************/
 
@@ -217,9 +211,9 @@ define(["jquery", "underscore-min",
                 if (visible) {
                     this.compass = new Compass({
                         element: "compassDiv",
-                        globe: this.sky.globe,
+                        globe: this.activatedContext.globe,
                         navigation: this.navigation,
-                        coordSystem: this.sky.globe.coordinateSystem.type,
+                        coordSystem: this.activatedContext.globe.coordinateSystem.type,
                         isMobile: options.isMobile,
                         mizarBaseUrl: options.mizarBaseUrl
                     });
@@ -228,7 +222,7 @@ define(["jquery", "underscore-min",
                         this.compass.remove();
                     }
                 }
-                skyContext.setComponentVisibility("compassDiv", visible);
+                this.activatedContext.setComponentVisibility("compassDiv", visible);
             }
         };
 
@@ -243,7 +237,7 @@ define(["jquery", "underscore-min",
                 if (this.mode == "sky") {
                     if (!this.measureToolSky) {
                         this.measureToolSky = new MeasureToolSky({
-                            globe: this.sky.globe,
+                            globe: this.activatedContext.globe,
                             navigation: this.navigation,
                             isMobile: this.isMobile,
                             mode: this.mode
@@ -251,7 +245,7 @@ define(["jquery", "underscore-min",
                     }
                 }
             }
-            skyContext.setComponentVisibility("measureSkyContainer", visible);
+            this.activatedContext.setComponentVisibility("measureSkyContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -265,16 +259,16 @@ define(["jquery", "underscore-min",
                 if (this.mode == "planet") {
                     if (!this.measureToolPlanet) {
                         this.measureToolPlanet = new MeasureToolPlanet({
-                            globe: planetContext.globe,
-                            navigation: planetContext.navigation,
-                            planetLayer: planetContext.planetLayer,
+                            globe: this.activatedContext.globe,
+                            navigation: this.navigation,
+                            planetLayer: this.activatedContext.planetLayer,
                             isMobile: this.isMobile,
                             mode: this.mode
                         });
                     }
                 }
             }
-            skyContext.setComponentVisibility("measureSkyContainer", visible);
+            this.activatedContext.setComponentVisibility("measureSkyContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -288,14 +282,14 @@ define(["jquery", "underscore-min",
                 if (!this.switchTo2D) {
                     this.switchTo2D = new SwitchTo2D({
                         mizar: this,
-                        globe: this.sky.globe,
+                        globe: this.activatedContext.globe,
                         navigation: this.navigation,
                         isMobile: this.isMobile,
                         mode: this.mode
                     });
                 }
             }
-            skyContext.setComponentVisibility("measureContainer", visible);
+            this.activatedContext.setComponentVisibility("measureContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -306,7 +300,7 @@ define(["jquery", "underscore-min",
          */
         MizarWidgetGui.prototype.setSampGui = function (visible) {
             if (!options.isMobile) {
-                skyContext.setComponentVisibility("sampContainer", visible);
+                this.activatedContext.setComponentVisibility("sampContainer", visible);
             }
         };
 
@@ -316,7 +310,7 @@ define(["jquery", "underscore-min",
          *    Add/remove shortener GUI
          */
         MizarWidgetGui.prototype.setShortenerUrlGui = function (visible) {
-            skyContext.setComponentVisibility("shareContainer", visible);
+            this.activatedContext.setComponentVisibility("shareContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -329,13 +323,13 @@ define(["jquery", "underscore-min",
                 // Mollweide viewer lazy initialization
                 if (!this.mollweideViewer) {
                     this.mollweideViewer = new MollweideViewer({
-                        globe: this.sky.globe,
+                        globe: this.activatedContext.globe,
                         navigation: this.navigation,
                         mizarBaseUrl: options.mizarBaseUrl
                     });
                 }
             }
-            skyContext.setComponentVisibility("2dMapContainer", visible);
+            this.activatedContext.setComponentVisibility("2dMapContainer", visible);
 
         };
 
@@ -346,7 +340,7 @@ define(["jquery", "underscore-min",
          */
         MizarWidgetGui.prototype.setReverseNameResolverGui = function (visible) {
             if (visible) {
-                ReverseNameResolverView.init(mizarCore, skyContext);
+                ReverseNameResolverView.init(mizarCore, this.activatedContext);
             } else {
                 ReverseNameResolverView.remove();
             }
@@ -363,7 +357,7 @@ define(["jquery", "underscore-min",
             } else {
                 NameResolverView.remove();
             }
-            skyContext.setComponentVisibility("searchDiv", visible);
+            this.activatedContext.setComponentVisibility("searchDiv", visible);
         };
 
         /**************************************************************************************************************/
@@ -377,7 +371,7 @@ define(["jquery", "underscore-min",
             } else {
                 LayerManagerView.remove();
             }
-            skyContext.setComponentVisibility("categoryDiv", visible);
+            this.activatedContext.setComponentVisibility("categoryDiv", visible);
         };
 
         /**************************************************************************************************************/
@@ -392,7 +386,7 @@ define(["jquery", "underscore-min",
                 } else {
                     ImageViewer.remove();
                 }
-                skyContext.setComponentVisibility("imageViewerDiv", visible);
+                this.activatedContext.setComponentVisibility("imageViewerDiv", visible);
             }
         };
 
@@ -404,13 +398,13 @@ define(["jquery", "underscore-min",
         MizarWidgetGui.prototype.setExportGui = function (visible) {
             if (visible) {
                 this.exportTool = new ExportTool({
-                    globe: this.sky.globe,
+                    globe: this.activatedContext.globe,
                     navigation: this.navigation,
                     layers: mizarCore.getLayers()
                 });
             }
 
-            skyContext.setComponentVisibility("exportContainer", visible);
+            this.activatedContext.setComponentVisibility("exportContainer", visible);
         };
 
         /**************************************************************************************************************/
@@ -419,7 +413,7 @@ define(["jquery", "underscore-min",
          *    Add/remove position tracker GUI
          */
         MizarWidgetGui.prototype.setPositionTrackerGui = function (visible) {
-            skyContext.setComponentVisibility("posTracker", visible);
+            this.activatedContext.setComponentVisibility("posTracker", visible);
         };
 
         /**************************************************************************************************************/
@@ -430,7 +424,7 @@ define(["jquery", "underscore-min",
          *        "EQ" or "GAL"(respectively equatorial or galactic)
          */
         MizarWidgetGui.prototype.setCoordinateSystem = function (newCoordSystem) {
-            this.sky.coordinateSystem.type = newCoordSystem;
+            this.activatedContext.globe.coordinateSystem.type = newCoordSystem;
 
             if (this.mollweideViewer) {
                 this.mollweideViewer.setCoordSystem(newCoordSystem);
@@ -484,10 +478,10 @@ define(["jquery", "underscore-min",
                 console.log("Change sky to planet context");
 
                 // Hide sky
-                skyContext.hide();
+                this.activatedContext.hide();
 
                 // Hide all additional layers
-                skyContext.hideAdditionalLayers();
+                this.activatedContext.hideAdditionalLayers();
                 // Create planet context( with existing sky render context )
                 var planetConfiguration = {
                     planetLayer: gwLayer,

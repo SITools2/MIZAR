@@ -22,9 +22,11 @@
  * Sky context (inherited from MizarContext)
  */
 define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNavigation", "gw/Utils/Utils",
-        "./MizarContext", "../layer/LayerManager", "../gui/PositionTracker", "jquery.ui"],
+        "./MizarContext", "../layer/LayerManager", "../provider/StarProvider", "../provider/ConstellationProvider",
+        "../provider/JsonProvider", "../provider/OpenSearchProvider", "../gui/tracker/PositionTracker", "jquery.ui"],
     function ($, _, Sky, AstroNavigation, Utils,
-              MizarContext, LayerManager, PositionTracker) {
+              MizarContext, LayerManager, StarProvider, ConstellationProvider,
+              JsonProvider, OpenSearchProvider, PositionTracker) {
 
         /**************************************************************************************************************/
 
@@ -68,7 +70,7 @@ define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNaviga
             this.navigation = new AstroNavigation(this.globe, options.navigation);
 
             // Eye position tracker initialization
-            PositionTracker.init({
+            this.positionTracker = new PositionTracker({
                 element: "posTracker",
                 globe: this.globe,
                 navigation: this.navigation,
@@ -89,6 +91,23 @@ define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNaviga
         SkyContext.prototype.getAdditionalLayers = function () {
             return _.filter(LayerManager.getLayers(), function (layer) {
                 return layer.category !== "background";
+            });
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Load specific sky providers and register them to the LayerManager
+         */
+        SkyContext.prototype.loadProviders = function () {
+            var starProvider = new StarProvider();
+            var constellationProvider = new ConstellationProvider();
+            var openSearchProvider = new OpenSearchProvider();
+
+            LayerManager.registerDataProvider("constellation", constellationProvider.loadFiles);
+            LayerManager.registerDataProvider("star", starProvider.loadFiles);
+            LayerManager.registerDataProvider("OpenSearch", function (gwLayer, configuration) {
+                openSearchProvider.loadFiles(gwLayer, configuration, 1);
             });
         };
 

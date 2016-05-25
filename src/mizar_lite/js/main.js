@@ -30,8 +30,8 @@ require.config({
         "jszip": "../../mizar_lite/externals/jszip/jszip.min",
         "saveAs": "../../mizar_lite/externals/fileSaver/FileSaver.min",
         "jquery.nicescroll.min": "../../mizar_lite/externals/jquery.nicescroll/dist/jquery.nicescroll.min",
-		"string": "../../mizar_lite/externals/string/dist/string.min",
-		"fits": "../../mizar_lite/externals/fits",
+        "string": "../../mizar_lite/externals/string/dist/string.min",
+        "fits": "../../mizar_lite/externals/fits",
         "samp": "../../mizar_lite/externals/samp",
         "gzip": "../../mizar_lite/externals/gzip",
         "crc32": "../../mizar_lite/externals/crc32",
@@ -47,26 +47,26 @@ require.config({
         "flot": "../../mizar_lite/externals/flot/jquery.flot.min",
         "flot.tooltip": "../../mizar_lite/externals/flot/jquery.flot.tooltip.min",
         "flot.axislabels": "../../mizar_lite/externals/flot/jquery.flot.axislabels",
-        "loadmask" : "../../mizar_lite/externals/loadmask/jquery.loadmask",
+        "loadmask": "../../mizar_lite/externals/loadmask/jquery.loadmask",
 
         // Mizar_Gui requirements
-        "mizar_gui" : "../../mizar_gui/js",
-        "uws_gui" : "../../mizar_gui/js/uws",
+        "mizar_gui": "../../mizar_gui/js",
+        "uws_gui": "../../mizar_gui/js/uws",
 
         //"service_gui" : "service_gui",
 
         // Mizar_Lite requirements
-        "context" : "../../mizar_lite/js/context",
-        "layer" : "../../mizar_lite/js/layer",
-        "provider" : "../../mizar_lite/js/provider",
-        "service" : "../../mizar_lite/js/service",
-        "gui_core" : "../../mizar_lite/js/gui",
-        "name_resolver" : "../../mizar_lite/js/name_resolver",
-        "reverse_name_resolver" : "../../mizar_lite/js/reverse_name_resolver",
-        "uws" : "../../mizar_lite/js/uws",
+        "context": "../../mizar_lite/js/context",
+        "layer": "../../mizar_lite/js/layer",
+        "provider": "../../mizar_lite/js/provider",
+        "service": "../../mizar_lite/js/service",
+        "gui_core": "../../mizar_lite/js/gui",
+        "name_resolver": "../../mizar_lite/js/name_resolver",
+        "reverse_name_resolver": "../../mizar_lite/js/reverse_name_resolver",
+        "uws": "../../mizar_lite/js/uws",
         //"mizar_lite" : "./js",
-        "templates" : "../../mizar_lite/templates",
-        "data" : "../data",
+        "templates": "../../mizar_lite/templates",
+        "data": "../data",
     },
     shim: {
         'jquery': {
@@ -112,19 +112,37 @@ require.config({
 require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
 
     function initGuiAndLayers() {
-        // Set different GUIs
-        mizar.setAngleDistanceSkyGui(true);
-        mizar.setSampGui(true);
-        mizar.setShortenerUrlGui(true);
-        mizar.setMollweideMapGui(true);
-        mizar.setReverseNameResolverGui(true);
-        mizar.setNameResolverGui(true);
-        mizar.setCategoryGui(true);
-        mizar.setCompassGui(true);
-        mizar.setShowCredits(true);
-        mizar.setImageViewerGui(true);
-        mizar.setSwitchTo2D(true);
-        mizar.setExportGui(true);
+
+        if (mizar.mode == "sky") {
+            // Set different GUIs
+            mizar.setAngleDistanceSkyGui(true);
+            mizar.setSampGui(true);
+            mizar.setShortenerUrlGui(true);
+            mizar.setMollweideMapGui(true);
+            mizar.setReverseNameResolverGui(true);
+            mizar.setNameResolverGui(true);
+            mizar.setCategoryGui(true);
+            mizar.setCompassGui(true);
+            mizar.setShowCredits(true);
+            mizar.setImageViewerGui(true);
+            mizar.setSwitchTo2D(true);
+            mizar.setExportGui(true);
+
+        } else {
+            // Set different GUIs
+            mizar.setAngleDistanceSkyGui(false);
+            mizar.setSampGui(false);
+            mizar.setShortenerUrlGui(false);
+            mizar.setMollweideMapGui(false);
+            mizar.setReverseNameResolverGui(true);
+            mizar.setNameResolverGui(true);
+            mizar.setCategoryGui(true);
+            mizar.setCompassGui(false);
+            mizar.setShowCredits(false);
+            mizar.setImageViewerGui(true);
+            mizar.setSwitchTo2D(true);
+            mizar.setExportGui(false);
+        }
 
         var atmosMarsLayer = {
             "category": "Other",
@@ -158,7 +176,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/min/costard_craters_min_3.json"
             },
             "visible": false,
-            "pickable" : true,
+            "pickable": true,
             "color": "red"
         };
         mizar.addLayer(cratersCatalog, marsLayer);
@@ -173,7 +191,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/detections_crateres_benjamin_bultel_icarus.json"
             },
             "visible": false,
-            "pickable" : true,
+            "pickable": true,
 //                        "color": ""
         };
         mizar.addLayer(peakIsidisHellasCatalog, marsLayer);
@@ -188,7 +206,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/landing_sites.json"
             },
             "visible": false,
-            "pickable" : true,
+            "pickable": true,
             //"icon": "http://psup.ias.u-psud.fr:8283/sitools/upload/marker_green.png"
         };
         mizar.addLayer(landingCatalog, marsLayer);
@@ -203,10 +221,10 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/min/crocus_ls150-200_min.json"
             },
             "visible": false,
-            "pickable" : true,
+            "pickable": true,
             "color": "blue"
         };
-        mizar.addLayer(crocusCatalog ,marsLayer)
+        mizar.addLayer(crocusCatalog, marsLayer)
 
         var scallopedCatalog = {
             "category": "Catalogs",
@@ -219,7 +237,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             },
             "visible": false,
             "color": "yellow",
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(scallopedCatalog, marsLayer);
 
@@ -234,7 +252,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             },
             "visible": false,
 //                        "color": "",
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(hydMinCatalog, marsLayer);
 
@@ -249,7 +267,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             },
             "visible": false,
 //                        "color": "",
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(vallesMarLowCalPyroCatalog, marsLayer);
 
@@ -264,7 +282,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             },
             "visible": false,
 //                        "color": "",
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(centralPeakMinSouthCatalog, marsLayer);
 
@@ -280,7 +298,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             "format": "image/png",
             "attribution": "Themis Day IR 100m"
         };
-        mizar.addLayer(themisDayIr100mLayer,marsLayer);
+        mizar.addLayer(themisDayIr100mLayer, marsLayer);
 
         var themisNightIr100mLayer = {
             "name": "Themis Night IR 100m",
@@ -292,7 +310,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             "format": "image/png",
             "attribution": "Themis Day IR 100m"
         };
-        mizar.addLayer(themisNightIr100mLayer,marsLayer);
+        mizar.addLayer(themisNightIr100mLayer, marsLayer);
 
         var molaShadedRelierColorLayer = {
             "name": "Mars Mola Shaded Relief Color",
@@ -304,7 +322,7 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             "format": "image/png",
             "attribution": "Mars Marc Shaded Relief Color TEST !"
         };
-        mizar.addLayer(molaShadedRelierColorLayer,marsLayer);
+        mizar.addLayer(molaShadedRelierColorLayer, marsLayer);
 
         var molaShadedRelierLayer = {
             "name": "Mars Mola Shaded Relief",
@@ -316,164 +334,164 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
             "format": "image/png",
             "attribution": "Mars Shaded Relief "
         };
-        mizar.addLayer(molaShadedRelierLayer,marsLayer);
+        mizar.addLayer(molaShadedRelierLayer, marsLayer);
 
         var tes_albedo = {
             "name": "TES Albedo",
             "type": "WMS",
             "category": "Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_albedo",
             "description": "TES Albedo",
             "format": "image/png"
         };
-        mizar.addLayer(tes_albedo,marsLayer);
+        mizar.addLayer(tes_albedo, marsLayer);
 
         // TEST OMEGA PNG
-        var omega_albedo_layer ={
+        var omega_albedo_layer = {
             "name": "OMEGA ALBEDO",
             "type": "WMS",
             "category": "Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_albedo_r1800",
             "description": "omega albedo",
             "format": "image/png"
         };
-        mizar.addLayer(omega_albedo_layer,marsLayer);
+        mizar.addLayer(omega_albedo_layer, marsLayer);
 
-        var omega_olivine_sp1_layer ={
+        var omega_olivine_sp1_layer = {
             "name": "OMEGA Olivine SP1",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_olivine_sp1",
             "description": "omega olivine sp1",
             "format": "image/png"
         };
-        mizar.addLayer(omega_olivine_sp1_layer,marsLayer);
+        mizar.addLayer(omega_olivine_sp1_layer, marsLayer);
 
-        var omega_olivine_sp2_layer ={
+        var omega_olivine_sp2_layer = {
             "name": "OMEGA Olivine SP2",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_olivine_sp2",
             "description": "omega olivine sp2",
             "format": "image/png"
         };
-        mizar.addLayer(omega_olivine_sp2_layer,marsLayer);
+        mizar.addLayer(omega_olivine_sp2_layer, marsLayer);
 
-        var omega_olivine_sp3_layer ={
+        var omega_olivine_sp3_layer = {
             "name": "OMEGA Olivine SP3",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_olivine_sp3",
             "description": "omega olivine sp3",
             "format": "image/png"
         };
-        mizar.addLayer(omega_olivine_sp3_layer,marsLayer);
+        mizar.addLayer(omega_olivine_sp3_layer, marsLayer);
 
-        var omega_ferric_bd530_layer ={
+        var omega_ferric_bd530_layer = {
             "name": "OMEGA Ferric Fe3+",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_ferric_bd530",
             "description": "Omega Ferric Fe3+ layer",
             "format": "image/png"
         };
-        mizar.addLayer(omega_ferric_bd530_layer,marsLayer);
+        mizar.addLayer(omega_ferric_bd530_layer, marsLayer);
 
-        var omega_ferric_nnphs_layer ={
+        var omega_ferric_nnphs_layer = {
             "name": "OMEGA Ferric Nanophase",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_ferric_nnphs",
             "description": "Omega Ferric Nanophase layer",
             "format": "image/png"
         };
-        mizar.addLayer(omega_ferric_nnphs_layer,marsLayer);
+        mizar.addLayer(omega_ferric_nnphs_layer, marsLayer);
 
-        var omega_pyroxene_bd2000_layer ={
+        var omega_pyroxene_bd2000_layer = {
             "name": "OMEGA Pyroxene",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_pyroxene_bd2000",
             "description": "Omega Pyroxene layer",
             "format": "image/png"
         };
-        mizar.addLayer(omega_pyroxene_bd2000_layer,marsLayer);
+        mizar.addLayer(omega_pyroxene_bd2000_layer, marsLayer);
 
-        var omega_hydration_layer ={
+        var omega_hydration_layer = {
             "name": "OMEGA Hydrated mineral sites",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "omega_hydration",
             "description": "Omega Hydrated mineral sites layer",
             "format": "image/png"
         };
-        mizar.addLayer(omega_hydration_layer,marsLayer);
+        mizar.addLayer(omega_hydration_layer, marsLayer);
 
         // Autres mineral Layers
-        var tes_dust_cover ={
+        var tes_dust_cover = {
             "name": "TES Dust Cover",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_dust_cover",
             "description": "TES Dust Cover",
             "format": "image/png"
         };
-        mizar.addLayer(tes_dust_cover,marsLayer);
+        mizar.addLayer(tes_dust_cover, marsLayer);
 
-        var tes_clinopyroxene_layer ={
+        var tes_clinopyroxene_layer = {
             "name": "TES High-Calcium Pyroxene Abundance",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_High-Ca_Pyroxene",
             "description": "TES Clinopyroxene",
             "format": "image/png"
         }
-        mizar.addLayer(tes_clinopyroxene_layer,marsLayer);
+        mizar.addLayer(tes_clinopyroxene_layer, marsLayer);
 
-        var tes_plagioclase_layer ={
+        var tes_plagioclase_layer = {
             "name": "TES Plagioclase",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_plagioclase",
             "description": "TES Plagioclase",
             "format": "image/png"
         };
-        mizar.addLayer(tes_plagioclase_layer,marsLayer);
+        mizar.addLayer(tes_plagioclase_layer, marsLayer);
 
-        var tes_low_ca_Pyroxene_layer ={
+        var tes_low_ca_Pyroxene_layer = {
             "name": "TES Low-Ca Pyroxene",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_Low-Ca_Pyroxene",
             "description": "TES Low-Ca Pyroxene",
             "format": "image/png"
         };
-        mizar.addLayer(tes_low_ca_Pyroxene_layer,marsLayer);
+        mizar.addLayer(tes_low_ca_Pyroxene_layer, marsLayer);
 
-        var tes_olivine_layer ={
+        var tes_olivine_layer = {
             "name": "TES Olivine",
             "type": "WMS",
             "category": "Mineral Layer",
-            "baseUrl":  "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
+            "baseUrl": "http://idoc-wmsmars.ias.u-psud.fr/cgi-bin/mapserv?map=/home/cnes/mars/mars.map",
             "layers": "tes_olivine",
             "description": "TES Olivine",
             "format": "image/png"
         };
-        mizar.addLayer(tes_olivine_layer,marsLayer);
-        var mars_mex_hrsc_dtmrdr_c  = {
+        mizar.addLayer(tes_olivine_layer, marsLayer);
+        var mars_mex_hrsc_dtmrdr_c = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "Mars Mex hrsc dtmrdr",
@@ -483,11 +501,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mex_hrsc_dtmrdr_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mex_hrsc_dtmrdr_c, marsLayer);
 
-        var mars_mex_hrsc_rdr_c0a  = {
+        var mars_mex_hrsc_rdr_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "Mars Mex rdr c0a",
@@ -497,11 +515,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mex_hrsc_rdr_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mex_hrsc_rdr_c0a, marsLayer);
 
-        var mars_mex_omega_edr_c0a  = {
+        var mars_mex_omega_edr_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mex_omega_edr_c0a",
@@ -511,11 +529,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mex_omega_edr_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mex_omega_edr_c0a, marsLayer);
 
-        var mars_mro_crism_trdrddrfrt07_c0a  = {
+        var mars_mro_crism_trdrddrfrt07_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_crism_trdrddrfrt07_c0a",
@@ -525,11 +543,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_crism_trdrddrfrt07_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_crism_trdrddrfrt07_c0a, marsLayer);
 
-        var mars_mro_crism_trdrddrmsp_c0a  = {
+        var mars_mro_crism_trdrddrmsp_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_crism_trdrddrmsp_c0a",
@@ -539,11 +557,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_crism_trdrddrmsp_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_crism_trdrddrmsp_c0a, marsLayer);
 
-        var mars_mro_ctx_edr_c0a  = {
+        var mars_mro_ctx_edr_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_ctx_edr_c0a",
@@ -553,11 +571,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_ctx_edr_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_ctx_edr_c0a, marsLayer);
 
-        var mars_mro_ctx_stereo_c0a  = {
+        var mars_mro_ctx_stereo_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_ctx_stereo_c0a",
@@ -567,11 +585,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_ctx_stereo_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_ctx_stereo_c0a, marsLayer);
 
-        var mars_mro_hirise_dtm_c0a  = {
+        var mars_mro_hirise_dtm_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_hirise_dtm_c0a",
@@ -581,11 +599,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_hirise_dtm_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_hirise_dtm_c0a, marsLayer);
 
-        var mars_mro_hirise_rdrv11_c0a  = {
+        var mars_mro_hirise_rdrv11_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_hirise_rdrv11_c0a",
@@ -595,11 +613,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_hirise_rdrv11_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_hirise_rdrv11_c0a, marsLayer);
 
-        var mars_mro_hirise_stereo_c0a  = {
+        var mars_mro_hirise_stereo_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_mro_hirise_stereo_c0a",
@@ -609,11 +627,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_mro_hirise_stereo_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_mro_hirise_stereo_c0a, marsLayer);
 
-        var mars_ody_themis_irrdr_daylarge_c0a  = {
+        var mars_ody_themis_irrdr_daylarge_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_ody_themis_irrdr_daylarge_c0a",
@@ -623,11 +641,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_ody_themis_irrdr_daylarge_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_ody_themis_irrdr_daylarge_c0a, marsLayer);
 
-        var mars_ody_themis_irrdr_daysmall_c0a  = {
+        var mars_ody_themis_irrdr_daysmall_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_ody_themis_irrdr_daysmall_c0a",
@@ -637,11 +655,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_ody_themis_irrdr_daysmall_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_ody_themis_irrdr_daysmall_c0a, marsLayer);
 
-        var mars_ody_themis_irrdr_nightlarge_c0a  = {
+        var mars_ody_themis_irrdr_nightlarge_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_ody_themis_irrdr_nightlarge_c0a",
@@ -651,11 +669,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_ody_themis_irrdr_nightlarge_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_ody_themis_irrdr_nightlarge_c0a, marsLayer);
 
-        var mars_ody_themis_irrdr_nightsmall_c0a  = {
+        var mars_ody_themis_irrdr_nightsmall_c0a = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "mars_ody_themis_irrdr_nightsmall_c0a",
@@ -665,11 +683,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:mars_ody_themis_irrdr_nightsmall_c0a&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(mars_ody_themis_irrdr_nightsmall_c0a, marsLayer);
 
-        var emars_crism  = {
+        var emars_crism = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "emars_crism",
@@ -679,11 +697,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:emars_crism&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(emars_crism, marsLayer);
 
-        var emars_ctx  = {
+        var emars_ctx = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "emars_ctx",
@@ -693,11 +711,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:emars_ctx&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(emars_ctx, marsLayer);
 
-        var emars_ctx_dtm  = {
+        var emars_ctx_dtm = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "emars_ctx_dtm",
@@ -707,11 +725,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:emars_ctx_dtm&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(emars_ctx_dtm, marsLayer);
 
-        var emars_hirise  = {
+        var emars_hirise = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "emars_hirise",
@@ -721,11 +739,11 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:emars_hirise&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(emars_hirise, marsLayer);
 
-        var emars_hirise_dtm  = {
+        var emars_hirise_dtm = {
             "category": "MarsSI Data",
             "type": "GeoJSON",
             "name": "emars_hirise_dtm",
@@ -735,15 +753,15 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
                 "url": "http://emars.univ-lyon1.fr/geoserver/EmarsGis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=EmarsGis:emars_hirise_dtm&maxFeatures=50&outputFormat=application/json"
             },
             "visible": false,
-            "pickable" : true
+            "pickable": true
         };
         mizar.addLayer(emars_hirise_dtm, marsLayer);
     }
 
     mizar = new MizarWidgetGlobal('#mizarWidget-div', {
-        guiActivated : true,
-        mode : "sky",
-        defaultLayer : "MOLA",
+        guiActivated: true,
+        mode: "sky",
+        //defaultLayer : "MOLA",
         debug: false,
         navigation: {
             "initTarget": [0, 0]
@@ -756,9 +774,9 @@ require(["./MizarWidgetGlobal"], function (MizarWidgetGlobal) {
         },
         sitoolsBaseUrl: 'http://sitools.akka.eu:8080',
         hipsServiceUrl: "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color",
-        nameResolver : {
+        nameResolver: {
             zoomFov: 2,
-            jsObject : "./name_resolver/IMCCENameResolver"
+            jsObject: "./name_resolver/IMCCENameResolver"
         }
         //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
     }, initGuiAndLayers);
