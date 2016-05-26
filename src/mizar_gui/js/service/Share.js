@@ -21,7 +21,7 @@
 /**
  * Share url module : creating url with current navigation properties
  */
-define(["jquery", "service/ShareLite", "gui_core/ErrorDialog"],
+define(["jquery", "service/ShareLite", "gui_core/dialog/ErrorDialog"],
     function ($, ShareLite, ErrorDialog) {
 
         function init(options) {

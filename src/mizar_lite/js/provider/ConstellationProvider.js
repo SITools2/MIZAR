@@ -103,7 +103,7 @@ define(["jquery", "provider/AbstractProvider", "../layer/LayerManager", "gw/Rend
                 console.error("Not valid options");
                 return false;
             }
-        }
+        };
 
         /**************************************************************************************************************/
 

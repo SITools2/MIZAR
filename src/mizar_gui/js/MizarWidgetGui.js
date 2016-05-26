@@ -43,8 +43,8 @@ define(["jquery", "underscore-min",
         "../../mizar_lite/js/layer/LayerManager",
         "../../mizar_lite/js/Utils",
         "../../mizar_lite/js/gui/ImageManagerLite",
-        "../../mizar_lite/js/gui/AboutDialog",
-        "../../mizar_lite/js/gui/ErrorDialog",
+        "../../mizar_lite/js/gui/dialog/AboutDialog",
+        "../../mizar_lite/js/gui/dialog/ErrorDialog",
 
         // GlobWeb
         "gw/Utils/Event",

@@ -88,11 +88,17 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
             });
 
             if (this.mode == "3d") {
+                //ElevationTracker.init({
+                //    element: "elevTracker",
+                //    globe: this.globe,
+                //    elevationTracker: options.elevationTracker,
+                //    elevationLayer: (options.planetLayer != undefined) ? options.planetLayer.elevationLayer : undefined
+                //});
                 this.elevationTracker = new ElevationTracker({
                     element: "elevTracker",
                     globe: this.globe,
                     elevationTracker: options.elevationTracker,
-                    elevationLayer: (!options.planetLayer) ? options.planetLayer.elevationLayer : undefined
+                    elevationLayer: (options.planetLayer != undefined) ? options.planetLayer.elevationLayer : undefined
                 });
 
                 this.navigation = new Navigation(this.globe, options.navigation);

@@ -58,6 +58,7 @@ define(["jquery", "./AbstractTracker", "Utils"],
                 }
             }
         };
+
         /**************************************************************************************************************/
 
         Utils.inherits(AbstractTracker, ElevationTracker);
@@ -76,7 +77,7 @@ define(["jquery", "./AbstractTracker", "Utils"],
 
             var geoPos = globe.getLonLatFromPixel(event.clientX, event.clientY);
             if (geoPos && mizar.mode === "planet") {
-                var elevation = self.compute(geoPos[0], geoPos[1]);
+                var elevation = self.compute([geoPos[0], geoPos[1]]);
                 document.getElementById(element).innerHTML = Utils.roundNumber(elevation / scale, 0) + " meters";
             } else {
                 document.getElementById(element).innerHTML = "";

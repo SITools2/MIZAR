@@ -20,8 +20,9 @@
 
 /**
  * AdditionalLayersView module
+ * @class AdditionalLayersLite
  */
-define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFITSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer", "gw/Layer/VectorLayer", "gui_core/ErrorDialog", "Utils"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFITSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer", "gw/Layer/VectorLayer", "gui_core/dialog/ErrorDialog", "Utils"],
     function ($, _, FeatureStyle, OpenSearchLayer, HEALPixFITSLayer, MocLayer, PlanetLayer, VectorLayer, ErrorDialog, Utils) {
 
         var mizar;
@@ -169,6 +170,12 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
         /**************************************************************************************************************/
 
         return {
+            /**
+             * @constructor
+             * @param m
+             * @param s
+             * @param nav
+             */
             init : function (m, s, nav) {
                 mizar = m;
                 sky = s;

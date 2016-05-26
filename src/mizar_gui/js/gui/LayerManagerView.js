@@ -21,7 +21,7 @@
 /**
  * Layer manager view module
  */
-define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gui_core/ImageManagerLite", "./ImageProcessing", "jquery.ui"],
+define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gui_core/ImageManagerLite", "./ImageProcessing", "jquery.ui"],
     function ($, _, LayerManager, ErrorDialog, LayerServiceView, BackgroundLayersView, AdditionalLayersView, ImageManagerLite, ImageProcessing) {
 
         /**

@@ -28,8 +28,8 @@ define(["jquery", "underscore-min",
         "text!../data/backgroundSurveys.json", "./layer/LayerManager",
         "./service/NameResolver", "./service/ReverseNameResolver",
         "./service/MocBase", "./Utils",
-        "./gui_core/ErrorDialog",
-        "./gui_core/AboutDialog",
+        "./gui_core/dialog/ErrorDialog",
+        "./gui_core/dialog/AboutDialog",
         "./uws/UWSManager",
         "./gui_core/ImageManagerLite",
 
@@ -369,8 +369,7 @@ define(["jquery", "underscore-min",
                         planetContext.globe.refresh();
                         var marsLayer = mizar.getLayer("Mars");
                         mizar.getMizarCore().getLayerManager().setBackgroundSurvey(defaultLayer);
-                        planetContext.globe.tileManager.tiling = mizar.getLayer("DSS").tiling;
-                        //planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
+                        planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
                         self.publish("mizarMode:toggle", marsLayer);
                         $(".backToSky").hide();
                     });
@@ -465,6 +464,8 @@ define(["jquery", "underscore-min",
             this.navigation.zoomTo(geoPos, fovInDegrees, 1000, callback);
         };
 
+        /**************************************************************************************************************/
+
         /**
          * TODO used in MizarWidgetGui
          *
@@ -473,16 +474,16 @@ define(["jquery", "underscore-min",
          * @param newCoordSystem
          *            "EQ" or "GAL"(respectively equatorial or galactic)
          */
-//			MizarWidget.prototype.setCoordinateSystem = function(newCoordSystem) {
-//				this.sky.coordinateSystem.type = newCoordSystem;
-//
-//				if (this.mollweideViewer) {
-//					this.mollweideViewer.setCoordSystem(newCoordSystem);
-//				}
-//
-//				// Publish modified event to update compass north
-//				this.navigation.publish('modified');
-//			};
+        MizarWidgetCore.prototype.setCoordinateSystem = function(newCoordSystem) {
+				this.sky.coordinateSystem.type = newCoordSystem;
+
+				if (this.mollweideViewer) {
+					this.mollweideViewer.setCoordSystem(newCoordSystem);
+				}
+
+				// Publish modified event to update compass north
+				this.navigation.publish('modified');
+			};
 
         /**************************************************************************************************************/
 

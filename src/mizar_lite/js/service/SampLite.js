@@ -21,8 +21,8 @@
 /**
  * SampLite Module : containing core methods
  */
-define(["jquery", "underscore-min", "Utils", "gw/Parser/JsonProcessor", "samp", "jquery.ui"],
-    function ($, _, Utils, JsonProcessor) {
+define(["jquery", "underscore-min", "Utils", "gw/Parser/JsonProcessor", "../gui_core/dialog/ErrorDialog", "samp", "jquery.ui"],
+    function ($, _, Utils, JsonProcessor, ErrorDialog) {
 
         var mizar;
         var sky;

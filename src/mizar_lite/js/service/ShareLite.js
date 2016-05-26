@@ -21,7 +21,7 @@
 /**
  * Share url module : creating url with current navigation properties
  */
-define(["../jquery", "../layer/LayerManager", "../gui_core/ErrorDialog"],
+define(["../jquery", "../layer/LayerManager", "../gui_core/dialog/ErrorDialog"],
     function ($, LayerManager, ErrorDialog) {
 
         // Globals

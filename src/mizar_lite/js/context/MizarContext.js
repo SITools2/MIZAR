@@ -22,7 +22,7 @@
  *    Abstract class for mizar context
  *    Implemented by SkyContext and PlanetContext
  */
-define(["jquery", "underscore-min", "../layer/LayerManager", "../provider/JsonProvider", "../provider/PlanetProvider", "../gui/ErrorDialog", "../gui/AboutDialog", "jquery.ui"],
+define(["jquery", "underscore-min", "../layer/LayerManager", "../provider/JsonProvider", "../provider/PlanetProvider", "../gui/dialog/ErrorDialog", "../gui/dialog/AboutDialog", "jquery.ui"],
     function ($, _, LayerManager, JsonProvider, PlanetProvider, ErrorDialog, AboutDialog) {
 
         /**************************************************************************************************************/

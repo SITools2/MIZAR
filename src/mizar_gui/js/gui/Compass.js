@@ -21,7 +21,7 @@
 /**
  * Compass module : map control with "north" composant
  */
-define(["jquery"], function ($) {
+define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
 
     /**
      *    Private variables
@@ -30,49 +30,6 @@ define(["jquery"], function ($) {
     var globe = null;
     var navigation = null;
     var svgDoc;
-
-    /**
-     *    Function updating the north position on compass
-     */
-    var updateNorth = function () {
-
-        var geo = [];
-        var coordinateSystem = globe.coordinateSystem;
-        coordinateSystem.from3DToEquatorial(navigation.center3d, geo, false);
-        geo = coordinateSystem.convert(geo, 'EQ', coordinateSystem.type);
-
-        var LHV = [];
-        coordinateSystem.getLHVTransform(geo, LHV);
-
-        var temp = [];
-        var north = [LHV[4], LHV[5], LHV[6]];
-        var vertical = [LHV[8], LHV[9], LHV[10]];
-
-        var up = vec3.create(navigation.up);
-        coordinateSystem.from3DToEquatorial(up, temp, false);
-        temp = coordinateSystem.convert(temp, 'EQ', coordinateSystem.type);
-        coordinateSystem.fromEquatorialTo3D(temp, up, false);
-        vec3.normalize(up);
-
-        // Find angle between up and north
-        var cosNorth = vec3.dot(up, north) / (vec3.length(up) * vec3.length(north));
-        var radNorth = Math.acos(cosNorth);
-        if (isNaN(radNorth)) {
-            return;
-        }
-        var degNorth = radNorth * 180 / Math.PI;
-
-        // Find sign between up and north
-        var sign;
-        vec3.cross(up, north, temp);
-        sign = vec3.dot(temp, [vertical[0], vertical[1], vertical[2]]);
-        if (sign < 0) {
-            degNorth *= -1;
-        }
-
-        var northText = svgDoc.getElementById("NorthText");
-        northText.setAttribute("transform", "rotate(" + degNorth + " 40 40)");
-    };
 
     var Compass = function (options) {
 
@@ -93,6 +50,9 @@ define(["jquery"], function ($) {
                 svgDoc.width.baseVal.value = 100;
                 // Append the imported SVG root element to the appropriate HTML element
                 $("#objectCompass").append(svgDoc);
+
+                options.svgDoc = svgDoc;
+                CompassLite.init(options);
 
                 initialize();
                 // Publish modified event to update compass north
@@ -157,7 +117,7 @@ define(["jquery"], function ($) {
                 _lastMouseX = event.layerX - _outerCircleRadius;
                 _lastMouseY = event.layerY - _outerCircleRadius;
 
-                updateNorth();
+                CompassLite.updateNorth();
             };
 
             svgDoc.addEventListener('mousemove', _handleMouseMove);
@@ -172,55 +132,46 @@ define(["jquery"], function ($) {
 
             east.addEventListener("click", function () {
                 navigation.pan(panFactor, 0.);
-                updateNorth();
+                CompassLite.updateNorth();
             });
 
             west.addEventListener("click", function () {
                 navigation.pan(-panFactor, 0.);
-                updateNorth();
+                CompassLite.updateNorth();
             });
 
             north.addEventListener("click", function () {
                 navigation.pan(0, panFactor);
-                updateNorth();
+                CompassLite.updateNorth();
             });
 
             south.addEventListener("click", function () {
                 navigation.pan(0, -panFactor);
-                updateNorth();
+                CompassLite.updateNorth();
             });
 
-            var _alignWithNorth = function (event) {
-                var up = [0, 0, 1];
-                var coordinateSystem = globe.coordinateSystem;
-                var temp = [];
-                coordinateSystem.from3DToEquatorial(up, temp, false);
-                temp = coordinateSystem.convert(temp, coordinateSystem.type, 'EQ');
-                coordinateSystem.fromEquatorialTo3D(temp, up, false);
-                navigation.moveUpTo(up);
-            };
-
-            northText.addEventListener("click", _alignWithNorth);
+            northText.addEventListener("click", CompassLite._alignWithNorth);
 
             if (options.isMobile) {
                 svgDoc.addEventListener('touchstart', _handleMouseDown);
                 svgDoc.addEventListener('touchup', _handleMouseUp);
                 svgDoc.addEventListener('touchmove', _handleMouseMove);
-                northText.addEventListener("touchstart", _alignWithNorth);
+                northText.addEventListener("touchstart", CompassLite._alignWithNorth);
             }
 
             // Update fov when moving
-            navigation.subscribe("modified", updateNorth);
+            navigation.subscribe("modified", CompassLite.updateNorth, northText);
         };
     };
+
+    /**************************************************************************************************************/
 
     /**
      *    Remove compass element
      */
-    Compass.prototype.remove = function () {
-        navigation.unsubscribe("modified", updateNorth);
-        document.getElementById(parentElement).innerHTML = '';
-    };
+    Compass.prototype.remove = CompassLite.remove;
+
+    /**************************************************************************************************************/
 
     return Compass;
 
