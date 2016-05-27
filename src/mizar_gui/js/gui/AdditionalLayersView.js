@@ -177,6 +177,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function createDynamicImageDialog(gwLayer) {
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             // Supports fits, so create dynamic image view in dialog
             var dialogId = "addFitsViewDialog_" + shortName;
             var $dialog = $('<div id="' + dialogId + '"></div>').appendTo('body').dialog({
@@ -233,6 +234,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
         function onVisibilityChange(gwLayer) {
             var isOn = gwLayer.visible();
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             // Manage 'custom' checkbox
             // jQuery UI button is not sexy enough :)
             // Toggle some classes when the user clicks on the visibility checkbox
@@ -300,6 +302,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function createHtmlForAdditionalLayer(gwLayer, categoryId) {
             var shortName = Utils.formatId(gwLayer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             var layerDiv = AdditionalLayersLite.createHTMLFromTemplate(additionalLayerTemplate, gwLayer, shortName, isMobile);
 
             var $layerDiv = $(layerDiv)
@@ -504,6 +507,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function onLoadStart(layer) {
             var shortName = Utils.formatId(layer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             $('#addLayer_' + shortName).find('.spinner').stop(true, true).fadeIn('fast');
         }
 
@@ -514,6 +518,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function onLoadEnd(layer) {
             var shortName = Utils.formatId(layer.name);
+            shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             $('#addLayer_' + shortName).find('.spinner').fadeOut(500);
         }
 

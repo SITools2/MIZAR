@@ -92,7 +92,8 @@ define(["jquery", "underscore-min",
             this.isMobile = globalOptions.isMobile;
 
             this.activatedContext = mizarCore.activatedContext;
-            skyContext = this.activatedContext.globe;
+            this.activatedContext.globe.coordinateSystem.type = globalOptions.options.coordSystem;
+            skyContext = this.activatedContext;
 
             this.navigation = mizarCore.navigation;
 
@@ -102,7 +103,6 @@ define(["jquery", "underscore-min",
                 self.addFitsEvent(layerDesc, planetLayer);
             });
 
-            this.activatedContext.globe.coordinateSystem.type = globalOptions.options.coordSystem;
 
             // Create data manager
             PickingManager.init(mizarCore, globalOptions.options);

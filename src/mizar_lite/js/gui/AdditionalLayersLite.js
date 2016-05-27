@@ -157,14 +157,16 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
             var sLat = 0;
             var nbGeometries = 0;
 
-            for (var i = 0; i < layer.features.length; i++) {
-                var barycenter = Utils.computeGeometryBarycenter(layer.features[i].geometry);
-                sLon += barycenter[0];
-                sLat += barycenter[1];
-                nbGeometries++;
+            if (layer.features.length > 0) {
+                for (var i = 0; i < layer.features.length; i++) {
+                    var barycenter = Utils.computeGeometryBarycenter(layer.features[i].geometry);
+                    sLon += barycenter[0];
+                    sLat += barycenter[1];
+                    nbGeometries++;
+                }
+                //TODO : compute the fov of the zoomTo according to the shape.
+                mizar.activatedContext.navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries]);
             }
-            //TODO : compute the fov of the zoomTo according to the shape.
-            mizar.activatedContext.navigation.zoomTo([sLon / nbGeometries, sLat / nbGeometries]);
         };
 
         /**************************************************************************************************************/
@@ -176,16 +178,16 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSe
              * @param s
              * @param nav
              */
-            init : function (m, s, nav) {
+            init: function (m, s, nav) {
                 mizar = m;
                 sky = s;
                 navigation = nav;
             },
-            generatePointLegend : generatePointLegend,
-            generateLineLegend : generateLineLegend,
-            buildVisibleTilesUrl : buildVisibleTilesUrl,
-            createHTMLFromTemplate : createHTMLFromTemplate,
-            setSublayersVisibility : setSublayersVisibility,
-            zoomTo : zoomTo
+            generatePointLegend: generatePointLegend,
+            generateLineLegend: generateLineLegend,
+            buildVisibleTilesUrl: buildVisibleTilesUrl,
+            createHTMLFromTemplate: createHTMLFromTemplate,
+            setSublayersVisibility: setSublayersVisibility,
+            zoomTo: zoomTo
         };
     });
