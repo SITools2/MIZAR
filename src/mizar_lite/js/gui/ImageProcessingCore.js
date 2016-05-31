@@ -184,7 +184,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "jquery.ui"],
         return {
 
             /**
-             *    Init ImageProcessingLite
+             *    Init ImageProcessingCore
              *
              *    @param options
              *        <ul>

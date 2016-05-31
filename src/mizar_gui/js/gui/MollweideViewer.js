@@ -21,8 +21,8 @@
 /**
  * Mollweider viewer module : Sky representation in mollweide coordinate system
  */
-define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
-    function ($, MollweideViewerLite) {
+define(["jquery", "gui_core/MollweideViewerCore", "Utils"],
+    function ($, MollweideViewerCore) {
 
     var mizarBaseUrl;
 
@@ -36,7 +36,7 @@ define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
         this.globe = options.globe;
         var navigation = options.navigation;
 
-        MollweideViewerLite.init(options);
+        MollweideViewerCore.init(options);
 
         // Interaction parameters
         var dragging = false;
@@ -67,7 +67,7 @@ define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
         canvas.addEventListener('mousedown', function (event) {
 
             var mPos = getMousePos(event);
-            MollweideViewerLite.updateNavigation(mPos);
+            MollweideViewerCore.updateNavigation(mPos);
             dragging = true;
             return true;
         });
@@ -78,7 +78,7 @@ define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
                 return;
 
             var mPos = getMousePos(event);
-            MollweideViewerLite.updateNavigation(mPos);
+            MollweideViewerCore.updateNavigation(mPos);
         });
 
         canvas.addEventListener('mouseup', function () {
@@ -96,15 +96,15 @@ define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
                 $(this).css('background-position', '0px 0px');
                 $(this).parent().animate({left: '0px'}, 300);
                 // Update fov when navigation modified
-                navigation.subscribe("modified", MollweideViewerLite.updateMollweideFov);
-                MollweideViewerLite.updateMollweideFov(MollweideViewerLite.getImageObj());
+                navigation.subscribe("modified", MollweideViewerCore.updateMollweideFov);
+                MollweideViewerCore.updateMollweideFov(MollweideViewerCore.getImageObj());
             }
             else {
                 // Hide
                 $('#mollweideContent').css({boxShadow: "none"});
                 $(this).css('background-position', '0px -20px');
                 $(this).parent().animate({left: '-266px'}, 300);
-                navigation.unsubscribe("modified", MollweideViewerLite.updateMollweideFov);
+                navigation.unsubscribe("modified", MollweideViewerCore.updateMollweideFov);
             }
         });
 
@@ -128,7 +128,7 @@ define(["jquery", "gui_core/MollweideViewerLite", "Utils"],
      */
     MollweideViewer.prototype.setCoordSystem = function (coordSystem) {
         // Update mollweideViewer background image
-        $(MollweideViewerLite.getImageObj()).attr("src", mizarBaseUrl + "css/images/MollweideSky_" + coordSystem + ".png");
+        $(MollweideViewerCore.getImageObj()).attr("src", mizarBaseUrl + "css/images/MollweideSky_" + coordSystem + ".png");
     };
 
     /**********************************************************************************************/

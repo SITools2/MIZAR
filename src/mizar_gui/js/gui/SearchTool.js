@@ -22,8 +22,8 @@
  * Tool designed to select areas on globe
  */
 
-define(["../jquery", "../underscore-min", "./PickingManager", "gui_core/SelectionToolLite", "./PickingManager", "./LayerServiceView", "../Utils", "gw/Tiling/HEALPixBase"],
-    function ($, _, PickingManager, SelectionToolLite, PickingManager, LayerServiceView, Utils, HealpixBase) {
+define(["../jquery", "../underscore-min", "./PickingManager", "gui_core/SelectionToolCore", "./PickingManager", "./LayerServiceView", "../Utils", "gw/Tiling/HEALPixBase"],
+    function ($, _, PickingManager, SelectionToolCore, PickingManager, LayerServiceView, Utils, HealpixBase) {
 
 
         /**
@@ -119,7 +119,7 @@ define(["../jquery", "../underscore-min", "./PickingManager", "gui_core/Selectio
             PickingManager.deactivate();
             navigation.stop();
 
-            selectionTool = new SelectionToolLite({
+            selectionTool = new SelectionToolCore({
                 globe: globe,
                 navigation: navigation,
                 activated: true,

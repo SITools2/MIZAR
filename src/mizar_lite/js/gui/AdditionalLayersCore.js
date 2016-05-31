@@ -20,7 +20,7 @@
 
 /**
  * AdditionalLayersView module
- * @class AdditionalLayersLite
+ * @class AdditionalLayersCore
  */
 define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFITSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer", "gw/Layer/VectorLayer", "gui_core/dialog/ErrorDialog", "Utils"],
     function ($, _, FeatureStyle, OpenSearchLayer, HEALPixFITSLayer, MocLayer, PlanetLayer, VectorLayer, ErrorDialog, Utils) {

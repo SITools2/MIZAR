@@ -63,7 +63,7 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/dialog/ErrorDialog"],
             mizar.sky.coordinateSystem.from3DToGeo(navigation.center3d, geo);
 
             // Get layer visibility parameters
-            var currentLayers = LayerManager.getLayers();
+            var currentLayers = LayerManager.getLayers("sky");
             var visibility = {};
             for (var i = 0; i < currentLayers.length; i++) {
                 visibility[currentLayers[i].name] = currentLayers[i].visible();

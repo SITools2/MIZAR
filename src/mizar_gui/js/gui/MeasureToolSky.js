@@ -22,8 +22,8 @@
  * Tool designed to measure the distance between two points
  */
 
-define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "jquery.ui"],
-    function ($, _, MeasureToolSkyLite, Utils) {
+define(["jquery", "underscore-min", "gui_core/MeasureToolSkyCore", "Utils", "jquery.ui"],
+    function ($, _, MeasureToolSkyCore, Utils) {
 
         var globe, navigation, onselect, scale, self;
 
@@ -42,7 +42,7 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "jqu
             navigation = options.navigation;
             onselect = options.onselect;
 
-            MeasureToolSkyLite.init(options);
+            MeasureToolSkyCore.init(options);
 
             this.renderContext = globe.renderContext;
 
@@ -56,14 +56,14 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "jqu
 
             self = this;
 
-            self.renderContext.canvas.addEventListener("mousedown", $.proxy(MeasureToolSkyLite._handleMouseDown, this));
-            self.renderContext.canvas.addEventListener("mouseup", $.proxy(MeasureToolSkyLite._handleMouseUp, this));
-            self.renderContext.canvas.addEventListener("mousemove", $.proxy(MeasureToolSkyLite._handleMouseMove, this));
+            self.renderContext.canvas.addEventListener("mousedown", $.proxy(MeasureToolSkyCore._handleMouseDown, this));
+            self.renderContext.canvas.addEventListener("mouseup", $.proxy(MeasureToolSkyCore._handleMouseUp, this));
+            self.renderContext.canvas.addEventListener("mousemove", $.proxy(MeasureToolSkyCore._handleMouseMove, this));
 
             if (options.isMobile) {
-                self.renderContext.canvas.addEventListener("touchend", $.proxy(MeasureToolSkyLite._handleMouseUp, this));
-                self.renderContext.canvas.addEventListener("touchmove", $.proxy(MeasureToolSkyLite._handleMouseMove, this));
-                self.renderContext.canvas.addEventListener("touchstart", $.proxy(MeasureToolSkyLite._handleMouseDown, this));
+                self.renderContext.canvas.addEventListener("touchend", $.proxy(MeasureToolSkyCore._handleMouseUp, this));
+                self.renderContext.canvas.addEventListener("touchmove", $.proxy(MeasureToolSkyCore._handleMouseMove, this));
+                self.renderContext.canvas.addEventListener("touchstart", $.proxy(MeasureToolSkyCore._handleMouseDown, this));
             }
             $('#measureSkyInvoker').on('click', function () {
                 self.toggle();
@@ -79,13 +79,13 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolSkyLite", "Utils", "jqu
          *    Enable/disable the tool
          */
         MeasureToolSky.prototype.toggle = function () {
-            MeasureToolSkyLite.activated = !MeasureToolSkyLite.activated;
-            if (MeasureToolSkyLite.activated) {
+            MeasureToolSkyCore.activated = !MeasureToolSkyCore.activated;
+            if (MeasureToolSkyCore.activated) {
                 $(self.renderContext.canvas).css('cursor', 'url(css/images/selectionCursor.png)');
             }
             else {
                 $(self.renderContext.canvas).css('cursor', 'default');
-                MeasureToolSkyLite.clear();
+                MeasureToolSkyCore.clear();
             }
             $('#measureSkyInvoker').toggleClass('selected');
         };

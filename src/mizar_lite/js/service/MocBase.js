@@ -71,7 +71,30 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils"
                     }
                 });
             }
-        }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Request moc layer for the given layer
+         * @param {Layer} layer
+         * @param {Function} callback
+         */
+        function requestMoc(layer, callback) {
+            var mocLayer = this.findMocSublayer(layer);
+            layer.globe = this.sky;
+
+            // Create if doesn't exist
+            if (!mocLayer) {
+                MocBase.createMocSublayer(layer, function (layer) {
+                    callback(this.findMocSublayer(layer));
+                }, function (layer) {
+                    callback(this.findMocSublayer(layer));
+                });
+            } else {
+                callback(mocLayer);
+            }
+        };
 
         /**************************************************************************************************************/
 
@@ -97,7 +120,22 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils"
             else {
                 errorCallback(layer);
             }
-        }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Request sky coverage based on moc
+         * @param layer
+         * @param callback
+         */
+       function requestSkyCoverage (layer, callback) {
+            this.getSkyCoverage(layer, function (layer) {
+                callback(layer.coverage);
+            }, function (layer) {
+                callback(layer.coverage);
+            });
+        };
 
         /**************************************************************************************************************/
 

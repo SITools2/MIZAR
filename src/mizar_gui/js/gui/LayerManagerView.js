@@ -21,8 +21,8 @@
 /**
  * Layer manager view module
  */
-define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gui_core/ImageManagerLite", "./ImageProcessing", "jquery.ui"],
-    function ($, _, LayerManager, ErrorDialog, LayerServiceView, BackgroundLayersView, AdditionalLayersView, ImageManagerLite, ImageProcessing) {
+define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dialog/ErrorDialog", "./LayerServiceView", "./BackgroundLayersView", "./AdditionalLayersView", "gui_core/ImageManagerCore", "./ImageProcessing", "jquery.ui"],
+    function ($, _, LayerManager, Utils, ErrorDialog, LayerServiceView, BackgroundLayersView, AdditionalLayersView, ImageManagerCore, ImageProcessing) {
 
         /**
          * Private variables
@@ -66,7 +66,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/Error
                     // Handle fits image
                     reader.onloadend = function (e) {
                         var arrayBuffer = this.result;
-                        var fits = ImageManagerLite.parseFits(arrayBuffer);
+                        var fits = ImageManagerCore.parseFits(arrayBuffer);
 
                         var gwLayer = LayerManager.createLayerFromFits(name, fits);
 
@@ -79,7 +79,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/Error
                         var fitsData = fits.getHDU().data;
                         mizar.publish("image:add", featureData);
 
-                        var image = ImageManagerLite.handleFits(fitsData, featureData);
+                        var image = ImageManagerCore.handleFits(fitsData, featureData);
                         ImageProcessing.setImage(image);
 
                         $('#loading').hide();
@@ -90,7 +90,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/Error
                     reader.onloadend = function (e) {
                         if (this.result.search('<?xml') > 0) {
                             // Handle xml votable
-                            mizar.convertVotable2JsonFromXML(this.result, function (response) {
+                            Utils.convertVotable2JsonFromXML(this.result, function (response) {
                                 var gwLayer = LayerManager.createLayerFromGeoJson(name, response);
                                 $('#loading').hide();
                             });
@@ -131,7 +131,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "gui_core/dialog/Error
          *    Initialize view with layers stored in <LayerManager>
          */
         function initLayers() {
-            var layers = LayerManager.getLayers();
+            var layers = LayerManager.getLayers("sky");
 
             // Add view depending on category of each layer
             for (var i = 0; i < layers.length; i++) {

@@ -37,12 +37,11 @@ define(["jquery", "underscore-min",
         "./gui/SwitchTo2D", "./gui/ExportTool",
 
         // Mizar_lite
-        "../../mizar_lite/js/MizarWidgetGlobal",
         "../../mizar_lite/js/context/PlanetContext",
         "../../mizar_lite/js/context/SkyContext",
         "../../mizar_lite/js/layer/LayerManager",
         "../../mizar_lite/js/Utils",
-        "../../mizar_lite/js/gui/ImageManagerLite",
+        "gui/ImageManagerCore",
         "../../mizar_lite/js/gui/dialog/AboutDialog",
         "../../mizar_lite/js/gui/dialog/ErrorDialog",
 
@@ -62,8 +61,8 @@ define(["jquery", "underscore-min",
               AdditionalLayersView, ImageManager,
               MeasureToolSky, MeasureToolPlanet,
               SwitchTo2D, ExportTool,
-              MizarWidgetGlobal, PlanetContext, SkyContext,
-              LayerManager, Utils, ImageManagerLite, AboutDialog, ErrorDialog,
+              PlanetContext, SkyContext,
+              LayerManager, Utils, ImageManagerCore, AboutDialog, ErrorDialog,
               Event) {
 
         /**
@@ -87,7 +86,7 @@ define(["jquery", "underscore-min",
 
             parentElement = div;
             options = globalOptions.options;
-            mizarCore = globalOptions.mizarGlobal.mizarWidgetCore;
+            mizarCore = globalOptions.mizarGlobal.mizarCore;
 
             this.isMobile = globalOptions.isMobile;
 
@@ -119,7 +118,7 @@ define(["jquery", "underscore-min",
             // current samp component doesn't break existing SAMP functionality
             if (!this.isMobile) {
                 var lm = mizarCore.getLayerManager();
-                Samp.init(mizarCore, lm, ImageManagerLite, globalOptions.options);
+                Samp.init(mizarCore, lm, ImageManagerCore, globalOptions.options);
             }
 
             this.addMouseEvents();
@@ -400,7 +399,7 @@ define(["jquery", "underscore-min",
                 this.exportTool = new ExportTool({
                     globe: this.activatedContext.globe,
                     navigation: this.navigation,
-                    layers: mizarCore.getLayers()
+                    layers: mizarCore.getLayers("sky")
                 });
             }
 
@@ -439,9 +438,9 @@ define(["jquery", "underscore-min",
         /**
          *    Toggle between planet/sky mode
          */
-        MizarWidgetGui.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
-            var mizarCore = mizar.getMizarCore();
-            var mizarGui = mizar.getMizarGui();
+        MizarWidgetGui.prototype.toggleContext = function (gwLayer, planetDimension, callback) {
+            var mizarCore = mizar.getCore();
+            var mizarGui = mizar.getGui();
 
             mizarCore.mode = (mizarCore.mode === "sky") ? "planet" : "sky";
             mizar.mode = mizarCore.mode;

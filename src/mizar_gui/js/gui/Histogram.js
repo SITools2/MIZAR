@@ -21,7 +21,7 @@
 /**
  * Histogram module : create histogram to the given image
  */
-define(["gui_core/HistogramLite"], function (HistogramLite) {
+define(["gui_core/HistogramCore"], function (HistogramCore) {
 
     // Private variables
     //var nbBins;
@@ -54,13 +54,13 @@ define(["gui_core/HistogramLite"], function (HistogramLite) {
         this.onUpdate = options.onUpdate;
         this.accuracy = options.accuracy || 6;
 
-        HistogramLite.init(options);
+        HistogramCore.init(options);
 
         // Init canvas
         var canvas = document.getElementById(options.canvas);
         this.ctx = canvas.getContext('2d');
 
-        HistogramLite.initThresholds();
+        HistogramCore.initThresholds();
 
         //// Init origins
         //originY = canvas.height - paddingBottom;
@@ -82,13 +82,13 @@ define(["gui_core/HistogramLite"], function (HistogramLite) {
 
         // Show bin pointed by mouse
         var self = this;
-        canvas.addEventListener('mousemove', HistogramLite._handleMouseMove);
+        canvas.addEventListener('mousemove', HistogramCore._handleMouseMove);
 
         // Handle threshold controller selection
-        canvas.addEventListener('mousedown', HistogramLite._handleMouseDown);
+        canvas.addEventListener('mousedown', HistogramCore._handleMouseDown);
 
         // Update histogram on mouseup
-        canvas.addEventListener('mouseup', HistogramLite._handleMouseUp);
+        canvas.addEventListener('mouseup', HistogramCore._handleMouseUp);
     };
 
     /**************************************************************************************************************/
@@ -96,42 +96,42 @@ define(["gui_core/HistogramLite"], function (HistogramLite) {
     /**
      *    Get histogram value from the given X-position on canvas
      */
-    Histogram.prototype.getHistValue = HistogramLite.getHistValue;
+    Histogram.prototype.getHistValue = HistogramCore.getHistValue;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw threshold controls(two triangles which represents min/max of current histogram)
      */
-    Histogram.prototype.drawThresholdControls = HistogramLite.drawThresholdControls;
+    Histogram.prototype.drawThresholdControls = HistogramCore.drawThresholdControls;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw histogram
      */
-    Histogram.prototype.drawHistogram = HistogramLite.drawHistogram;
+    Histogram.prototype.drawHistogram = HistogramCore.drawHistogram;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw histogram axis
      */
-    Histogram.prototype.drawAxes = HistogramLite.drawAxes;
+    Histogram.prototype.drawAxes = HistogramCore.drawAxes;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw transfer function(linear, log, asin, sqrt, sqr)
      */
-    Histogram.prototype.drawTransferFunction = HistogramLite.drawTransferFunction;
+    Histogram.prototype.drawTransferFunction = HistogramCore.drawTransferFunction;
 
     /**************************************************************************************************************/
 
     /**
      *    Draw the histogram in canvas
      */
-    Histogram.prototype.draw = HistogramLite.draw;
+    Histogram.prototype.draw = HistogramCore.draw;
 
     /**************************************************************************************************************/
 
@@ -139,14 +139,14 @@ define(["gui_core/HistogramLite"], function (HistogramLite) {
      *    TODO : create different module
      *    Compute histogram values
      */
-    Histogram.prototype.compute = HistogramLite.compute;
+    Histogram.prototype.compute = HistogramCore.compute;
 
     /**************************************************************************************************************/
 
     /**
      *    Set image
      */
-    Histogram.prototype.setImage = HistogramLite.setImage;
+    Histogram.prototype.setImage = HistogramCore.setImage;
 
     /**************************************************************************************************************/
 

@@ -21,7 +21,7 @@
 /**
  * Compass module : map control with "north" composant
  */
-define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
+define(["jquery", "gui_core/CompassCore"], function ($, CompassCore) {
 
     /**
      *    Private variables
@@ -52,7 +52,7 @@ define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
                 $("#objectCompass").append(svgDoc);
 
                 options.svgDoc = svgDoc;
-                CompassLite.init(options);
+                CompassCore.init(options);
 
                 initialize();
                 // Publish modified event to update compass north
@@ -117,7 +117,7 @@ define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
                 _lastMouseX = event.layerX - _outerCircleRadius;
                 _lastMouseY = event.layerY - _outerCircleRadius;
 
-                CompassLite.updateNorth();
+                CompassCore.updateNorth();
             };
 
             svgDoc.addEventListener('mousemove', _handleMouseMove);
@@ -132,35 +132,35 @@ define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
 
             east.addEventListener("click", function () {
                 navigation.pan(panFactor, 0.);
-                CompassLite.updateNorth();
+                CompassCore.updateNorth();
             });
 
             west.addEventListener("click", function () {
                 navigation.pan(-panFactor, 0.);
-                CompassLite.updateNorth();
+                CompassCore.updateNorth();
             });
 
             north.addEventListener("click", function () {
                 navigation.pan(0, panFactor);
-                CompassLite.updateNorth();
+                CompassCore.updateNorth();
             });
 
             south.addEventListener("click", function () {
                 navigation.pan(0, -panFactor);
-                CompassLite.updateNorth();
+                CompassCore.updateNorth();
             });
 
-            northText.addEventListener("click", CompassLite._alignWithNorth);
+            northText.addEventListener("click", CompassCore._alignWithNorth);
 
             if (options.isMobile) {
                 svgDoc.addEventListener('touchstart', _handleMouseDown);
                 svgDoc.addEventListener('touchup', _handleMouseUp);
                 svgDoc.addEventListener('touchmove', _handleMouseMove);
-                northText.addEventListener("touchstart", CompassLite._alignWithNorth);
+                northText.addEventListener("touchstart", CompassCore._alignWithNorth);
             }
 
             // Update fov when moving
-            navigation.subscribe("modified", CompassLite.updateNorth, northText);
+            navigation.subscribe("modified", CompassCore.updateNorth, northText);
         };
     };
 
@@ -169,7 +169,7 @@ define(["jquery", "gui_core/CompassLite"], function ($, CompassLite) {
     /**
      *    Remove compass element
      */
-    Compass.prototype.remove = CompassLite.remove;
+    Compass.prototype.remove = CompassCore.remove;
 
     /**************************************************************************************************************/
 

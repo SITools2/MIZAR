@@ -22,8 +22,8 @@
  * Tool designed to select areas on globe
  */
 
-define(["jquery", "underscore-min", "gui_core/ExportToolLite", "./PickingManager", "gui_core/SelectionToolLite", "loadmask"],
-    function ($, _, ExportToolLite, PickingManager, SelectionToolLite) {
+define(["jquery", "underscore-min", "gui_core/ExportToolCore", "./PickingManager", "gui_core/SelectionToolCore", "loadmask"],
+    function ($, _, ExportToolCore, PickingManager, SelectionToolCore) {
 
 
         /**
@@ -58,7 +58,7 @@ define(["jquery", "underscore-min", "gui_core/ExportToolLite", "./PickingManager
 
             self = this;
 
-            ExportToolLite.init(options);
+            ExportToolCore.init(options);
 
             this.activated = false;
             this.renderContext = globe.renderContext;
@@ -123,13 +123,13 @@ define(["jquery", "underscore-min", "gui_core/ExportToolLite", "./PickingManager
             PickingManager.deactivate();
             navigation.stop();
 
-            selectionTool = new SelectionToolLite({
+            selectionTool = new SelectionToolCore({
                 globe: globe,
                 navigation: navigation,
                 activated: true,
                 onselect: function (coordinates) {
                     $('.cutOutService').slideDown();
-                    availableLayers = ExportToolLite.filterServicesAvailableOnLayers();
+                    availableLayers = ExportToolCore.filterServicesAvailableOnLayers();
                     self.displayAvailableServices();
 
                     self.coordinates = coordinates;
@@ -137,7 +137,7 @@ define(["jquery", "underscore-min", "gui_core/ExportToolLite", "./PickingManager
                     // Activate picking events
                     $(self.renderContext.canvas).css('cursor', 'default');
                     $('#GlobWebCanvas').css('cursor', 'default');
-                    $('#exportToolBtn').on('click', self.coordinates, ExportToolLite.exportSelection);
+                    $('#exportToolBtn').on('click', self.coordinates, ExportToolCore.exportSelection);
 
                     PickingManager.activate();
                     navigation.start();

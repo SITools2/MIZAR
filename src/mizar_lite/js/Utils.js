@@ -25,6 +25,7 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
     function (wcs, _, OpenSearchLayer, HEALPixFITSLayer, HEALPixLayer, PlanetLayer, VectorLayer, MocLayer) {
 
         var mizarCore;
+        var votable2geojsonUrl;
 
         /**
          *    HSV values in [0..1[
@@ -91,8 +92,10 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
         }
 
         return {
-            init: function (m) {
+            init: function (m, options) {
                 mizarCore = m;
+                votable2geojsonUrl = options.votable2geojson.baseUrl;
+
             },
 
             roundNumber: function (num, dec) {
@@ -288,7 +291,7 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
                 return false;
             },
 
-            getAstroCoordinatesFromCursorLocation : function (globe, navigation, LHV) {
+            getAstroCoordinatesFromCursorLocation: function (globe, navigation, LHV) {
                 // Find angle between eye and north
                 var geoEye = [];
                 globe.coordinateSystem.from3DToGeo(navigation.center3d, geoEye);
@@ -387,7 +390,7 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
              * @param {Event} evt
              * @returns {{x: number, y: number}}
              */
-            _getMousePos : function(canvas, evt) {
+            _getMousePos: function (canvas, evt) {
                 var rect = canvas.getBoundingClientRect();
                 return {
                     x: evt.clientX - rect.left,
@@ -414,6 +417,59 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
             },
             isPlanetLayer: function (obj) {
                 return (obj instanceof PlanetLayer);
+            },
+
+            /**
+             * Convert votable to json from url
+             * @param {String} url
+             * @param {Function} callback
+             */
+            convertVotable2JsonFromURL: function (url, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                //self = this;
+                xhr.onload = function () {
+                    var xml = xhr.responseXML;
+                    if (xml) {
+                        this.convertVotable2JsonFromXML(xhr.responseText, callback);
+                    } else {
+                        console.log("No XML response");
+                    }
+                };
+                xhr.onerror = function (err) {
+                    console.log("Error getting table " + url + "\n" + "(" + err
+                        + ")");
+                };
+                xhr.send(null);
+            },
+
+            /**************************************************************************************************************/
+
+            /**
+             * Convert votable to json from xml
+             * @param {Object} xml xml votable
+             * @param {Function} callback
+             */
+            convertVotable2JsonFromXML: function (xml, callback) {
+                try {
+                    // Send response of xml to SiTools2 to convert it to GeoJSON
+                    $.ajax({
+                        type: "POST",
+                        url: votable2geojsonUrl,
+                        data: {
+                            votable: xml,
+                            coordSystem: "EQUATORIAL"
+                        },
+                        success: function (response) {
+                            callback(response);
+                        },
+                        error: function (thrownError) {
+                            console.error(thrownError);
+                        }
+                    });
+                } catch (e) {
+                    console.log("Error displaying table:\n" + e.toString());
+                }
             }
         };
     });

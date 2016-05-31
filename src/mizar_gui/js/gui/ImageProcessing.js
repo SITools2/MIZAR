@@ -21,8 +21,8 @@
 /**
  *    ImageProcessing module
  */
-define(["jquery", "gui_core/ImageProcessingLite", "./CutOutViewFactory", "./DynamicImageView", "jquery.ui"],
-    function ($, ImageProcessingLite, CutOutViewFactory, DynamicImageView) {
+define(["jquery", "gui_core/ImageProcessingCore", "./CutOutViewFactory", "./DynamicImageView", "jquery.ui"],
+    function ($, ImageProcessingCore, CutOutViewFactory, DynamicImageView) {
 
         /**************************************************************************************************************/
 
@@ -102,13 +102,13 @@ define(["jquery", "gui_core/ImageProcessingLite", "./CutOutViewFactory", "./Dyna
 
                 var histogramElement = new DynamicImageView("histogramView", {
                     id: "featureImageProcessing",
-                    changeShaderCallback: ImageProcessingLite.changeShaderCallback
+                    changeShaderCallback: ImageProcessingCore.changeShaderCallback
                 });
                 cutOutElement = CutOutViewFactory.addView("cutOutView");
 
-                ImageProcessingLite.init(options, $dialog, histogramElement, cutOutElement);
+                ImageProcessingCore.init(options, $dialog, histogramElement, cutOutElement);
 
-                options.mizar.subscribe("image:set", ImageProcessingLite.setImage);
+                options.mizar.subscribe("image:set", ImageProcessingCore.setImage);
             }
         };
     });

@@ -317,7 +317,7 @@ define(["jquery", "Utils", "service/NameResolver", "underscore-min", "text!templ
             else if(Utils.isPlanetLayer(layer)) {
                 // Temporary use visiblity button to change mizar context to "planet"
                 // TODO: change button,
-                mizar.toggleMode(layer);
+                mizar.toggleContext(layer);
             }
             else {
                 var visible = layer._visible;

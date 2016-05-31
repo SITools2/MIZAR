@@ -21,8 +21,8 @@
 /**
  * AdditionalLayersView module
  */
-define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/dialog/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
-    function ($, AdditionalLayersLite, LayerManager, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
+define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/dialog/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
+    function ($, AdditionalLayersCore, LayerManager, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
 
         var mizar;
         var sky;
@@ -156,10 +156,10 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
 
             if (Utils.isOpenSearchLayer(gwLayer) || Utils.isMocLayer(gwLayer) || Utils.isVectorLayer(gwLayer)) {
                 if (gwLayer.dataType === "point") {
-                    AdditionalLayersLite.generatePointLegend(gwLayer, canvas, gwLayer.style.iconUrl);
+                    AdditionalLayersCore.generatePointLegend(gwLayer, canvas, gwLayer.style.iconUrl);
                 }
                 else if (gwLayer.dataType === "line") {
-                    AdditionalLayersLite.generateLineLegend(gwLayer, canvas);
+                    AdditionalLayersCore.generateLineLegend(gwLayer, canvas);
                 }
                 else {
                     $canvas.css("display", "none");
@@ -239,7 +239,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
             // jQuery UI button is not sexy enough :)
             // Toggle some classes when the user clicks on the visibility checkbox
             if (gwLayer.subLayers) {
-                AdditionalLayersLite.setSublayersVisibility(gwLayer, isOn);
+                AdditionalLayersCore.setSublayersVisibility(gwLayer, isOn);
             }
 
             var toolsDiv = $("#addLayer_" + shortName).find('.layerTools');
@@ -287,7 +287,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
                 if (Utils.isPlanetLayer(gwLayer)) {
                     // Temporary use visiblity button to change mizar context to "planet"
                     // TODO: change button,
-                    mizar.toggleMode(gwLayer);
+                    mizar.toggleContext(gwLayer);
                 } else {
                     var isOn = !$(this).hasClass('ui-state-active');
                     gwLayer.visible(isOn);
@@ -303,7 +303,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
         function createHtmlForAdditionalLayer(gwLayer, categoryId) {
             var shortName = Utils.formatId(gwLayer.name);
             shortName = shortName.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
-            var layerDiv = AdditionalLayersLite.createHTMLFromTemplate(additionalLayerTemplate, gwLayer, shortName, isMobile);
+            var layerDiv = AdditionalLayersCore.createHTMLFromTemplate(additionalLayerTemplate, gwLayer, shortName, isMobile);
 
             var $layerDiv = $(layerDiv)
                 .appendTo('#' + categoryId)
@@ -424,7 +424,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
         function exportLayer() {
             if (Samp.isConnected()) {
                 var layer = $(this).closest(".addLayer").data("layer");
-                var url = AdditionalLayersLite.buildVisibleTilesUrl(layer);
+                var url = AdditionalLayersCore.buildVisibleTilesUrl(layer);
                 Samp.sendVOTable(layer, url);
             }
             else {
@@ -439,7 +439,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function downloadAsVO() {
             var layer = $(this).closest(".addLayer").data("layer");
-            var url = AdditionalLayersLite.buildVisibleTilesUrl(layer);
+            var url = AdditionalLayersCore.buildVisibleTilesUrl(layer);
             url += "&media=votable";
             var posGeo = layer.globe.coordinateSystem.from3DToGeo(navigation.center3d);
             var astro = Utils.formatCoordinates(posGeo);
@@ -455,7 +455,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
          */
         function zoomTo() {
             var layer = $(this).closest(".addLayer").data("layer");
-            AdditionalLayersLite.zoomTo(layer);
+            AdditionalLayersCore.zoomTo(layer);
         }
 
         /**************************************************************************************************************/
@@ -535,7 +535,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
                 navigation = options.mizar.navigation;
                 isMobile = options.configuration.isMobile;
 
-                AdditionalLayersLite.init(mizar, sky, navigation);
+                AdditionalLayersCore.init(mizar, sky, navigation);
 
                 // Append content to parent element
                 parentElement = options.configuration.element;
@@ -575,7 +575,7 @@ define(["jquery", "gui_core/AdditionalLayersLite", "layer/LayerManager", "./Pick
                     .off('click', '.category .isFits', toggleFits);
 
                 // Remove all created dialogs
-                var layers = LayerManager.getLayers();
+                var layers = LayerManager.getLayers("sky");
                 for (var i = 0; i < layers.length; i++) {
                     var layer = layers[i];
                     if (layer.div) {

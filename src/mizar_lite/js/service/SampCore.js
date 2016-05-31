@@ -19,7 +19,7 @@
 /*global define: false */
 
 /**
- * SampLite Module : containing core methods
+ * SampCore Module : containing core methods
  */
 define(["jquery", "underscore-min", "Utils", "gw/Parser/JsonProcessor", "../gui_core/dialog/ErrorDialog", "samp", "jquery.ui"],
     function ($, _, Utils, JsonProcessor, ErrorDialog) {
@@ -58,7 +58,7 @@ define(["jquery", "underscore-min", "Utils", "gw/Parser/JsonProcessor", "../gui_
                     var params = message["samp.params"];
                     var origUrl = params["url"];
                     var proxyUrl = clientTracker.connection.translateUrl(origUrl);
-                    mizar.convertVotable2JsonFromURL(proxyUrl, function (response) {
+                    Utils.convertVotable2JsonFromURL(proxyUrl, function (response) {
                         // Add feature collection
                         JsonProcessor.handleFeatureCollection(sampLayer, response);
                         sampLayer.addFeatureCollection(response);

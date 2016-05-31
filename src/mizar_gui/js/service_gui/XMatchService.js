@@ -182,7 +182,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "service/MocBase", "gu
 				<div id="intersectResult"></div>\
 			</div>');
 
-                var allLayers = LayerManager.getLayers();
+                var allLayers = LayerManager.getLayers("sky");
                 var allOSLayers = _.filter(allLayers, function (layer) {
                     return Utils.isOpenSearchLayer(layer)
                 });
@@ -248,7 +248,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "service/MocBase", "gu
                 $("#xMatchService").remove();
                 tabs.tabs("refresh");
 
-                var allLayers = LayerManager.getLayers();
+                var allLayers = LayerManager.getLayers("sky");
                 var allOSLayers = _.filter(allLayers, function (layer) {
                     return Utils.isOpenSearchLayer(layer)
                 });

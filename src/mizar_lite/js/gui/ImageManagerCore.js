@@ -135,7 +135,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
         return {
 
             /**
-             * Initialize ImageManagerLite
+             * Initialize ImageManagerCore
              * @param mizar
              * @param configuration
              *      <ul>

@@ -21,8 +21,8 @@
 /**
  * FeaturePopup module
  */
-define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProcessing", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
-    function ($, FeaturePopupLite, IFrame, Utils, ImageProcessing, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
+define(["jquery", "gui_core/FeaturePopupCore", "./IFrame", "Utils", "./ImageProcessing", "../service/Samp", "underscore-min", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html", "jquery.nicescroll.min", "jquery.ui"],
+    function ($, FeaturePopupCore, IFrame, Utils, ImageProcessing, Samp, _, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var featureListHTML = '';
         var pickingManager = null;
@@ -78,7 +78,7 @@ define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProc
                 $leftDiv = $('#leftDiv');
                 $rightDiv = $('#rightDiv');
 
-                FeaturePopupLite.init($selectedFeatureDiv, pm, im, gl, conf);
+                FeaturePopupCore.init($selectedFeatureDiv, pm, im, gl, conf);
 
                 // Initialize image processing popup
                 ImageProcessing.init({
@@ -92,22 +92,22 @@ define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProc
                 });
 
                 // Show/hide quicklook
-                $selectedFeatureDiv.on("click", '#quicklook', FeaturePopupLite.showOrHideQuicklook);
+                $selectedFeatureDiv.on("click", '#quicklook', FeaturePopupCore.showOrHideQuicklook);
 
                 // Show/hide quicklook fits
-                $selectedFeatureDiv.on('click', "#quicklookFits", FeaturePopupLite.showOrHideQuicklookFits);
+                $selectedFeatureDiv.on('click', "#quicklookFits", FeaturePopupCore.showOrHideQuicklookFits);
 
                 // Show/hide Dynamic image service
-                $selectedFeatureDiv.on("click", '#dynamicImageView', FeaturePopupLite.showOrHideDynamicImageService);
+                $selectedFeatureDiv.on("click", '#dynamicImageView', FeaturePopupCore.showOrHideDynamicImageService);
 
                 // Send image by Samp
-                $selectedFeatureDiv.on("click", '#sendImage', FeaturePopupLite.sendImageBySamp);
+                $selectedFeatureDiv.on("click", '#sendImage', FeaturePopupCore.sendImageBySamp);
 
                 // Show/hide HEALPix service
-                $selectedFeatureDiv.on("click", '#healpix', FeaturePopupLite.showOrHideHEALPixService);
+                $selectedFeatureDiv.on("click", '#healpix', FeaturePopupCore.showOrHideHEALPixService);
 
                 // Show/hide Solar object service
-                $selectedFeatureDiv.on("click", '#solarObjects', FeaturePopupLite.showOrHideSolarObjectService);
+                $selectedFeatureDiv.on("click", '#solarObjects', FeaturePopupCore.showOrHideSolarObjectService);
 
                 // Arrow scroll events
                 $selectedFeatureDiv.on("mousedown", '#scroll-arrow-down.clickable', function () {
@@ -156,7 +156,7 @@ define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProc
 
                 // Choose feature by clicking on its title
                 var self = this;
-                $selectedFeatureDiv.on("click", '.featureTitle', FeaturePopupLite.selectFeatureOnTitle);
+                $selectedFeatureDiv.on("click", '.featureTitle', FeaturePopupCore.selectFeatureOnTitle);
 
                 // Show/hide external resource
                 $selectedFeatureDiv.on("click", '.propertiesTable a', function (event) {
@@ -168,17 +168,17 @@ define(["jquery", "gui_core/FeaturePopupLite", "./IFrame", "Utils", "./ImageProc
 
                 // Make rightDiv always visible depending on viewport
                 $(window).on('resize', function () {
-                    $rightDiv.find('.featureProperties').css('max-height', FeaturePopupLite.computeHeight());
+                    $rightDiv.find('.featureProperties').css('max-height', FeaturePopupCore.computeHeight());
                     $rightDiv.css('max-width', $('#' + globe.renderContext.canvas.id).width() / 4);
                 });
 
             },
 
-            // Exposing FeaturePopupLite methods to keep existing API
-            hide: FeaturePopupLite.hide,
-            show: FeaturePopupLite.show,
-            createFeatureList: FeaturePopupLite.createFeatureList,
-            showFeatureInformation: FeaturePopupLite.showFeatureInformation,
+            // Exposing FeaturePopupCore methods to keep existing API
+            hide: FeaturePopupCore.hide,
+            show: FeaturePopupCore.show,
+            createFeatureList: FeaturePopupCore.createFeatureList,
+            showFeatureInformation: FeaturePopupCore.showFeatureInformation,
 
 
             /**********************************************************************************************/

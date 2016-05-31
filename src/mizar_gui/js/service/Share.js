@@ -21,15 +21,15 @@
 /**
  * Share url module : creating url with current navigation properties
  */
-define(["jquery", "service/ShareLite", "gui_core/dialog/ErrorDialog"],
-    function ($, ShareLite, ErrorDialog) {
+define(["jquery", "service/ShareCore", "gui_core/dialog/ErrorDialog"],
+    function ($, ShareCore, ErrorDialog) {
 
         function init(options) {
 
-            ShareLite.init(options);
+            ShareCore.init(options);
 
             $('#share').on('click', function () {
-                var url = ShareLite.generateURL();
+                var url = ShareCore.generateURL();
                 $('#shareInput').val(url);
                 $(this).fadeOut(300, function () {
                     $(this).next().fadeIn();

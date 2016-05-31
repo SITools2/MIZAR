@@ -23,8 +23,7 @@
 define(["jquery", "underscore-min",
         "gw/Utils/Event",
         "./Utils",
-        "text!../templates/mizarCore.html",
-        "text!../data/backgroundSurveys.json"],
+        "text!../templates/mizarCore.html"],
     function ($, _, Event, Utils, mizarCoreHTML) {
 
         var parentElement;
@@ -55,7 +54,7 @@ define(["jquery", "underscore-min",
                 // Dev
                 // Basically use the relative path from index page
                 mizarSrc = _.find(scripts, function (script) {
-                    return script.src.indexOf("MizarWidgetGlobal") !== -1;
+                    return script.src.indexOf("MizarGlobal") !== -1;
                 });
                 mizarBaseUrl = mizarSrc.src.split('/').slice(0, -1).join('/') + '/../';
             }
@@ -65,7 +64,7 @@ define(["jquery", "underscore-min",
         /**
          * Mizar Widget Global constructor
          */
-        var MizarWidgetGlobal = function (div, userOptions, callbackInitMain) {
+        var MizarGlobal = function (div, userOptions, callbackInitMain) {
             Event.prototype.constructor.call(this);
 
             var mizarBaseUrl = getMizarUrl();
@@ -160,15 +159,15 @@ define(["jquery", "underscore-min",
                     var mizarContent = _.template(mizarCoreHTML, {});
                     $(mizarContent).appendTo(div);
 
-                    require(['MizarWidgetCore'], function (MizarWidgetCore) {
-                        self.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
+                    require(['MizarCore'], function (MizarCore) {
+                        self.mizarCore = new MizarCore(div, options, userOptions);
 
                         self.mizarWidgetGui = new MizarWidgetGui(div, {
                             isMobile: isMobile,
                             mode: userOptions.mode,
                             mizarGlobal: self,
-                            sky: self.mizarWidgetCore.sky,
-                            navigation: self.mizarWidgetCore.navigation,
+                            sky: self.mizarCore.sky,
+                            navigation: self.mizarCore.navigation,
                             options: options
                         });
                         callbackInitMain(); // init GUI and layers
@@ -176,12 +175,12 @@ define(["jquery", "underscore-min",
 
                 });
             } else {
-                require(['MizarWidgetCore'], function (MizarWidgetCore) {
+                require(['MizarCore'], function (MizarCore) {
                     // Create mizar core HTML
                     var mizarContent = _.template(mizarCoreHTML, {});
                     $(mizarContent).appendTo(div);
 
-                    self.mizarWidgetCore = new MizarWidgetCore(div, options, userOptions);
+                    self.mizarCore = new MizarCore(div, options, userOptions);
                     callbackInitMain(); // init GUI and layers
                 });
             }
@@ -190,15 +189,24 @@ define(["jquery", "underscore-min",
 
         /**************************************************************************************************************/
 
-        Utils.inherits(Event, MizarWidgetGlobal);
+        Utils.inherits(Event, MizarGlobal);
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get the current Mizar context (Sky/Planet)
+         */
+        MizarGlobal.prototype.getContext = function () {
+            return this.mizarCore.activatedContext;
+        };
 
         /**************************************************************************************************************/
 
         /**
          * Get Mizar Core
          */
-        MizarWidgetGlobal.prototype.getMizarCore = function () {
-            return this.mizarWidgetCore;
+        MizarGlobal.prototype.getCore = function () {
+            return this.mizarCore;
         };
 
         /**************************************************************************************************************/
@@ -206,18 +214,19 @@ define(["jquery", "underscore-min",
         /**
          * Get Mizar Gui
          */
-        MizarWidgetGlobal.prototype.getMizarGui = function () {
+        MizarGlobal.prototype.getGui = function () {
             return this.mizarWidgetGui;
         };
 
         /**************************************************************************************************************/
 
         /**
-         * Get all layers
+         * Get layers depending on the mode
+         * @param {string} mode
          */
-        MizarWidgetGlobal.prototype.getLayers = function () {
-            if (this.mizarWidgetCore) {
-                return this.mizarWidgetCore.getLayers();
+        MizarGlobal.prototype.getLayers = function (mode) {
+            if (this.mizarCore) {
+                return this.mizarCore.getLayers(mode);
             }
         };
 
@@ -227,9 +236,9 @@ define(["jquery", "underscore-min",
          * Get layer with the given name
          * @param {String} layerName
          */
-        MizarWidgetGlobal.prototype.getLayer = function (layerName) {
-            if (this.mizarWidgetCore) {
-                return this.mizarWidgetCore.getLayer(layerName);
+        MizarGlobal.prototype.getLayer = function (layerName) {
+            if (this.mizarCore) {
+                return this.mizarCore.getLayer(layerName);
             }
         };
 
@@ -244,9 +253,9 @@ define(["jquery", "underscore-min",
          *    @return
          *        The created layer
          */
-        MizarWidgetGlobal.prototype.addLayer = function (layerDesc, planetLayer) {
-            if (this.mizarWidgetCore) {
-                return this.mizarWidgetCore.addLayer(layerDesc, planetLayer);
+        MizarGlobal.prototype.addLayer = function (layerDesc, planetLayer) {
+            if (this.mizarCore) {
+                return this.mizarCore.addLayer(layerDesc, planetLayer);
             }
         };
 
@@ -256,9 +265,9 @@ define(["jquery", "underscore-min",
          *    Set the credits popup
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setShowCredits = function (visible) {
-            if (this.mizarWidgetCore) {
-                this.mizarWidgetCore.setShowCredits(visible);
+        MizarGlobal.prototype.setShowCredits = function (visible) {
+            if (this.mizarCore) {
+                this.mizarCore.setShowCredits(visible);
             }
         };
 
@@ -269,7 +278,7 @@ define(["jquery", "underscore-min",
          *    Only on desktop due performance issues
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setCompassGui = function (visible) {
+        MizarGlobal.prototype.setCompassGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setCompassGui(visible);
             }
@@ -281,7 +290,7 @@ define(["jquery", "underscore-min",
          *    Add/remove angle distance GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setAngleDistanceSkyGui = function (visible) {
+        MizarGlobal.prototype.setAngleDistanceSkyGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setAngleDistanceSkyGui(visible);
             }
@@ -293,7 +302,7 @@ define(["jquery", "underscore-min",
          *    Activate Switch To 2D
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setSwitchTo2D = function (visible) {
+        MizarGlobal.prototype.setSwitchTo2D = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setSwitchTo2D(visible);
             }
@@ -305,7 +314,7 @@ define(["jquery", "underscore-min",
          *    Add/remove samp GUI Only on desktop
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setSampGui = function (visible) {
+        MizarGlobal.prototype.setSampGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setSampGui(visible);
             }
@@ -317,7 +326,7 @@ define(["jquery", "underscore-min",
          *    Add/remove shortener GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setShortenerUrlGui = function (visible) {
+        MizarGlobal.prototype.setShortenerUrlGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setShortenerUrlGui(visible);
             }
@@ -329,7 +338,7 @@ define(["jquery", "underscore-min",
          *    Add/remove 2d map GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setMollweideMapGui = function (visible) {
+        MizarGlobal.prototype.setMollweideMapGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setMollweideMapGui(visible);
             }
@@ -341,7 +350,7 @@ define(["jquery", "underscore-min",
          *    Add/remove reverse name resolver GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setReverseNameResolverGui = function (visible) {
+        MizarGlobal.prototype.setReverseNameResolverGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setReverseNameResolverGui(visible);
             }
@@ -353,7 +362,7 @@ define(["jquery", "underscore-min",
          *    Add/remove name resolver GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setNameResolverGui = function (visible) {
+        MizarGlobal.prototype.setNameResolverGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setNameResolverGui(visible);
             }
@@ -365,7 +374,7 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI layer manager view
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setCategoryGui = function (visible) {
+        MizarGlobal.prototype.setCategoryGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setCategoryGui(visible);
             }
@@ -377,7 +386,7 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI image viewer GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setImageViewerGui = function (visible) {
+        MizarGlobal.prototype.setImageViewerGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setImageViewerGui(visible);
             }
@@ -389,7 +398,7 @@ define(["jquery", "underscore-min",
          *    Add/remove jQueryUI Export GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setExportGui = function (visible) {
+        MizarGlobal.prototype.setExportGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setExportGui(visible);
             }
@@ -401,7 +410,7 @@ define(["jquery", "underscore-min",
          *    Add/remove position tracker GUI
          *    @param {boolean} visible
          */
-        MizarWidgetGlobal.prototype.setPositionTrackerGui = function (visible) {
+        MizarGlobal.prototype.setPositionTrackerGui = function (visible) {
             if (this.mizarWidgetGui) {
                 this.mizarWidgetGui.setPositionTrackerGui(visible);
             }
@@ -413,9 +422,9 @@ define(["jquery", "underscore-min",
          *    Toggle between between 3D and 2D
          *    @param {Layer} layer the current layer
          */
-        MizarWidgetGlobal.prototype.toggleDimension = function (gwLayer) {
-            if (this.mizarWidgetCore) {
-                this.mizarWidgetCore.toggleDimension(gwLayer);
+        MizarGlobal.prototype.toggleDimension = function (gwLayer) {
+            if (this.mizarCore) {
+                this.mizarCore.toggleDimension(gwLayer);
             }
         };
 
@@ -428,12 +437,12 @@ define(["jquery", "underscore-min",
          * @param {String} planetDimension (2D or 3D)
          * @param {Function} callback
          */
-        MizarWidgetGlobal.prototype.toggleMode = function (gwLayer, planetDimension, callback) {
-            if (this.mizarWidgetCore) {
-                this.mizarWidgetCore.toggleMode(gwLayer, planetDimension, callback);
+        MizarGlobal.prototype.toggleContext = function (gwLayer, planetDimension, callback) {
+            if (this.mizarCore) {
+                this.mizarCore.toggleContext(gwLayer, planetDimension, callback);
             }
         };
 
-        return MizarWidgetGlobal;
+        return MizarGlobal;
 
     });

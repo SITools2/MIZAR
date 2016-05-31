@@ -36,7 +36,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
          *            <li>style: Selection tool style</li>
          *        </ul>
          */
-        var SelectionToolLite = function (options) {
+        var SelectionToolCore = function (options) {
             // Required options
             var globe = options.globe;
             var navigation = options.navigation;
@@ -161,7 +161,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
          *    Compute selection tool radius between pickPoint and the given point
          *    @param {Array} pt point
          */
-        SelectionToolLite.prototype.computeGeoRadius = function (pt) {
+        SelectionToolCore.prototype.computeGeoRadius = function (pt) {
             // Find angle between start and stop vectors which is in fact the radius
             var dotProduct = vec3.dot(vec3.normalize(this.coordinateSystem.fromGeoTo3D(pt)), vec3.normalize(this.coordinateSystem.fromGeoTo3D(this.geoPickPoint)));
             var theta = Math.acos(dotProduct);
@@ -174,7 +174,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
          *    Compute selection for the given pick point depending on radius
          *    @return {Array} points
          */
-        SelectionToolLite.prototype.computeSelection = function () {
+        SelectionToolCore.prototype.computeSelection = function () {
             var rc = this.renderContext;
             var tmpMat = mat4.create();
 
@@ -218,7 +218,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
         /**
          *    Update selection coordinates
          */
-        SelectionToolLite.prototype.updateSelection = function () {
+        SelectionToolCore.prototype.updateSelection = function () {
             if (this.selectionFeature)
                 this.selectionLayer.removeFeature(this.selectionFeature);
 
@@ -243,7 +243,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
         /**
          *    Activate/desactivate the tool
          */
-        SelectionToolLite.prototype.toggle = function () {
+        SelectionToolCore.prototype.toggle = function () {
             this.activated = !this.activated;
             if (this.activated) {
                 // TODO : Find more sexy image for cursor
@@ -259,7 +259,7 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
         /**
          *    Clear selection
          */
-        SelectionToolLite.prototype.clear = function () {
+        SelectionToolCore.prototype.clear = function () {
             if (this.selectionFeature)
                 this.selectionLayer.removeFeature(this.selectionFeature);
 
@@ -271,6 +271,6 @@ define(["jquery", "gw/Layer/VectorLayer", "gw/Renderer/FeatureStyle", "gw/Utils/
 
         /**************************************************************************************************************/
 
-        return SelectionToolLite;
+        return SelectionToolCore;
 
     });

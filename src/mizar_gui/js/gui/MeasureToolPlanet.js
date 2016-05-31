@@ -22,8 +22,8 @@
  * Tool designed to measure the distance between two points in planet mode
  */
 
-define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "jquery.ui"],
-    function ($, _, MeasureToolPlanetLite, Utils) {
+define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetCore", "Utils", "jquery.ui"],
+    function ($, _, MeasureToolPlanetCore, Utils) {
 
         var globe, navigation, onselect, scale, self;
 
@@ -42,7 +42,7 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
             navigation = options.navigation;
             onselect = options.onselect;
 
-            MeasureToolPlanetLite.init(options);
+            MeasureToolPlanetCore.init(options);
 
             this.renderContext = globe.renderContext;
 
@@ -58,10 +58,10 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
 
             var _handleMouseUp = function (event) {
 
-                if (!MeasureToolPlanetLite.activated) {
+                if (!MeasureToolPlanetCore.activated) {
                     return;
                 }
-                MeasureToolPlanetLite._handleMouseUp(event);
+                MeasureToolPlanetCore._handleMouseUp(event);
                 $.proxy(self.displayButtonElevation(event), self);
 
             };
@@ -72,14 +72,14 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
             self.renderContext.canvas.addEventListener("contextmenu", function () {
                 return false;
             });
-            self.renderContext.canvas.addEventListener("mousedown", $.proxy(MeasureToolPlanetLite._handleMouseDown, this));
+            self.renderContext.canvas.addEventListener("mousedown", $.proxy(MeasureToolPlanetCore._handleMouseDown, this));
             self.renderContext.canvas.addEventListener("mouseup", $.proxy(_handleMouseUp, this));
-            self.renderContext.canvas.addEventListener("mousemove", $.proxy(MeasureToolPlanetLite._handleMouseMove, this));
+            self.renderContext.canvas.addEventListener("mousemove", $.proxy(MeasureToolPlanetCore._handleMouseMove, this));
 
             if (options.isMobile) {
                 self.renderContext.canvas.addEventListener("touchend", $.proxy(_handleMouseUp, this));
-                self.renderContext.canvas.addEventListener("touchmove", $.proxy(MeasureToolPlanetLite._handleMouseMove, this));
-                self.renderContext.canvas.addEventListener("touchstart", $.proxy(MeasureToolPlanetLite._handleMouseDown, this));
+                self.renderContext.canvas.addEventListener("touchmove", $.proxy(MeasureToolPlanetCore._handleMouseMove, this));
+                self.renderContext.canvas.addEventListener("touchstart", $.proxy(MeasureToolPlanetCore._handleMouseDown, this));
             }
 
             $('#measurePlanetInvoker').on('click', function () {
@@ -96,8 +96,8 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
          *    Enable/disable the tool
          */
         MeasureToolPlanet.prototype.toggle = function () {
-            MeasureToolPlanetLite.activated = !MeasureToolPlanetLite.activated;
-            if (MeasureToolPlanetLite.activated) {
+            MeasureToolPlanetCore.activated = !MeasureToolPlanetCore.activated;
+            if (MeasureToolPlanetCore.activated) {
                 $(self.renderContext.canvas).css('cursor', 'url(css/images/selectionCursor.png)');
             }
             else {
@@ -108,7 +108,7 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
                 } catch (e) {
                 }
 
-                MeasureToolPlanetLite.clear();
+                MeasureToolPlanetCore.clear();
             }
             $('#measurePlanetInvoker').toggleClass('selected');
         };
@@ -137,11 +137,11 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
          */
         MeasureToolPlanet.prototype.displayPopupElevation = function (event) {
 
-            var intermediatePoints = MeasureToolPlanetLite.calculateIntermediateElevationPoint(MeasureToolPlanetLite.geoPickPoint, MeasureToolPlanetLite.secondGeoPickPoint);
+            var intermediatePoints = MeasureToolPlanetCore.calculateIntermediateElevationPoint(MeasureToolPlanetCore.geoPickPoint, MeasureToolPlanetCore.secondGeoPickPoint);
 
-            MeasureToolPlanetLite.storeDistanceAndElevation(intermediatePoints[0], intermediatePoints[0]);
+            MeasureToolPlanetCore.storeDistanceAndElevation(intermediatePoints[0], intermediatePoints[0]);
             for (var i = 0; i < intermediatePoints.length; i++) {
-                MeasureToolPlanetLite.storeDistanceAndElevation(intermediatePoints[0], intermediatePoints[i]);
+                MeasureToolPlanetCore.storeDistanceAndElevation(intermediatePoints[0], intermediatePoints[i]);
             }
 
             $("#popupElevation").dialog({
@@ -155,7 +155,7 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetLite", "Utils", "
             });
 
             $.plot("#popupElevation", [{
-                data: MeasureToolPlanetLite.elevations, label: "elevation (m)"
+                data: MeasureToolPlanetCore.elevations, label: "elevation (m)"
             }], {
                 series: {
                     color: "#F68D12",

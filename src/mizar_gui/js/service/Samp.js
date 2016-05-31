@@ -21,8 +21,8 @@
 /**
  * Samp module : performing communication between applications using SAMP protocol
  */
-define(["jquery", "underscore-min", "service/SampLite", "Utils", "samp", "jquery.ui"],
-    function ($, _, SampLite, Utils) {
+define(["jquery", "underscore-min", "service/SampCore", "Utils", "samp", "jquery.ui"],
+    function ($, _, SampCore, Utils) {
 
         var mizar;
         var sky;
@@ -131,7 +131,7 @@ define(["jquery", "underscore-min", "service/SampLite", "Utils", "samp", "jquery
             }
 
             initUI();
-            connector = SampLite.initSamp();
+            connector = SampCore.initSamp();
 
             // Send pointAt messages when navigation modified
             navigation.subscribe("modified", function () {
@@ -170,10 +170,10 @@ define(["jquery", "underscore-min", "service/SampLite", "Utils", "samp", "jquery
 
         return {
             init: init,
-            sendImage: SampLite.sendImage,
-            sendVOTable: SampLite.sendVOTable,
-            highlightFeature: SampLite.highlightFeature,
-            isConnected: SampLite.isConnected
+            sendImage: SampCore.sendImage,
+            sendVOTable: SampCore.sendVOTable,
+            highlightFeature: SampCore.highlightFeature,
+            isConnected: SampCore.isConnected
         }
 
     });

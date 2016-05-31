@@ -100,6 +100,8 @@ define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNaviga
          * Load specific sky providers and register them to the LayerManager
          */
         SkyContext.prototype.loadProviders = function () {
+            MizarContext.prototype.loadProviders.call(this);
+
             var starProvider = new StarProvider();
             var constellationProvider = new ConstellationProvider();
             var openSearchProvider = new OpenSearchProvider();

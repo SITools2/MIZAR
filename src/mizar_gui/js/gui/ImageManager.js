@@ -21,8 +21,8 @@
 /**
  * Image manager
  */
-define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
-    function ($, ImageManagerLite, ImageProcessing) {
+define(["jquery", "gui_core/ImageManagerCore", "./ImageProcessing"],
+    function ($, ImageManagerCore, ImageProcessing) {
 
         var sky = null;
 
@@ -33,7 +33,7 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
          */
         function handleFits(fitsData, featureData) {
 
-            var image = ImageManagerLite.handleFits(fitsData, featureData);
+            var image = ImageManagerCore.handleFits(fitsData, featureData);
 
             // Set image on image processing popup
             ImageProcessing.setImage(image);
@@ -49,7 +49,7 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
          *    @return Parsed data
          */
         function parseFits(response) {
-            ImageManagerLite.parseFits
+            ImageManagerCore.parseFits
         };
 
         /**********************************************************************************************/
@@ -62,7 +62,7 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
             init: function (mizar, configuration) {
                 sky = mizar.sky;
 
-                ImageManagerLite.init(mizar, configuration);
+                ImageManagerCore.init(mizar, configuration);
 
                 // Enable float texture extension to have higher luminance range
                 var ext = sky.renderContext.gl.getExtension("OES_texture_float");
@@ -73,30 +73,30 @@ define(["jquery", "gui_core/ImageManagerLite", "./ImageProcessing"],
             /**
              *    Hide image
              */
-            hideImage: ImageManagerLite.hideImage,
+            hideImage: ImageManagerCore.hideImage,
 
             /**********************************************************************************************/
 
             /**
              *    Show image
              */
-            showImage: ImageManagerLite.showImage,
+            showImage: ImageManagerCore.showImage,
 
             /**********************************************************************************************/
 
             /**
              *    Remove image from renderer
              */
-            removeImage: ImageManagerLite.removeImage,
+            removeImage: ImageManagerCore.removeImage,
 
             /**********************************************************************************************/
 
             /**
              *    Start download of texture
              */
-            addImage: ImageManagerLite.addImage,
+            addImage: ImageManagerCore.addImage,
 
-            computeFits: ImageManagerLite.computeFits,
+            computeFits: ImageManagerCore.computeFits,
             handleFits: handleFits
         };
 

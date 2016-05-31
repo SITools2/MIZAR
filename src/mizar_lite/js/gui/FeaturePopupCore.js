@@ -21,8 +21,8 @@
 /**
  * FeaturePopup module
  */
-define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite", "gw/Parser/JsonProcessor", "Utils", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html"],
-    function ($, _, SampLite, ImageProcessingLite, JsonProcessor, Utils, FeatureStyle, VectorLayer, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
+define(["jquery", "underscore-min", "../service/SampCore", "./ImageProcessingCore", "gw/Parser/JsonProcessor", "Utils", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "text!../../templates/featureList.html", "text!../../templates/featureDescription.html", "text!../../templates/descriptionTable.html"],
+    function ($, _, SampCore, ImageProcessingCore, JsonProcessor, Utils, FeatureStyle, VectorLayer, featureListHTMLTemplate, featureDescriptionHTMLTemplate, descriptionTableHTMLTemplate) {
 
         var featureListHTML = '';
         var pickingManager = null;
@@ -89,7 +89,7 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
                 button.button().once().click(function () {
                     var marsLayer = mizar.getLayer("Mars");
                     if (marsLayer != undefined) {
-                        mizar.toggleMode(marsLayer);
+                        mizar.toggleContext(marsLayer);
                         $('#selectedFeatureDiv').hide();
                     }
                 });
@@ -288,7 +288,7 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
          */
         function sendImageBySamp() {
             var selectedData = pickingManager.getSelectedData();
-            var message = SampLite.sendImage(selectedData.feature.services.download.url);
+            var message = SampCore.sendImage(selectedData.feature.services.download.url);
             $('#serviceStatus').html(message).slideDown().delay(1500).slideUp();
         };
 
@@ -398,7 +398,7 @@ define(["jquery", "underscore-min", "service/SampLite", "./ImageProcessingLite",
         function showOrHideDynamicImageService() {
             $(this).toggleClass('selected');
             var selectedData = pickingManager.getSelectedData();
-            ImageProcessingLite.setData(selectedData);
+            ImageProcessingCore.setData(selectedData);
         }
 
         /**********************************************************************************************/

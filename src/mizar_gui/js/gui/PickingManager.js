@@ -21,14 +21,14 @@
 /**
  * PickingManager module
  */
-define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
-    function ($, _, PickingManagerLite, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
+define(["jquery", "underscore-min", "gui_core/PickingManagerCore", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
+    function ($, _, PickingManagerCore, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
         var mizar;
         var context;
         var sky; // TODO: refactor it to use always the context
         var self;
-        var pickingManagerLite;
+        var pickingManagerCore;
 
         var selection = [];
 
@@ -52,7 +52,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
             timeStart = new Date();
             mouseXStart = event.layerX;
             mouseYStart = event.layerY;
-            pickingManagerLite.clearSelection();
+            pickingManagerCore.clearSelection();
         }
 
         /**************************************************************************************************************/
@@ -76,9 +76,9 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
                 var pickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
 
                 // Remove selected style for previous selection
-                pickingManagerLite.clearSelection();
+                pickingManagerCore.clearSelection();
 
-                var newSelection = pickingManagerLite.computePickSelection(pickPoint);
+                var newSelection = pickingManagerCore.computePickSelection(pickPoint);
 
                 if (!_.isEmpty(newSelection) && newSelection.length > 0) {
                     var navigation = context.navigation;
@@ -90,21 +90,21 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
                         }
 
                         var showPopup = function () {
-                            var select = pickingManagerLite.setSelection(newSelection);
+                            var select = pickingManagerCore.setSelection(newSelection);
 
                             // Add selected style for new selection
-                            pickingManagerLite.focusSelection(select);
+                            pickingManagerCore.focusSelection(select);
                             FeaturePopup.createFeatureList(select);
                             if (select.length > 1) {
                                 // Create dialogue for the first selection call
                                 FeaturePopup.createHelp();
-                                pickingManagerLite.stackSelectionIndex = -1;
+                                pickingManagerCore.stackSelectionIndex = -1;
                             }
                             else {
                                 // only one layer, no pile needed, create feature dialogue
-                                pickingManagerLite.focusFeatureByIndex(0, {isExclusive: true});
+                                pickingManagerCore.focusFeatureByIndex(0, {isExclusive: true});
                                 $('#featureList div:eq(0)').addClass('selected');
-                                FeaturePopup.showFeatureInformation(select[pickingManagerLite.stackSelectionIndex].layer, select[pickingManagerLite.stackSelectionIndex].feature)
+                                FeaturePopup.showFeatureInformation(select[pickingManagerCore.stackSelectionIndex].layer, select[pickingManagerCore.stackSelectionIndex].feature)
                             }
                             var offset = $(globe.renderContext.canvas).offset();
                             FeaturePopup.show(offset.left + globe.renderContext.canvas.width / 2, offset.top + globe.renderContext.canvas.height / 2);
@@ -144,7 +144,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
 
             // Hide popup and blur selection when pan/zoom or animation
             context.navigation.subscribe("modified", function () {
-                pickingManagerLite.clearSelection();
+                pickingManagerCore.clearSelection();
                 FeaturePopup.hide();
             });
         }
@@ -165,7 +165,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
 
             // Hide popup and blur selection when pan/zoom or animation
             context.navigation.unsubscribe("modified", function () {
-                pickingManagerLite.clearSelection();
+                pickingManagerCore.clearSelection();
                 FeaturePopup.hide();
             });
         }
@@ -182,7 +182,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
                 sky = mizar.sky;
                 self = this;
                 isMobile = configuration.isMobile;
-                pickingManagerLite = mizar.getLayerManager().getPickingManagerLite();
+                pickingManagerCore = mizar.getLayerManager().getPickingManagerCore();
 
                 this.updateContext();
                 activate();
@@ -217,7 +217,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
              *    Add pickable layer
              */
             addPickableLayer: function (layer) {
-                pickingManagerLite.addPickableLayer(layer);
+                pickingManagerCore.addPickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -226,7 +226,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
              *    Remove pickable layers
              */
             removePickableLayer: function (layer) {
-                pickingManagerLite.removePickableLayer(layer);
+                pickingManagerCore.removePickableLayer(layer);
             },
 
             /**************************************************************************************************************/
@@ -235,44 +235,44 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerLite", "./FeaturePop
              *    Apply selected style to the given feature
              */
             focusFeature: function (selectedData, options) {
-                pickingManagerLite.getSelection().push(selectedData);
-                this.focusFeatureByIndex(pickingManagerLite.getSelection().length - 1, options);
+                pickingManagerCore.getSelection().push(selectedData);
+                this.focusFeatureByIndex(pickingManagerCore.getSelection().length - 1, options);
             },
 
             /**************************************************************************************************************/
 
             getSelectedData: function () {
-                return pickingManagerLite.getSelection()[pickingManagerLite.stackSelectionIndex];
+                return pickingManagerCore.getSelection()[pickingManagerCore.stackSelectionIndex];
             },
 
             /**************************************************************************************************************/
 
             getSelection: function () {
-                return pickingManagerLite.getSelection();
+                return pickingManagerCore.getSelection();
             },
 
             /**************************************************************************************************************/
 
             blurSelectedFeature: function () {
-                pickingManagerLite.blurSelectedFeature();
+                pickingManagerCore.blurSelectedFeature();
             },
 
             /**************************************************************************************************************/
 
             focusFeatureByIndex: function (index, options) {
-                pickingManagerLite.focusFeatureByIndex(index, options);
+                pickingManagerCore.focusFeatureByIndex(index, options);
             },
 
             /**************************************************************************************************************/
 
             computePickSelection: function (pickPoint) {
-                pickingManagerLite.computePickSelection(pickPoint);
+                pickingManagerCore.computePickSelection(pickPoint);
             },
 
             /**************************************************************************************************************/
 
             blurSelection: function () {
-                pickingManagerLite.blurSelection();
+                pickingManagerCore.blurSelection();
             },
 
             /**************************************************************************************************************/
