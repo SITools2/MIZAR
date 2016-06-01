@@ -264,6 +264,16 @@ define(["jquery", "underscore-min", "../layer/LayerManager", "../provider/JsonPr
         /**************************************************************************************************************/
 
         /**
+        * Get the current position tracker
+        * @returns {PositionTracker|*}
+        */
+        MizarContext.prototype.getPositionTracker = function () {
+            return this.positionTracker | console.log("No positionTracker defined");
+        };
+
+        /**************************************************************************************************************/
+
+        /**
          * Load common providers to sky/planet and register them to the LayerManager
          */
         MizarContext.prototype.loadProviders = function () {

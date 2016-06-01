@@ -59,10 +59,10 @@ define(["jquery", "gui_core/ImageManagerCore", "./ImageProcessing"],
             /**
              *    Initialize
              */
-            init: function (mizar, configuration) {
-                sky = mizar.sky;
+            init: function (mizarCore, configuration) {
+                sky = mizarCore.scene;
 
-                ImageManagerCore.init(mizar, configuration);
+                ImageManagerCore.init(mizarCore, configuration);
 
                 // Enable float texture extension to have higher luminance range
                 var ext = sky.renderContext.gl.getExtension("OES_texture_float");

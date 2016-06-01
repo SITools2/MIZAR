@@ -401,7 +401,7 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             stackSelectionIndex: stackSelectionIndex,
             init: function (m) {
                 mizar = m;
-                sky = m.sky;
+                sky = m.scene;
             },
             addPickableLayer: addPickableLayer,
             removePickableLayer: removePickableLayer,

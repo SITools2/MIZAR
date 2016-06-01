@@ -23,7 +23,7 @@
  */
 define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils", "../string", "gw/Layer/FitsLoader", "gw/Tiling/HEALPixBase"],
     function ($, FeatureStyle, MocLayer, Utils, String, FitsLoader, HEALPixBase) {
-        var mizar;
+        var mizarCore;
         var coverageServiceUrl;
 
         /**************************************************************************************************************/
@@ -82,7 +82,7 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils"
          */
         function requestMoc(layer, callback) {
             var mocLayer = this.findMocSublayer(layer);
-            layer.globe = this.sky;
+            layer.globe = this.scene;
 
             // Create if doesn't exist
             if (!mocLayer) {
@@ -319,7 +319,7 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils"
                 }),
                 visible: false
             });
-            mizar.sky.addLayer(intersectionLayer);
+            mizarCore.scene.addLayer(intersectionLayer);
 
             intersectionLayer.describeUrl = url;
 
@@ -364,7 +364,7 @@ define(["../jquery", "gw/Renderer/FeatureStyle", "gw/Layer/MocLayer", "../Utils"
 
         return {
             init: function (m, options) {
-                mizar = m;
+                mizarCore = m;
                 coverageServiceUrl = options.coverageService.baseUrl;
             },
             createMocSublayer: createMocSublayer,

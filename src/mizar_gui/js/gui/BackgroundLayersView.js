@@ -32,6 +32,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
 
         var backgroundDiv;
         var selectedLayer;
+        var mizarCore;
 
         /**************************************************************************************************************/
 
@@ -87,7 +88,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                 // Update background options layout
                 updateBackgroundOptions(gwLayer);
                 selectedLayer = gwLayer;
-                if (gwLayer !== this.mizar.activatedContext.globe.baseImagery) {
+                if (gwLayer !== mizarCore.activatedContext.globe.baseImagery) {
                     LayerManager.setBackgroundSurvey(gwLayer.name);
                 }
             }
@@ -121,21 +122,21 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
              *    Initialization options
              */
             init: function (options) {
-                this.mizar = options.mizar;
+                mizarCore = options.mizar;
 
-                sky = this.mizar.sky;
+                sky = mizarCore.scene;
                 parentElement = options.configuration.element;
                 this.updateUI();
 
                 // Background spinner events
                 sky.subscribe("startBackgroundLoad", onLoadStart);
                 sky.subscribe("endBackgroundLoad", onLoadEnd);
-                this.mizar.subscribe("backgroundLayer:change", this.selectLayer);
+                mizarCore.subscribe("backgroundLayer:change", this.selectLayer);
             },
             remove: function () {
                 sky.unsubscribe("startBackgroundLoad", onLoadStart);
                 sky.unsubscribe("endBackgroundLoad", onLoadEnd);
-                this.mizar.unsubscribe("backgroundLayer:change", this.selectLayer);
+                mizarCore.unsubscribe("backgroundLayer:change", this.selectLayer);
                 $('#backgroundDiv').dialog("destroy").remove();
                 $el.remove();
                 nbBackgroundLayers = 0;
@@ -201,7 +202,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
 
                 // Back to sky button if in planet mode
                 var self = this;
-                if (this.mizar.mode === "planet") {
+                if (mizarCore.mode === "planet") {
                     $el.find('.backToSky').button().click(function (event) {
                         self.mizar.toggleContext();
                     });
@@ -302,7 +303,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                     select: function (event, ui) {
                         var index = ui.item.index;
                         var layer = $(this).children().eq(index).data("layer");
-                        if (layer !== self.mizar.activatedContext.globe.baseImagery) {
+                        if (layer !== mizarCore.activatedContext.globe.baseImagery) {
                             LayerManager.setBackgroundSurvey(layer.name);
                         }
                     }

@@ -102,8 +102,8 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
                 });
 
                 this.navigation = new Navigation(this.globe, options.navigation);
-                //this.navigation.zoomTo(options.initTarget, 18000000);
-                this.navigation.zoomTo([85.2500, -2.4608], 18000000);
+                var initTarget = options.initTarget || [85.2500, -2.4608];
+                this.navigation.zoomTo(initTarget, 18000000);
             } else {
                 this.navigation = new FlatNavigation(this.globe, options.navigation);
                 this.globe.setCoordinateSystem(new MercatorCoordinateSystem());
@@ -125,6 +125,16 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
          */
         PlanetContext.prototype.getAdditionalLayers = function () {
             return this.planetLayer.layers;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get the current elevation tracker
+         * @returns {ElevationTracker|*}
+         */
+        PlanetContext.prototype.getElevationTracker = function () {
+            return this.elevationTracker | console.log("No elevationTracker defined");
         };
 
         /**************************************************************************************************************/

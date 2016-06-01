@@ -24,7 +24,7 @@
 define(["jquery", "underscore-min", "service/SampCore", "Utils", "samp", "jquery.ui"],
     function ($, _, SampCore, Utils) {
 
-        var mizar;
+        var mizarCore;
         var sky;
         var navigation;
         var imageManager;
@@ -119,9 +119,9 @@ define(["jquery", "underscore-min", "service/SampCore", "Utils", "samp", "jquery
          *    Init SAMP module
          */
         function init(m, lm, im, configuration) {
-            mizar = m;
-            sky = mizar.sky;
-            navigation = mizar.navigation;
+            mizarCore = m;
+            sky = mizarCore.scene;
+            navigation = mizarCore.navigation;
             layerManager = lm;
             imageManager = im;
 

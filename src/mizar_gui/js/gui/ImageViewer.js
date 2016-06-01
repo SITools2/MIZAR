@@ -21,7 +21,7 @@
 define(["require", "jquery", "./PickingManager", "./ImageManager", "./ImageProcessing", "./SimpleProgressBar", "Utils", "../service/Samp", "gui_core/dialog/ErrorDialog", "underscore-min", "text!../../templates/imageViewer.html", "text!../../templates/imageViewerLayerItem.html", "text!../../templates/imageViewerImageItem.html", "jquery.ui"],
     function (require, $, PickingManager, ImageManager, ImageProcessing, SimpleProgressBar, Utils, Samp, ErrorDialog, _, imageViewerHTML, imageViewerLayerItemHTMLTemplate, imageViewerImageItemHTMLTemplate) {
 
-        var mizar;
+        var mizarCore;
         var navigation;
         var sky;
 
@@ -161,13 +161,13 @@ define(["require", "jquery", "./PickingManager", "./ImageManager", "./ImageProce
              *    Init image viewer
              */
             init: function (m) {
-                mizar = m;
-                mizar.subscribe("image:add", this.addView);
-                mizar.subscribe("image:remove", this.removeView);
-                mizar.subscribe("image:download", this.addProgressBar);
-                mizar.subscribe("layer:remove", this.removeLayer);
-                sky = mizar.sky;
-                navigation = mizar.navigation;
+                mizarCore = m;
+                mizarCore.subscribe("image:add", this.addView);
+                mizarCore.subscribe("image:remove", this.removeView);
+                mizarCore.subscribe("image:download", this.addProgressBar);
+                mizarCore.subscribe("layer:remove", this.removeLayer);
+                sky = mizarCore.scene;
+                navigation = mizarCore.navigation;
 
                 $imageViewer = $(imageViewerHTML).appendTo('#imageViewerDiv');
 
@@ -196,10 +196,10 @@ define(["require", "jquery", "./PickingManager", "./ImageManager", "./ImageProce
                     layer.unsubscribe("visibility:changed", onVisibilityChange);
                 }
 
-                mizar.unsubscribe("image:add", this.addView);
-                mizar.unsubscribe("image:remove", this.removeView);
-                mizar.unsubscribe("image:download", this.addProgressBar);
-                mizar.unsubscribe("layer:remove", this.removeLayer);
+                mizarCore.unsubscribe("image:add", this.addView);
+                mizarCore.unsubscribe("image:remove", this.removeView);
+                mizarCore.unsubscribe("image:download", this.addProgressBar);
+                mizarCore.unsubscribe("layer:remove", this.removeLayer);
                 $imageViewer.remove();
                 sky = null;
                 navigation = null;

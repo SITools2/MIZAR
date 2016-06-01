@@ -27,7 +27,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
         /**
          * Private variables
          */
-        var mizar;
+        var mizarCore;
         var configuration;
 
         // GeoJSON data providers
@@ -77,7 +77,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
                             isFits: true
                         };
                         var fitsData = fits.getHDU().data;
-                        mizar.publish("image:add", featureData);
+                        mizarCore.publish("image:add", featureData);
 
                         var image = ImageManagerCore.handleFits(fitsData, featureData);
                         ImageProcessing.setImage(image);
@@ -177,7 +177,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
              *        Mizar configuration
              */
             init: function (m, conf) {
-                mizar = m;
+                mizarCore = m;
                 configuration = conf;
                 parentElement = configuration.element;
                 // Add invoker
@@ -185,12 +185,12 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
                 $el = $('<div id="accordion" style="display: none;"></div>').appendTo(parentElement);
                 configuration.element = $el;
 
-                BackgroundLayersView.init({mizar: mizar, configuration: configuration});
-                AdditionalLayersView.init({mizar: mizar, configuration: configuration});
+                BackgroundLayersView.init({mizar: mizarCore, configuration: configuration});
+                AdditionalLayersView.init({mizar: mizarCore, configuration: configuration});
 
-                mizar.subscribe("backgroundLayer:add", BackgroundLayersView.addView);
-                mizar.subscribe("additionalLayer:add", AdditionalLayersView.addView);
-                mizar.subscribe("mizarMode:toggle", this.toggleMode);
+                mizarCore.subscribe("backgroundLayer:add", BackgroundLayersView.addView);
+                mizarCore.subscribe("additionalLayer:add", AdditionalLayersView.addView);
+                mizarCore.subscribe("mizarMode:toggle", this.toggleMode);
 
                 // Necessary to drag&drop option while using jQuery
                 $.event.props.push('dataTransfer');
@@ -206,7 +206,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
                 }).show().accordion("refresh");
 
                 initLayers();
-                LayerServiceView.init(mizar, configuration);
+                LayerServiceView.init(mizarCore, configuration);
 
                 // Setup the drag & drop listeners.
                 $('canvas').on('dragover', handleDragOver);
@@ -244,34 +244,34 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
                 LayerServiceView.remove();
                 $(parentElement).empty();
 
-                mizar.unsubscribe("backgroundLayer:add", BackgroundLayersView.addView);
-                mizar.unsubscribe("additionalLayer:add", AdditionalLayersView.addView);
-                mizar.unsubscribe("mizarMode:toggle", this.toggleMode);
+                mizarCore.unsubscribe("backgroundLayer:add", BackgroundLayersView.addView);
+                mizarCore.unsubscribe("additionalLayer:add", AdditionalLayersView.addView);
+                mizarCore.unsubscribe("mizarMode:toggle", this.toggleMode);
                 $('canvas').off('dragover', handleDragOver);
                 $('canvas').off('drop', handleDrop);
             },
 
             /**
-             *    Update view depending on mizar mode
+             *    Update view depending on mizarCore mode
              *
              *    @param planetLayer
              *        Planet layer if toggled in globe mode
              */
             toggleMode: function (planetLayer) {
-                if (mizar.mode === "sky") {
+                if (mizarCore.mode === "sky") {
                     // Reinit background&additional views
                     BackgroundLayersView.remove();
                     AdditionalLayersView.remove();
-                    BackgroundLayersView.init({mizar: mizar, configuration: configuration});
-                    AdditionalLayersView.init({mizar: mizar, configuration: configuration});
+                    BackgroundLayersView.init({mizar: mizarCore, configuration: configuration});
+                    AdditionalLayersView.init({mizar: mizarCore, configuration: configuration});
                     initLayers();
                 }
                 else {
                     // Reinit only background layers view for the given planet layer
                     BackgroundLayersView.remove();
                     AdditionalLayersView.remove();
-                    BackgroundLayersView.init({mizar: mizar, configuration: configuration});
-                    AdditionalLayersView.init({mizar: mizar, configuration: configuration});
+                    BackgroundLayersView.init({mizar: mizarCore, configuration: configuration});
+                    AdditionalLayersView.init({mizar: mizarCore, configuration: configuration});
                     initPlanetLayer(planetLayer);
                 }
                 $el.accordion("option", "active", 0).accordion("refresh");
@@ -281,7 +281,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "Utils", "gui_core/dia
              *    Returns the state of view
              */
             isInitialized: function () {
-                return (mizar.sky !== null)
+                return (mizarCore.scene !== null)
             }
         };
 

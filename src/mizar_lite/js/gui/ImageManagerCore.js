@@ -26,6 +26,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
         var sky = null;
         var sitoolsBaseUrl;
+        var mizarCore;
 
         /**********************************************************************************************/
 
@@ -48,7 +49,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
                 handleFits(fitsData, featureData);
             });
-            this.mizar.publish("image:download", featureData);
+            mizarCore.publish("image:download", featureData);
         }
 
         /**********************************************************************************************/
@@ -136,15 +137,15 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
 
             /**
              * Initialize ImageManagerCore
-             * @param mizar
+             * @param m
              * @param configuration
              *      <ul>
              *          <li>sitoolsBaseUrl : the base sitools url used as proxy here
              *      </ul>
              */
-            init: function (mizar, configuration) {
-                this.mizar = mizar;
-                sky = mizar.sky;
+            init: function (m, configuration) {
+                mizarCore = m;
+                sky = m.scene;
                 sitoolsBaseUrl = configuration.sitoolsBaseUrl;
                 // Enable float texture extension to have higher luminance range
                 var ext = sky.renderContext.gl.getExtension("OES_texture_float");
@@ -184,7 +185,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
             removeImage: function (featureData) {
 
                 // Publish event that the image of the given feature will be removed
-                this.mizar.publish("image:remove", featureData);
+                mizarCore.publish("image:remove", featureData);
                 if (featureData.isFits) {
                     removeFitsFromRenderer(featureData);
                     $('#quicklookFits').removeClass('selected');
@@ -212,7 +213,7 @@ define(["jquery", "gw/Renderer/FeatureStyle", "gw/Renderer/DynamicImage", "gw/La
                 style.fill = true;
 
                 // Publish event that the image for the given feature will be loaded
-                this.mizar.publish("image:add", featureData);
+                mizarCore.publish("image:add", featureData);
 
                 if (featureData.isFits) {
                     var url = sitoolsBaseUrl + "/proxy?external_url=" + encodeURIComponent(feature.services.download.url);

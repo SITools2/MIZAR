@@ -24,7 +24,7 @@
 define(["jquery", "underscore-min", "gui_core/PickingManagerCore", "./FeaturePopup", "./ImageManager", "./CutOutViewFactory", "Utils"],
     function ($, _, PickingManagerCore, FeaturePopup, ImageManager, CutOutViewFactory, Utils) {
 
-        var mizar;
+        var mizarCore;
         var context;
         var sky; // TODO: refactor it to use always the context
         var self;
@@ -70,7 +70,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerCore", "./FeaturePop
                 event.layerY = event.changedTouches[0].clientY;
             }
 
-            var globe = mizar.activatedContext.globe;
+            var globe = mizarCore.activatedContext.globe;
             // If not pan and not reverse name resolver call
             if (diff < 500 && Math.abs(mouseXStart - event.layerX) < epsilon && Math.abs(mouseYStart - event.layerY) < epsilon) {
                 var pickPoint = globe.getLonLatFromPixel(event.layerX, event.layerY);
@@ -177,26 +177,26 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerCore", "./FeaturePop
              *    Init picking manager
              */
             init: function (m, configuration) {
-                mizar = m;
+                mizarCore = m;
                 // Store the sky in the global module variable
-                sky = mizar.sky;
+                sky = mizarCore.scene;
                 self = this;
                 isMobile = configuration.isMobile;
-                pickingManagerCore = mizar.getLayerManager().getPickingManagerCore();
+                pickingManagerCore = mizarCore.getLayerManager().getPickingManagerCore();
 
                 this.updateContext();
                 activate();
 
-                mizar.subscribe("mizarMode:toggle", this.updateContext);
+                mizarCore.subscribe("mizarMode:toggle", this.updateContext);
 
                 // Initialize the fits manager
-                ImageManager.init(mizar, configuration);
+                ImageManager.init(mizarCore, configuration);
 
                 if (configuration.cutOut) {
                     // CutOutView factory ... TODO : move it/refactor it/do something with it...
                     CutOutViewFactory.init(sky, context.navigation, this);
                 }
-                FeaturePopup.init(mizar, this, ImageManager, sky, configuration);
+                FeaturePopup.init(mizarCore, this, ImageManager, sky, configuration);
             },
 
             /**************************************************************************************************************/
@@ -207,7 +207,7 @@ define(["jquery", "underscore-min", "gui_core/PickingManagerCore", "./FeaturePop
             updateContext: function () {
                 if (context)
                     deactivate();
-                context = mizar.activatedContext;
+                context = mizarCore.activatedContext;
                 activate();
             },
 

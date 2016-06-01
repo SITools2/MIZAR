@@ -166,7 +166,7 @@ define(["jquery", "underscore-min",
                             isMobile: isMobile,
                             mode: userOptions.mode,
                             mizarGlobal: self,
-                            sky: self.mizarCore.sky,
+                            sky: self.mizarCore.scene,
                             navigation: self.mizarCore.navigation,
                             options: options
                         });
@@ -198,6 +198,24 @@ define(["jquery", "underscore-min",
          */
         MizarGlobal.prototype.getContext = function () {
             return this.mizarCore.activatedContext;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get the current Scene
+         */
+        MizarGlobal.prototype.getScene = function () {
+            return this.mizarCore.scene;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get the current Navigation
+         */
+        MizarGlobal.prototype.getNavigation = function () {
+            return this.mizarCore.navigation;
         };
 
         /**************************************************************************************************************/
@@ -441,6 +459,15 @@ define(["jquery", "underscore-min",
             if (this.mizarCore) {
                 this.mizarCore.toggleContext(gwLayer, planetDimension, callback);
             }
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get additional layers depending on current context
+         */
+        MizarGlobal.prototype.getAdditionalLayers = function () {
+            return this.getContext().getAdditionalLayers();
         };
 
         return MizarGlobal;

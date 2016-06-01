@@ -24,7 +24,7 @@
 define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/dialog/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
     function ($, AdditionalLayersCore, LayerManager, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
 
-        var mizar;
+        var mizarCore;
         var sky;
         var navigation;
         var parentElement;
@@ -285,9 +285,9 @@ define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./Pick
             $layerDiv.find('#visible_' + shortName).click(function () {
 
                 if (Utils.isPlanetLayer(gwLayer)) {
-                    // Temporary use visiblity button to change mizar context to "planet"
+                    // Temporary use visiblity button to change mizarCore context to "planet"
                     // TODO: change button,
-                    mizar.toggleContext(gwLayer);
+                    mizarCore.toggleContext(gwLayer);
                 } else {
                     var isOn = !$(this).hasClass('ui-state-active');
                     gwLayer.visible(isOn);
@@ -530,12 +530,12 @@ define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./Pick
              */
             init: function (options) {
                 // Set some globals
-                mizar = options.mizar;
-                sky = options.mizar.sky;
+                mizarCore = options.mizar;
+                sky = options.mizar.scene;
                 navigation = options.mizar.navigation;
                 isMobile = options.configuration.isMobile;
 
-                AdditionalLayersCore.init(mizar, sky, navigation);
+                AdditionalLayersCore.init(mizarCore, sky, navigation);
 
                 // Append content to parent element
                 parentElement = options.configuration.element;

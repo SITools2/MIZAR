@@ -98,10 +98,9 @@ define(["jquery", "underscore-min",
 
             var self = this;
 
-            self.subscribe('layer:fitsSupported', function (layerDesc, planetLayer) {
-                self.addFitsEvent(layerDesc, planetLayer);
+            self.subscribe('layer:fitsSupported', function (layerDesc) {
+                self.addFitsEvent(layerDesc);
             });
-
 
             // Create data manager
             PickingManager.init(mizarCore, globalOptions.options);
@@ -134,7 +133,7 @@ define(["jquery", "underscore-min",
         /**
          * Register all mouse events
          */
-        MizarWidgetGui.prototype.addMouseEvents = function() {
+        MizarWidgetGui.prototype.addMouseEvents = function () {
             // Fade hover styled image effect
             $("body").on("mouseenter", "span.defaultImg", function () {
                 //stuff to do on mouseover
@@ -165,15 +164,10 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         *    Add additional layer(OpenSearch, GeoJSON, HIPS, grid coordinates)
-         *    @param layerDesc
-         *        Layer description
-         *    @param planetLayer
-         *        Planet layer, if described layer must be added to planet (optional)
-         *    @return
-         *        The created layer
+         * Add Fits event to layer if supported
+         * @param layerDesc
          */
-        MizarWidgetGui.prototype.addFitsEvent = function (layerDesc, planetLayer) {
+        MizarWidgetGui.prototype.addFitsEvent = function (layerDesc) {
 
             // Add onready event if FITS supported by layer
             if (layerDesc.fitsSupported) {
@@ -436,11 +430,29 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
+         * Get measureToolPlanet
+         * @returns {MeasureToolPlanet|*}
+         */
+        MizarWidgetGui.prototype.getMeasureToolPlanet = function () {
+            return this.measureToolPlanet;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Get measureToolSky
+         * @returns {MeasureToolSky|*}
+         */
+        MizarWidgetGui.prototype.getMeasureToolSky = function () {
+            return this.measureToolSky;
+        };
+
+        /**************************************************************************************************************/
+
+        /**
          *    Toggle between planet/sky mode
          */
         MizarWidgetGui.prototype.toggleContext = function (gwLayer, planetDimension, callback) {
-            var mizarCore = mizar.getCore();
-            var mizarGui = mizar.getGui();
 
             mizarCore.mode = (mizarCore.mode === "sky") ? "planet" : "sky";
             mizar.mode = mizarCore.mode;
@@ -451,15 +463,15 @@ define(["jquery", "underscore-min",
                 planetContext.hide();
 
                 // desactive the planet measure tool
-                if (!_.isEmpty(mizarGui.measureToolPlanet) && mizarGui.measureToolPlanet.activated)
-                    mizarGui.measureToolPlanet.toggle();
+                if (!_.isEmpty(this.measureToolPlanet) && this.measureToolPlanet.activated)
+                    this.measureToolPlanet.toggle();
 
                 mizarCore.activatedContext = skyContext;
                 // Add smooth animation from planet context to sky context
                 planetContext.navigation.toViewMatrix(mizarCore.oldVM, mizarCore.oldFov, 2000, function () {
                     // Show all additional layers
                     skyContext.showAdditionalLayers();
-                    mizarCore.sky.renderContext.tileErrorTreshold = 1.5;
+                    mizarCore.scene.renderContext.tileErrorTreshold = 1.5;
                     mizarCore.publish("mizarMode:toggle", gwLayer);
 
                     // Destroy planet context
@@ -467,7 +479,7 @@ define(["jquery", "underscore-min",
                     planetContext = null;
                     // Show sky
                     skyContext.show();
-                    mizarCore.sky.refresh();
+                    mizarCore.scene.refresh();
                     if (callback) {
                         callback.call(mizarCore);
                     }
@@ -484,7 +496,7 @@ define(["jquery", "underscore-min",
                 // Create planet context( with existing sky render context )
                 var planetConfiguration = {
                     planetLayer: gwLayer,
-                    renderContext: mizarCore.sky.renderContext,
+                    renderContext: mizarCore.scene.renderContext,
                     initTarget: options.navigation.initTarget,
                     reverseNameResolver: {
                         "baseUrl": gwLayer.reverseNameResolverURL	// TODO: define protocol for reverse name resolver
@@ -518,11 +530,11 @@ define(["jquery", "underscore-min",
                 planetContext.credits = skyContext.credits;
 
                 // Planet tile error treshold is less sensetive than sky's one
-                mizarCore.sky.renderContext.tileErrorTreshold = 3;
+                mizarCore.scene.renderContext.tileErrorTreshold = 3;
                 mizarCore.activatedContext = planetContext;
                 // Store old view matrix & fov to be able to rollback to sky context
-                mizarCore.oldVM = mizarCore.sky.renderContext.viewMatrix;
-                mizarCore.oldFov = mizarCore.sky.renderContext.fov;
+                mizarCore.oldVM = mizarCore.scene.renderContext.viewMatrix;
+                mizarCore.oldFov = mizarCore.scene.renderContext.fov;
 
                 if (planetContext.mode == "3d") {
                     //Compute planet view matrix
@@ -543,8 +555,8 @@ define(["jquery", "underscore-min",
                     mizarCore.publish("mizarMode:toggle", gwLayer);
                 }
 
-                if (!mizarGui.measureToolPlanet) {
-                    mizarGui.measureToolPlanet = new MeasureToolPlanet({
+                if (!this.measureToolPlanet) {
+                    this.measureToolPlanet = new MeasureToolPlanet({
                         globe: planetContext.globe,
                         navigation: planetContext.navigation,
                         planetLayer: planetContext.planetLayer,
@@ -554,8 +566,8 @@ define(["jquery", "underscore-min",
                 }
 
                 // desactive the sky measure tool
-                if (!_.isEmpty(mizarGui.measureToolSky) && mizarGui.measureToolSky.activated)
-                    mizarGui.measureToolSky.toggle();
+                if (!_.isEmpty(this.measureToolSky) && this.measureToolSky.activated)
+                    this.measureToolSky.toggle();
 
                 //planetContext.globe.isSky = true;
                 mizarCore.navigation.globe.isSky = true;

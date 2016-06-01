@@ -22,6 +22,7 @@
  * Mizar widget Core
  */
 define(["jquery", "underscore-min",
+        "./context/MizarContext",
         "./context/PlanetContext",
         "./context/SkyContext",
 
@@ -48,7 +49,7 @@ define(["jquery", "underscore-min",
 
         "./name_resolver/NameResolverManager",
         "./reverse_name_resolver/ReverseNameResolverManager"],
-    function ($, _, PlanetContext, SkyContext,
+    function ($, _, MizarContext, PlanetContext, SkyContext,
               backgroundSurveys, LayerManager, NameResolver,
               ReverseNameResolver, MocBase, Utils,
               ErrorDialog, AboutDialog, UWSManager, ImageManagerCore, TileWireframeLayer, Stats,
@@ -235,17 +236,17 @@ define(["jquery", "underscore-min",
 
             // Add stats
             if (options.stats.visible) {
-                new Stats(this.sky.renderContext, {
+                new Stats(this.scene.renderContext, {
                     element: "fps",
                     verbose: options.stats.verbose
                 });
                 $("#fps").show();
             }
 
-            this.sky.coordinateSystem.type = options.coordSystem;
+            this.scene.coordinateSystem.type = options.coordSystem;
 
             // Add attribution handler
-            new AttributionHandler(this.sky, {
+            new AttributionHandler(this.scene, {
                 element: 'attributions'
             });
 
@@ -298,7 +299,7 @@ define(["jquery", "underscore-min",
                     }, options));
 
                     this.activatedContext = skyContext;
-                    this.sky = skyContext.globe;
+                    this.scene = skyContext.globe;
                     this.navigation = skyContext.navigation;
 
                     // Load providers
@@ -318,7 +319,7 @@ define(["jquery", "underscore-min",
                     planetContext = new PlanetContext(div, options);
 
                     this.activatedContext = planetContext;
-                    this.sky = planetContext.globe;
+                    this.scene = planetContext.globe;
                     this.navigation = planetContext.navigation;
 
                     // Load providers
@@ -337,10 +338,10 @@ define(["jquery", "underscore-min",
                     this.activatedContext.navigation.computeInverseViewMatrix();
                     mat4.inverse(this.activatedContext.navigation.inverseViewMatrix, planetVM);
 
-                    this.sky.renderContext.tileErrorTreshold = 3;
+                    this.scene.renderContext.tileErrorTreshold = 3;
                     // Store old view matrix & fov to be able to rollback to sky context
-                    this.oldVM = this.sky.renderContext.viewMatrix;
-                    this.oldFov = this.sky.renderContext.fov;
+                    this.oldVM = this.scene.renderContext.viewMatrix;
+                    this.oldFov = this.scene.renderContext.fov;
                     this.navigation.globe.isSky = true;
 
                     //planetContext.globe.publish("baseLayersReady");
@@ -531,7 +532,7 @@ define(["jquery", "underscore-min",
          * @param {Function} callback
          */
         MizarCore.prototype.setZoom = function (fovInDegrees, callback) {
-            var geoPos = this.sky.coordinateSystem
+            var geoPos = this.scene.coordinateSystem
                 .from3DToGeo(this.navigation.center3d);
             this.navigation.zoomTo(geoPos, fovInDegrees, 1000, callback);
         };
@@ -547,7 +548,7 @@ define(["jquery", "underscore-min",
          *            "EQ" or "GAL"(respectively equatorial or galactic)
          */
         MizarCore.prototype.setCoordinateSystem = function (newCoordSystem) {
-            this.sky.coordinateSystem.type = newCoordSystem;
+            this.scene.coordinateSystem.type = newCoordSystem;
 
             if (this.mollweideViewer) {
                 this.mollweideViewer.setCoordSystem(newCoordSystem);

@@ -25,7 +25,7 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/dialog/ErrorDialog"],
     function ($, LayerManager, ErrorDialog) {
 
         // Globals
-        var mizar;
+        var mizarCore;
         var navigation;
         var baseUrl;
 
@@ -60,7 +60,7 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/dialog/ErrorDialog"],
 
             // Get navigation parameters
             var geo = [];
-            mizar.sky.coordinateSystem.from3DToGeo(navigation.center3d, geo);
+            mizarCore.scene.coordinateSystem.from3DToGeo(navigation.center3d, geo);
 
             // Get layer visibility parameters
             var currentLayers = LayerManager.getLayers("sky");
@@ -102,7 +102,7 @@ define(["../jquery", "../layer/LayerManager", "../gui_core/dialog/ErrorDialog"],
         }
 
         function init(options) {
-            mizar = options.mizar;
+            mizarCore = options.mizar;
             navigation = options.navigation;
             if (options.configuration.hasOwnProperty('shortener')) {
                 baseUrl = options.configuration.shortener.baseUrl;

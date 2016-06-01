@@ -21,9 +21,11 @@
 /**
  * LayerManager module
  */
-define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer", "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer", "gw/Layer/HEALPixFITSLayer", "../gui/PickingManagerCore", "../Utils", "gw/Parser/JsonProcessor", "gw/Layer/AtmosphereLayer", "string"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer",
+    "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer",
+    "gw/Layer/HEALPixFITSLayer", "gw/Layer/AtmosphereLayer", "gw/Layer/BingLayer", "gw/Layer/OSMLayer", "gw/Layer/WMTSLayer", "../gui/PickingManagerCore", "../Utils", "gw/Parser/JsonProcessor",  "string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
-              MocLayer, PlanetLayer, HEALPixFITSLayer, PickingManagerCore, Utils, JsonProcessor, AtmosphereLayer, String) {
+              MocLayer, PlanetLayer, HEALPixFITSLayer, AtmosphereLayer, BingLayer, OSMLayer, WMTSLayer, PickingManagerCore, Utils, JsonProcessor, String) {
 
         /**
          * Private variables
@@ -35,6 +37,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
 // GeoJSON data providers
         var dataProviders = {};
+        var mizarCore;
 
 
         /**
@@ -231,7 +234,6 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
          * @param {Layer} layer
          */
         function onVisibilityChange(layer) {
-            var mizarCore = mizar.getCore();
 
             if(layer.visible() && layer.properties && layer.properties.hasOwnProperty("initialRa") && layer.properties.hasOwnProperty("initialDec") && layer.properties.hasOwnProperty("initialFov")) {
                 if (mizarCore.mode === "sky") {
@@ -390,7 +392,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 layerToAdd.availableServices = ["Moc"];
             }
 
-            var healpixLayer = this.mizar.addLayer(layerToAdd);
+            var healpixLayer = mizarCore.addLayer(layerToAdd);
 
             if(hipsLayer.hasOwnProperty("moc_access_url")) {
                 healpixLayer.serviceUrl = hipsLayer.moc_access_url;
@@ -403,18 +405,18 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             /**
              *    Init
              *
-             *    @param mizar
-             *        Mizar API object
+             *    @param m
+             *        mizarCore
              *    @param conf
              *        Mizar configuration
              */
-            init: function (mizarCore, conf) {
-                this.mizar = mizarCore;
+            init: function (m, conf) {
+                mizarCore = m;
                 configuration = conf;
                 // Store the sky in the global module variable
-                sky = this.mizar.sky;
+                sky = mizarCore.scene;
 
-                PickingManagerCore.init(mizarCore);
+                PickingManagerCore.init(m);
 
                 // TODO : Call init layers
                 //initLayers(configuration.layers);
@@ -507,7 +509,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
              *        GlobWeb layer to add
              */
             addLayerToGlobe: function (gwLayer) {
-                var globe = this.mizar.activatedContext.globe;
+                var globe = mizarCore.activatedContext.globe;
                 if (gwLayer.category === "background") {
                     // Add to engine
                     if (gwLayer.visible()) {
@@ -521,7 +523,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                     }
 
                     // Publish the event
-                    this.mizar.publish("backgroundLayer:add", gwLayer);
+                    mizarCore.publish("backgroundLayer:add", gwLayer);
                 }
                 else {
                     // Add to engine
@@ -530,7 +532,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                     }
 
                     // Publish the event
-                    this.mizar.publish("additionalLayer:add", gwLayer);
+                    mizarCore.publish("additionalLayer:add", gwLayer);
                 }
             },
 
@@ -546,7 +548,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 if (planetLayer) {
                     // Add layer to planet
                     planetLayer.layers.push(gwLayer);
-                    if (mizar.mode === "planet") {
+                    if (mizarCore.mode === "planet") {
                         this.addLayerToGlobe(gwLayer);
                     }
                 }
@@ -560,7 +562,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
                     // Add layer to sky
                     gwLayers.push(gwLayer);
-                    if (mizar.mode === "sky") {
+                    if (mizarCore.mode === "sky") {
                         this.addLayerToGlobe(gwLayer);
                     }
                 }
@@ -612,7 +614,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                     PickingManagerCore.removePickableLayer(gwLayer);
                 }
 
-                this.mizar.publish("layer:remove", gwLayer);
+                mizarCore.publish("layer:remove", gwLayer);
                 sky.removeLayer(gwLayer);
             },
 
@@ -623,9 +625,9 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
              */
             setBackgroundSurvey: function (survey) {
 
-                var globe = this.mizar.activatedContext.globe;
+                var globe = mizarCore.activatedContext.globe;
                 var gwLayer;
-                if (mizar.mode === "sky") {
+                if (mizarCore.mode === "sky") {
                     // Find the layer by name among all the layers
                     gwLayer = _.findWhere(gwLayers, {name: survey});
                     if (gwLayer) {
@@ -655,10 +657,10 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                                     }
                                 }
                             }
-                            this.mizar.publish("backgroundLayer:change", gwLayer);
+                            mizarCore.publish("backgroundLayer:change", gwLayer);
                         }
                     } else {
-                        this.mizar.publish("backgroundSurveyError", "Survey " + survey + " hasn't been found");
+                        mizarCore.publish("backgroundSurveyError", "Survey " + survey + " hasn't been found");
                     }
                 }
                 else {
@@ -671,7 +673,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                         }
                         globe.setBaseImagery(gwLayer);
                         gwLayer.visible(true);
-                        this.mizar.publish("backgroundLayer:change", gwLayer);
+                        mizarCore.publish("backgroundLayer:change", gwLayer);
                     }
 
                 }
@@ -701,7 +703,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
                 gwLayer.addFeature(feature);
                 PickingManagerCore.addPickableLayer(gwLayer);
-                this.addLayer(gwLayer, this.mizar.activatedContext.planetLayer);
+                this.addLayer(gwLayer, mizarCore.activatedContext.planetLayer);
                 return gwLayer;
             },
 
@@ -717,7 +719,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 gwLayer.addFeatureCollection(geoJson);
                 PickingManagerCore.addPickableLayer(gwLayer);
 
-                this.addLayer(gwLayer, this.mizar.activatedContext.planetLayer);
+                this.addLayer(gwLayer, mizarCore.activatedContext.planetLayer);
                 return gwLayer;
             },
 

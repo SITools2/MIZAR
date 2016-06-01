@@ -89,7 +89,7 @@ define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNaviga
          *    Get additional layers of sky context
          */
         SkyContext.prototype.getAdditionalLayers = function () {
-            return _.filter(LayerManager.getLayers(), function (layer) {
+            return _.filter(LayerManager.getLayers("sky"), function (layer) {
                 return layer.category !== "background";
             });
         };

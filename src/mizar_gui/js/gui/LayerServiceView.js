@@ -70,7 +70,7 @@ define(["jquery", "../service_gui/OpenSearchService", "../service_gui/MocService
             /**
              *    Initilize layer service view
              */
-            init: function (mizar, configuration) {
+            init: function (mizarCore, configuration) {
                 // Create jQuery UI dialog to represent layer service view
                 $layerServiceView = $(layerServiceView)
                     .appendTo('body')
@@ -100,9 +100,9 @@ define(["jquery", "../service_gui/OpenSearchService", "../service_gui/MocService
                     show: {effect: "slideDown", duration: 300}
                 });
 
-                MocService.init(mizar.sky, configuration);
-                XMatchService.init(mizar.sky, configuration);
-                HEALPixCutService.init(mizar.sky, mizar.navigation);
+                MocService.init(mizarCore.scene, configuration);
+                XMatchService.init(mizarCore.scene, configuration);
+                HEALPixCutService.init(mizarCore.scene, mizarCore.navigation);
             },
 
             /**
