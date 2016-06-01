@@ -203,6 +203,15 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
                 case "WMS":
                     gwLayer = new WMSLayer(layerDesc);
                     break;
+                case "WMTS":
+                    gwLayer = new WMTSLayer(layerDesc);
+                    break;
+                case "OSM":
+                    gwLayer = new OSMLayer(layerDesc);
+                    break;
+                case "Bing":
+                    gwLayer = new BingLayer(layerDesc);
+                    break;
                 default:
                     console.error(layerDesc.type + " isn't not implemented");
                     return null;
