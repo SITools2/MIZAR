@@ -285,6 +285,16 @@ define(["jquery", "underscore-min", "../layer/LayerManager", "../provider/JsonPr
 
         /**************************************************************************************************************/
 
+        /**
+         * Change background survey
+         * @param {string} survey the name of the layer
+         */
+        MizarContext.prototype.setBackgroundSurvey = function (survey) {
+
+        };
+
+        /**************************************************************************************************************/
+
         return MizarContext;
 
     });

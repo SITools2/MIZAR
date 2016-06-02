@@ -89,7 +89,8 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                 updateBackgroundOptions(gwLayer);
                 selectedLayer = gwLayer;
                 if (gwLayer !== mizarCore.activatedContext.globe.baseImagery) {
-                    LayerManager.setBackgroundSurvey(gwLayer.name);
+                    //LayerManager.setBackgroundSurvey(gwLayer.name);
+                    mizarCore.activatedContext.setBackgroundSurvey(gwLayer.name);
                 }
             }
 
@@ -304,7 +305,8 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                         var index = ui.item.index;
                         var layer = $(this).children().eq(index).data("layer");
                         if (layer !== mizarCore.activatedContext.globe.baseImagery) {
-                            LayerManager.setBackgroundSurvey(layer.name);
+                            //LayerManager.setBackgroundSurvey(layer.name);
+                            mizarCore.activatedContext.setBackgroundSurvey(layer.name);
                         }
                     }
                 }).iconselectmenu("menuWidget")

@@ -229,6 +229,8 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             return gwLayer;
         }
 
+        /**************************************************************************************************************/
+
         /**
          * Execute when layer visibility is changed
          * @param {Layer} layer
@@ -318,6 +320,8 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             });
         }
 
+        /**************************************************************************************************************/
+
         /**
          * Get service url from HIPS Layer
          *
@@ -338,6 +342,8 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
             }
             return hipsServiceUrlArray;
         }
+
+        /**************************************************************************************************************/
 
         /**
          * Add HIPS Layer to Mizar
@@ -616,68 +622,6 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
 
                 mizarCore.publish("layer:remove", gwLayer);
                 sky.removeLayer(gwLayer);
-            },
-
-            /**
-             *    Set background survey from its name
-             *    @param survey
-             *        Survey name
-             */
-            setBackgroundSurvey: function (survey) {
-
-                var globe = mizarCore.activatedContext.globe;
-                var gwLayer;
-                if (mizarCore.mode === "sky") {
-                    // Find the layer by name among all the layers
-                    gwLayer = _.findWhere(gwLayers, {name: survey});
-                    if (gwLayer) {
-                        // Check if is not already set
-                        if (gwLayer !== globe.baseImagery) {
-                            // Change visibility's of previous layer, because visibility is used to know the active background layer in the layers list (layers can be shared)
-                            if (globe.baseImagery) {
-                                globe.baseImagery.visible(false);
-                            }
-                            globe.setBaseImagery(gwLayer);
-                            gwLayer.visible(true);
-
-                            // Clear selection
-                            PickingManagerCore.getSelection().length = 0;
-
-                            for (var i = 0; i < gwLayers.length; i++) {
-                                var currentLayer = gwLayers[i];
-                                if (currentLayer.subLayers) {
-                                    var len = currentLayer.subLayers.length;
-                                    for (var j = 0; j < len; j++) {
-                                        var subLayer = currentLayer.subLayers[j];
-                                        if (subLayer.name === "SolarObjectsSublayer") {
-                                            PickingManagerCore.removePickableLayer(subLayer);
-                                            globe.removeLayer(subLayer);
-                                            currentLayer.subLayers.splice(j, 1);
-                                        }
-                                    }
-                                }
-                            }
-                            mizarCore.publish("backgroundLayer:change", gwLayer);
-                        }
-                    } else {
-                        mizarCore.publish("backgroundSurveyError", "Survey " + survey + " hasn't been found");
-                    }
-                }
-                else {
-                    // Planet mode
-                    gwLayer = _.findWhere(planetLayers, {name: survey});
-
-                    if (!_.isEmpty(gwLayer)) {
-                        if (globe.baseImagery) {
-                            globe.baseImagery.visible(false);
-                        }
-                        globe.setBaseImagery(gwLayer);
-                        gwLayer.visible(true);
-                        mizarCore.publish("backgroundLayer:change", gwLayer);
-                    }
-
-                }
-
             },
 
             /**

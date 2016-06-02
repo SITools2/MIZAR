@@ -23,10 +23,10 @@
  */
 define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNavigation", "gw/Utils/Utils",
         "./MizarContext", "../layer/LayerManager", "../provider/StarProvider", "../provider/ConstellationProvider",
-        "../provider/JsonProvider", "../provider/OpenSearchProvider", "../gui/tracker/PositionTracker", "jquery.ui"],
+        "../provider/JsonProvider", "../provider/OpenSearchProvider", "../gui/tracker/PositionTracker", "../gui/PickingManagerCore", "jquery.ui"],
     function ($, _, Sky, AstroNavigation, Utils,
               MizarContext, LayerManager, StarProvider, ConstellationProvider,
-              JsonProvider, OpenSearchProvider, PositionTracker) {
+              JsonProvider, OpenSearchProvider, PositionTracker, PickingManagerCore) {
 
         /**************************************************************************************************************/
 
@@ -111,6 +111,55 @@ define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNaviga
             LayerManager.registerDataProvider("OpenSearch", function (gwLayer, configuration) {
                 openSearchProvider.loadFiles(gwLayer, configuration, 1);
             });
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Change background survey
+         * @param {string} survey the name of the layer
+         */
+        SkyContext.prototype.setBackgroundSurvey = function (survey) {
+            var globe = this.globe;
+            var gwLayer;
+
+            var mizarCore = mizar.getCore();
+            var gwLayers = mizar.getLayers("sky");
+
+            // Find the layer by name among all the layers
+            gwLayer = _.findWhere(gwLayers, {name: survey});
+            if (gwLayer) {
+                // Check if is not already set
+                if (gwLayer !== globe.baseImagery) {
+                    // Change visibility's of previous layer, because visibility is used to know the active background layer in the layers list (layers can be shared)
+                    if (globe.baseImagery) {
+                        globe.baseImagery.visible(false);
+                    }
+                    globe.setBaseImagery(gwLayer);
+                    gwLayer.visible(true);
+
+                    // Clear selection
+                    PickingManagerCore.getSelection().length = 0;
+
+                    for (var i = 0; i < gwLayers.length; i++) {
+                        var currentLayer = gwLayers[i];
+                        if (currentLayer.subLayers) {
+                            var len = currentLayer.subLayers.length;
+                            for (var j = 0; j < len; j++) {
+                                var subLayer = currentLayer.subLayers[j];
+                                if (subLayer.name === "SolarObjectsSublayer") {
+                                    PickingManagerCore.removePickableLayer(subLayer);
+                                    globe.removeLayer(subLayer);
+                                    currentLayer.subLayers.splice(j, 1);
+                                }
+                            }
+                        }
+                    }
+                    mizarCore.publish("backgroundLayer:change", gwLayer);
+                }
+            } else {
+                mizarCore.publish("backgroundSurveyError", "Survey " + survey + " hasn't been found");
+            }
         };
 
         /**************************************************************************************************************/

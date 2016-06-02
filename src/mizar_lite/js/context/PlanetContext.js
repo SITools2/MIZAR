@@ -21,8 +21,12 @@
 /**
  * Planet context (inherited from MizarContext)
  */
-define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils", "./MizarContext", "../layer/LayerManager", "../provider/JsonProvider", "../gui/tracker/PositionTracker", "../gui/tracker/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
-    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext, LayerManager, JsonProvider, PositionTracker, ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
+define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils",
+    "./MizarContext", "../layer/LayerManager", "../provider/JsonProvider", "../gui/tracker/PositionTracker",
+    "../gui/tracker/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
+    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext,
+              LayerManager, JsonProvider, PositionTracker,
+              ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
 
         /**************************************************************************************************************/
 
@@ -173,6 +177,29 @@ define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Na
          */
         PlanetContext.prototype.loadProviders = function () {
             MizarContext.prototype.loadProviders.call(this);
+        };
+
+        /**************************************************************************************************************/
+
+        /**
+         * Change background survey
+         * @param {string} survey the name of the layer
+         */
+        PlanetContext.prototype.setBackgroundSurvey = function (survey) {
+            var globe = this.globe;
+            var gwLayer;
+
+            var planetLayers = mizar.getLayers("planet");
+            gwLayer = _.findWhere(planetLayers, {name: survey});
+
+            if (!_.isEmpty(gwLayer)) {
+                if (globe.baseImagery) {
+                    globe.baseImagery.visible(false);
+                }
+                globe.setBaseImagery(gwLayer);
+                gwLayer.visible(true);
+                mizar.getCore().publish("backgroundLayer:change", gwLayer);
+            }
         };
 
         /**************************************************************************************************************/

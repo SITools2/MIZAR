@@ -349,7 +349,8 @@ define(["jquery", "underscore-min",
 
                     // Add smooth animation from sky context to planet context
                     this.navigation.toViewMatrix(planetVM, 45, 2000, function () {
-                        mizar.getCore().getLayerManager().setBackgroundSurvey(defaultLayer);
+                        planetContext.setBackgroundSurvey(defaultLayer);
+                        //mizar.getCore().getLayerManager().setBackgroundSurvey(defaultLayer);
                         //planetContext.globe.baseImagery.tiling = mizar.getLayer("DSS").tiling;
 
                         planetContext.show();
@@ -453,23 +454,14 @@ define(["jquery", "underscore-min",
         /**************************************************************************************************************/
 
         /**
-         * Set a predefined background survey
-         * @param {String} survey the layerName
-         */
-        MizarCore.prototype.setBackgroundSurvey = function (survey) {
-            LayerManager.setBackgroundSurvey(survey);
-        };
-
-        /**************************************************************************************************************/
-
-        /**
          * Set a custom background survey
          */
         MizarCore.prototype.setCustomBackgroundSurvey = function (layerDesc) {
             layerDesc.background = true; // Ensure that background option
             // is set to true
             var layer = LayerManager.addLayerFromDescription(layerDesc);
-            LayerManager.setBackgroundSurvey(layerDesc.name);
+            this.activatedContext.setBackgroundSurvey(layerDesc.name);
+            //LayerManager.setBackgroundSurvey(layerDesc.name);
             return layer;
         };
 
