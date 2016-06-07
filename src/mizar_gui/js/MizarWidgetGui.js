@@ -573,6 +573,7 @@ define(["jquery", "underscore-min",
                 mizarCore.navigation.globe.isSky = true;
                 planetContext.setComponentVisibility("measurePlanetContainer", true);
             }
+            $('#selectedFeatureDiv').hide();
         };
 
         return MizarWidgetGui;

@@ -85,6 +85,8 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
             if (selectedData) {
                 var style = new FeatureStyle(selectedData.feature.properties.style);
                 switch (selectedData.feature.geometry.type) {
+                    case "LineString":
+                    case "MultiLineString":
                     case "Polygon":
                     case "MultiPolygon":
                         style.strokeColor = selectedData.layer.style.strokeColor;
@@ -124,6 +126,8 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 this.stackSelectionIndex = index;
                 var style = new FeatureStyle(selectedData.feature.properties.style);
                 switch (selectedData.feature.geometry.type) {
+                    case "LineString":
+                    case "MultiLineString":
                     case "Polygon":
                     case "MultiPolygon":
                         style.strokeColor = strokeColor;
@@ -160,6 +164,8 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 var selectedData = this.getSelection()[i];
                 var style = new FeatureStyle(selectedData.feature.properties.style);
                 switch (selectedData.feature.geometry.type) {
+                    case "LineString":
+                    case "MultiLineString":
                     case "Polygon":
                     case "MultiPolygon":
                         style.strokeColor = selectedData.layer.style.strokeColor;
@@ -199,6 +205,8 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
                 }
 
                 switch (selectedData.feature.geometry.type) {
+                    case "LineString":
+                    case "MultiLineString":
                     case "Polygon":
                     case "MultiPolygon":
                         style.strokeColor = this.selectedStyle.strokeColor;
@@ -284,6 +292,27 @@ define(["gw/Renderer/FeatureStyle", "gw/Layer/OpenSearchLayer", "Utils"],
          */
         function featureIsPicked(feature, pickPoint) {
             switch (feature['geometry'].type) {
+                case "LineString":
+                    for (var i = 0; i < feature['geometry']['coordinates'].length - 1; i++) {
+                        var feat = feature['geometry']['coordinates'][i];
+                        var featNext = feature['geometry']['coordinates'][i + 1];
+                        if (Utils.pointInLine(pickPoint, feat, featNext)) {
+                            return true;
+                        }
+                    }
+                    //var ring = this.fixDateLine(pickPoint, feature['geometry']['coordinates'][0]);
+                    break;
+                case "MultiLineString":
+                    for (var i = 0; i < feature['geometry']['coordinates'].length; i++) {
+                        for (var j = 0; j < feature['geometry']['coordinates'][i].length - 1; j++) {
+                            var feat = feature['geometry']['coordinates'][i][j];
+                            var featNext = feature['geometry']['coordinates'][i][j + 1];
+                            if (Utils.pointInLine(pickPoint, feat, featNext)) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
                 case "Polygon":
                     var ring = this.fixDateLine(pickPoint, feature['geometry']['coordinates'][0]);
                     return Utils.pointInRing(pickPoint, ring);

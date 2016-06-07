@@ -197,6 +197,14 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
                 var sLat = 0;
                 var nbPoints = 0;
                 switch (geometry.type) {
+                    case "MultiLineString":
+                        sLonBarycenter = geometry.coordinates[0][0][0];
+                        sLatBarycenter = geometry.coordinates[0][0][1];
+                        break;
+                    case "LineString":
+                        sLonBarycenter = geometry.coordinates[0][0];
+                        sLatBarycenter = geometry.coordinates[0][1];
+                        break;
                     case "Point":
                         sLonBarycenter = geometry.coordinates[0];
                         sLatBarycenter = geometry.coordinates[1];
@@ -289,6 +297,38 @@ define(["wcs", "underscore-min", "gw/Layer/OpenSearchLayer", "gw/Layer/HEALPixFI
 
                 //If not, return false
                 return false;
+            },
+
+            /**
+             * Check if a point lies on a line
+             * @param point
+             * @param segmentStart
+             * @param segmentEnd
+             * @returns {boolean}
+             */
+            pointInLine: function (point, segmentStart, segmentEnd) {
+                var deltax = segmentEnd[0] - segmentStart[0];
+                var deltay, t;
+                var liesInXDir = false;
+
+                if (deltax == 0) {
+                    liesInXDir = (point[0] == segmentStart[0]);
+                } else {
+                    t = (point[0] - segmentStart[0]) / deltax;
+                    liesInXDir = (t >= 0 && t <= 1);
+                }
+
+                if (liesInXDir) {
+                    deltay = segmentEnd[1] - segmentStart[1];
+                    if (deltax == 0) {
+                        return (point[1] == segmentStart[1]);
+                    } else {
+                        t = (point[1] - segmentStart[1]) / deltay;
+                        return (t >= 0 && t <= 1);
+                    }
+                } else {
+                    return false;
+                }
             },
 
             getAstroCoordinatesFromCursorLocation: function (globe, navigation, LHV) {

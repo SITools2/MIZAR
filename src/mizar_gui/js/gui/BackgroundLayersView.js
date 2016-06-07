@@ -205,7 +205,7 @@ define(["jquery", "underscore-min", "layer/LayerManager", "./DynamicImageView", 
                 var self = this;
                 if (mizarCore.mode === "planet") {
                     $el.find('.backToSky').button().click(function (event) {
-                        self.mizar.toggleContext();
+                        mizar.toggleContext();
                     });
 
                     $el.find("#backgroundOptions").hide();
