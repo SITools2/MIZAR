@@ -137,7 +137,8 @@ define(["jquery", "underscore-min", "gui_core/MeasureToolPlanetCore", "Utils", "
          */
         MeasureToolPlanet.prototype.displayPopupElevation = function (event) {
 
-            var intermediatePoints = MeasureToolPlanetCore.calculateIntermediateElevationPoint(MeasureToolPlanetCore.geoPickPoint, MeasureToolPlanetCore.secondGeoPickPoint);
+            var options = {};
+            var intermediatePoints = MeasureToolPlanetCore.calculateIntermediateElevationPoint(options, MeasureToolPlanetCore.geoPickPoint, MeasureToolPlanetCore.secondGeoPickPoint);
 
             MeasureToolPlanetCore.storeDistanceAndElevation(intermediatePoints[0], intermediatePoints[0]);
             for (var i = 0; i < intermediatePoints.length; i++) {

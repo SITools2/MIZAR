@@ -50,6 +50,7 @@ define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/Abstract
                 var marsResolverUrl = context.configuration.nameResolver.baseUrl.replace('mizar_gui', 'mizar_lite');
                 $.ajax({
                     type: "GET",
+                    dataType : "json",
                     url: marsResolverUrl,
                     success: function (response) {
                         dictionary = response;
