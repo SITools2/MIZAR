@@ -19,7 +19,7 @@
 
 /*global define: false */
 
-define(["jquery", "gui_core/SelectionToolCore", "uws/UWSManager", "../service/Samp", "uws_gui/AnimatedButton", "gui_core/dialog/ErrorDialog", "underscore-min", "text!../../templates/cutOut.html", "text!../../templates/cutResultItem.html", "jquery.ui"],
+define(["jquery", "gui_core/SelectionToolCore", "uws_core/UWSManager", "service_gui2/Samp", "uws/AnimatedButton", "gui_core/dialog/ErrorDialog", "underscore-min", "text!../../templates/cutOut.html", "text!../../templates/cutResultItem.html", "jquery.ui"],
     function ($, SelectionToolCore, UWSManager, Samp, AnimatedButton, ErrorDialog, _, cutOutHTMLTemplate, cutResultHTMLTemplate) {
 
 // Template generating UWS services div

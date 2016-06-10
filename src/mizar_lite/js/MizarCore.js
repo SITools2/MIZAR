@@ -26,13 +26,13 @@ define(["jquery", "underscore-min",
         "./context/PlanetContext",
         "./context/SkyContext",
 
-        "text!../data/backgroundSurveys.json", "./layer/LayerManager",
+        "text!data/backgroundSurveys.json", "./layer/LayerManager",
         "./service/NameResolver", "./service/ReverseNameResolver",
         "./service/MocBase", "./Utils",
-        "./gui_core/dialog/ErrorDialog",
-        "./gui_core/dialog/AboutDialog",
-        "./uws/UWSManager",
-        "./gui_core/ImageManagerCore",
+        "gui_core/dialog/ErrorDialog",
+        "gui_core/dialog/AboutDialog",
+        "uws_core/UWSManager",
+        "gui_core/ImageManagerCore",
 
         // GlobWeb
         "gw/Layer/TileWireframeLayer",

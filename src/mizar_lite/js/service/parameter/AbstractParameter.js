@@ -21,7 +21,7 @@
  *    Abstract class for services parameters
  *    Implemented by Concrete Parameters in order to perform searches based on different criteria
  */
-define(["../../jquery", "../../underscore-min"],
+define(["jquery", "underscore-min"],
     function ($, _) {
 
         /**************************************************************************************************************/

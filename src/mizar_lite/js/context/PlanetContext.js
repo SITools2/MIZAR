@@ -21,10 +21,10 @@
 /**
  * Planet context (inherited from MizarContext)
  */
-define(["jquery", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils",
-    "./MizarContext", "../layer/LayerManager", "../provider/JsonProvider", "../gui/tracker/PositionTracker",
-    "../gui/tracker/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
-    function ($, Globe, AttributionHandler, Navigation, Utils, MizarContext,
+define(["jquery", "underscore-min", "gw/Context/Globe", "gw/AttributionHandler", "gw/Navigation/Navigation", "gw/Utils/Utils",
+    "./MizarContext", "../layer/LayerManager", "../provider/JsonProvider", "tracker/PositionTracker",
+    "tracker/ElevationTracker", "gw/Navigation/FlatNavigation", "gw/Projection/MercatorCoordinateSystem", "gw/Layer/WCSElevationLayer", "jquery.ui"],
+    function ($, _, Globe, AttributionHandler, Navigation, Utils, MizarContext,
               LayerManager, JsonProvider, PositionTracker,
               ElevationTracker, FlatNavigation, MercatorCoordinateSystem, WCSElevationLayer) {
 

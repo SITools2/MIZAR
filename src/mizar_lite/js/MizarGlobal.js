@@ -22,9 +22,9 @@
  */
 define(["jquery", "underscore-min",
         "gw/Utils/Event",
-        "./Utils",
-        "text!../templates/mizarCore.html"],
-    function ($, _, Event, Utils, mizarCoreHTML) {
+        "./Utils", "MizarCore", "MizarWidgetGui",
+        "text!templates/mizarCore.html"],
+    function ($, _, Event, Utils, MizarCore, MizarWidgetGui, mizarCoreHTML) {
 
         var parentElement;
         var options;
@@ -32,7 +32,7 @@ define(["jquery", "underscore-min",
 
         var getMizarUrl = function () {
             /**
-             *    Store the mizar base url
+             *    Store the mizar base urlferf
              *    Used to access to images(Compass, Mollweide, Target icon for name resolver)
              *    Also used to define "star" icon for point data on-fly
              *    NB: Not the best solution of my life.... TODO: think how to improve it..
@@ -153,36 +153,28 @@ define(["jquery", "underscore-min",
 
             // Async Load of MizarWidgetGui if GUI activated
             if (userOptions.guiActivated) {
-                require(['mizar_gui/MizarWidgetGui'], function (MizarWidgetGui) {
 
-                    // Create mizar core HTML
-                    var mizarContent = _.template(mizarCoreHTML, {});
-                    $(mizarContent).appendTo(div);
+                // Create mizar core HTML
+                var mizarContent = _.template(mizarCoreHTML, {});
+                $(mizarContent).appendTo(div);
 
-                    require(['MizarCore'], function (MizarCore) {
-                        self.mizarCore = new MizarCore(div, options, userOptions);
+                self.mizarCore = new MizarCore(div, options, userOptions);
 
-                        self.mizarWidgetGui = new MizarWidgetGui(div, {
-                            isMobile: isMobile,
-                            mode: userOptions.mode,
-                            mizarGlobal: self,
-                            sky: self.mizarCore.scene,
-                            navigation: self.mizarCore.navigation,
-                            options: options
-                        });
-                        callbackInitMain(); // init GUI and layers
-                    });
-
+                self.mizarWidgetGui = new MizarWidgetGui(div, {
+                    isMobile: isMobile,
+                    mode: userOptions.mode,
+                    mizarGlobal: self,
+                    sky: self.mizarCore.scene,
+                    navigation: self.mizarCore.navigation,
+                    options: options
                 });
+
             } else {
-                require(['MizarCore'], function (MizarCore) {
-                    // Create mizar core HTML
-                    var mizarContent = _.template(mizarCoreHTML, {});
-                    $(mizarContent).appendTo(div);
+                // Create mizar core HTML
+                var mizarContent = _.template(mizarCoreHTML, {});
+                $(mizarContent).appendTo(div);
 
-                    self.mizarCore = new MizarCore(div, options, userOptions);
-                    callbackInitMain(); // init GUI and layers
-                });
+                self.mizarCore = new MizarCore(div, options, userOptions);
             }
 
         };

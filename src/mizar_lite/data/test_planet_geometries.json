@@ -1,0 +1,63 @@
+[
+  // TEST GEOMETRY
+  {
+    "category": "Other",
+    "type": "GeoJSON",
+    "name": "Point_planet",
+    "data": {
+      "type": "JSON",
+      "url": "../../tests/simple_geometry/point.json"
+    },
+    "visible": false,
+    "pickable": true
+//    "dataType": "point"
+  },
+  {
+    "category": "Other",
+    "type": "GeoJSON",
+    "name": "LineString_planet",
+    "data": {
+      "type": "JSON",
+      "url": "../../tests/simple_geometry/linestring.json"
+    },
+    "visible": false,
+    "pickable": true
+//    "dataType": "linestring"
+  },
+  {
+    "category": "Other",
+    "type": "GeoJSON",
+    "name": "MultiLineString_planet",
+    "data": {
+      "type": "JSON",
+      "url": "../../tests/simple_geometry/multilinestring.json"
+    },
+    "visible": false,
+    "pickable": true
+//    "dataType": "linestring"
+  },
+  {
+    "category": "Other",
+    "type": "GeoJSON",
+    "name": "Polygon_planet",
+    "data": {
+      "type": "JSON",
+      "url": "../../tests/simple_geometry/polygon.json"
+    },
+    "visible": false,
+    "pickable": true
+//    "dataType": "polygon"
+  },
+  {
+    "category": "Other",
+    "type": "GeoJSON",
+    "name": "MultiPolygon_planet",
+    "data": {
+      "type": "JSON",
+      "url": "../../tests/simple_geometry/multiPolygon.json"
+    },
+    "visible": false,
+    "pickable": true
+//    "dataType": "polygon"
+  }
+]

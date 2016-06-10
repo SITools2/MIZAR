@@ -20,7 +20,7 @@
 /**
  * Name resolver module : API allowing to search object name and zoom to it
  */
-define(["../jquery", "../underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "gw/Tiling/HEALPixBase", "text!../data/mars_resolver.json", "../layer/LayerManager", "../jquery.ui"],
+define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/VectorLayer", "gw/Tiling/HEALPixBase", "text!data/mars_resolver.json", "../layer/LayerManager", "jquery.ui"],
     function ($, _, FeatureStyle, VectorLayer, HEALPixBase, marsResolverJSON, layerManager) {
 
 // Name resolver globals

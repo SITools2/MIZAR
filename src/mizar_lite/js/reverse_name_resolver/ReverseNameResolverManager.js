@@ -20,7 +20,7 @@
 /**
  *    Main class for managing Wrappers, all transformers have to be required here
  */
-define(["../jquery", "../underscore-min", "./DefaultReverseNameResolver", "./CDSReverseNameResolver"],
+define(["jquery", "underscore-min", "./DefaultReverseNameResolver", "./CDSReverseNameResolver"],
     function ($, _, DefaultReverseNameResolver, CDSReverseNameResolver) {
 
         /**************************************************************************************************************/

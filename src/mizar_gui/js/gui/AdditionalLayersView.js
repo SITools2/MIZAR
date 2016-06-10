@@ -21,7 +21,7 @@
 /**
  * AdditionalLayersView module
  */
-define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "../service/Samp", "gui_core/dialog/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
+define(["jquery", "gui_core/AdditionalLayersCore", "layer/LayerManager", "./PickingManager", "./DynamicImageView", "./LayerServiceView", "service_gui2/Samp", "gui_core/dialog/ErrorDialog", "Utils", "underscore-min", "text!../../templates/additionalLayers.html", "text!../../templates/additionalLayer.html", "jquery.nicescroll.min", "jquery.ui"],
     function ($, AdditionalLayersCore, LayerManager, PickingManager, DynamicImageView, LayerServiceView, Samp, ErrorDialog, Utils, _, additionalLayersHTML, additionalLayerHTMLTemplate) {
 
         var mizarCore;

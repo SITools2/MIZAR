@@ -21,7 +21,7 @@
  *    Abstract class for Layer Wrapper
  *    Implemented by Concrete transformer in order to transform opensearch request in owner request
  */
-define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/AbstractNameResolver"],
+define(["jquery", "underscore-min", "../Utils", "../name_resolver/AbstractNameResolver"],
     function ($, _, Utils, AbstractNameResolver) {
 
         /**************************************************************************************************************/

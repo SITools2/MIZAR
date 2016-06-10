@@ -21,7 +21,7 @@
  *    String parameters types
  *    Implemented by Concrete Parameters Type such as geometry parameter, number & string parameter...
  */
-define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParameter"],
+define(["jquery", "underscore-min", "../../Utils", "./AbstractParameter"],
     function ($, _, Utils, AbstractParameter, selectize) {
 
         var galacticParameter = '<input type="radio" id="galactic" name="coordSystem" value="galactic" />' +

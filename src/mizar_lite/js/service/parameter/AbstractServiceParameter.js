@@ -21,7 +21,7 @@
  *    Abstract class for additional layer services
  *    Implemented by Concrete Service in order to perform an action on data
  */
-define(["../jquery", "../underscore-min"],
+define(["jquery", "underscore-min"],
     function ($, _) {
 
         /**************************************************************************************************************/

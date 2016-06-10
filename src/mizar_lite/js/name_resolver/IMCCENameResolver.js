@@ -17,7 +17,7 @@
  * along with SITools2. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-define(["../jquery", "../underscore-min", "../Utils", "../name_resolver/AbstractNameResolver"],
+define(["jquery", "underscore-min", "../Utils", "../name_resolver/AbstractNameResolver"],
     function ($, _, Utils, AbstractNameResolver) {
         /**************************************************************************************************************/
 

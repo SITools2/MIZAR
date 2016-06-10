@@ -21,7 +21,7 @@
  *    Abstract class for Layer Wrapper
  *    Implemented by Concrete transformer in order to transform opensearch request in owner request
  */
-define(["../jquery", "../underscore-min", "../Utils", "../reverse_name_resolver/AbstractReverseNameResolver", "gw/Tiling/HEALPixBase"],
+define(["jquery", "underscore-min", "../Utils", "../reverse_name_resolver/AbstractReverseNameResolver", "gw/Tiling/HEALPixBase"],
     function ($, _, Utils, AbstractReverseNameResolver, HEALPixBase) {
 
         /**************************************************************************************************************/

@@ -22,7 +22,7 @@
  * Name resolver module : search object name from its coordinates
  * TODO : move _handleMouseDown&Up to View ?
  */
-define(["../jquery", "gw/Tiling/HEALPixBase"], function ($, HEALPixBase) {
+define(["jquery", "gw/Tiling/HEALPixBase"], function ($, HEALPixBase) {
 
     var mizar;
     var context;

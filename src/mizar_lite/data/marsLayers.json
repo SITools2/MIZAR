@@ -19,7 +19,7 @@
     "description": "Hydrated phases detected in the exhumed material by impact crater from CRISM targeted observations between Isidis and Hellas basin",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/detections_crateres_benjamin_bultel_icarus.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/detections_crateres_benjamin_bultel_icarus.json"
     },
     "visible": false,
     "pickable": true
@@ -31,7 +31,7 @@
     "description": "landing site of previous rover",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/landing_sites.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/landing_sites.json"
     },
     "visible": false,
     "pickable": true
@@ -43,7 +43,7 @@
     "description": "crocus description",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/min/crocus_ls150-200_min.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/min/crocus_ls150-200_min.json"
     },
     "visible": false,
     "pickable": true,
@@ -56,7 +56,7 @@
     "description": "Outline of scalloped depressions from 80°E to 110°E and 40°N to 50°N using Context Camera/MRO (NASA) of 6 m/pixel and MOC/MGS (NASA) images",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/min/Scalloped_Depression_min.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/min/Scalloped_Depression_min.json"
     },
     "visible": false,
     "color": "yellow",
@@ -69,10 +69,9 @@
     "description": "A global map of hydrated mineral sites at the surface of Mars detected using the reflectance data acquired by the Mars Express OMEGA hyperspectral camera and from the Mars Reconnaissance Orbiter (MRO) CRISM imaging spectrometer",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/hyd_global_290615_min.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/hyd_global_290615_min.json"
     },
     "visible": false,
-    //                        "color": "",
     "pickable": true
   },
   {
@@ -82,10 +81,9 @@
     "description": "Detection of low Calcium Pyroxene in the walls of Valles Marineris Canyon based on CRISM targeted observation",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/lcp_flahaut_et_al.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/lcp_flahaut_et_al.json"
     },
     "visible": false,
-    //                        "color": "",
     "pickable": true
   },
   {
@@ -95,10 +93,9 @@
     "description": "Mineralogy of the central peaks of impact crater derived from CRISM targeted observation south of Valles Marineris Canyon",
     "data": {
       "type": "JSON",
-      "url": "http://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/lcp_vmwalls.json"
+      "url": "https://psup.ias.u-psud.fr/sitools/upload/geojson/jsonPlis/lcp_vmwalls.json"
     },
     "visible": false,
-    //                        "color": "",
     "pickable": true
   },
   {

@@ -21,7 +21,7 @@
  *    Date parameter types
  *    Implemented by Concrete Parameters Type such as geometry parameter, number & string parameter...
  */
-define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParameter", "../../selectize"],
+define(["jquery", "underscore-min", "../../Utils", "./AbstractParameter", "../../selectize"],
     function ($, _, Utils, AbstractParameter, selectize) {
 
         var minDateParameterTemplate = '<input type="text" name="minField" class="selectize-input">';

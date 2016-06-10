@@ -21,7 +21,7 @@
  *    String parameters types
  *    Implemented by Concrete Parameters Type such as geometry parameter, number & string parameter...
  */
-define(["../../jquery", "../../underscore-min", "../../Utils", "./AbstractParameter", "../../selectize"],
+define(["jquery", "underscore-min", "../../Utils", "./AbstractParameter", "../../selectize"],
     function ($, _, Utils, AbstractParameter, selectize) {
 
         // <option>Best Practices</option>

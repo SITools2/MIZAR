@@ -20,7 +20,7 @@
 /**
  *    Main class for managing Wrappers, all transformers have to be required here
  */
-define(["../jquery", "../underscore-min", "./DefaultNameResolver", "./CDSNameResolver",  "./DictionaryNameResolver", "./IMCCENameResolver"],
+define(["jquery", "underscore-min", "./DefaultNameResolver", "./CDSNameResolver",  "./DictionaryNameResolver", "./IMCCENameResolver"],
     function ($, _, DefaultNameResolver, CDSNameResolver, DictionaryNameResolver, IMCCENameResolver) {
 
         /**************************************************************************************************************/

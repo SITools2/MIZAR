@@ -23,7 +23,7 @@
  */
 define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPixLayer", "gw/Layer/VectorLayer", "gw/Layer/CoordinateGridLayer",
     "gw/Layer/TileWireframeLayer", "gw/Layer/OpenSearchLayer", "gw/Layer/WMSLayer", "gw/Layer/MocLayer", "gw/Layer/PlanetLayer",
-    "gw/Layer/HEALPixFITSLayer", "gw/Layer/AtmosphereLayer", "gw/Layer/BingLayer", "gw/Layer/OSMLayer", "gw/Layer/WMTSLayer", "../gui/PickingManagerCore", "../Utils", "gw/Parser/JsonProcessor",  "string"],
+    "gw/Layer/HEALPixFITSLayer", "gw/Layer/AtmosphereLayer", "gw/Layer/BingLayer", "gw/Layer/OSMLayer", "gw/Layer/WMTSLayer", "gui_core/PickingManagerCore", "../Utils", "gw/Parser/JsonProcessor",  "string"],
     function ($, _, FeatureStyle, HEALPixLayer, VectorLayer, CoordinateGridLayer, TileWireframeLayer, OpenSearchLayer, WMSLayer,
               MocLayer, PlanetLayer, HEALPixFITSLayer, AtmosphereLayer, BingLayer, OSMLayer, WMTSLayer, PickingManagerCore, Utils, JsonProcessor, String) {
 
@@ -463,7 +463,7 @@ define(["jquery", "underscore-min", "gw/Renderer/FeatureStyle", "gw/Layer/HEALPi
              *    @returns {Array} layers
              */
             getAllLayers: function () {
-                return _.union(this.getLayers(), this.getPlanetLayers());
+                return _.union(gwLayers, this.getPlanetLayers());
             },
 
             /**

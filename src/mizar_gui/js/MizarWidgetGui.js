@@ -29,7 +29,7 @@ define(["jquery", "underscore-min",
         "./gui/PickingManager", "./gui/FeaturePopup",
         "./gui/IFrame", "./gui/Compass",
         "./gui/MollweideViewer", "./gui/ImageViewer",
-        "./service/Share", "./service/Samp",
+        "service_gui2/Share", "service_gui2/Samp",
         "./gui/AdditionalLayersView", "./gui/ImageManager",
 
         // Gui
@@ -37,13 +37,13 @@ define(["jquery", "underscore-min",
         "./gui/SwitchTo2D", "./gui/ExportTool",
 
         // Mizar_lite
-        "../../mizar_lite/js/context/PlanetContext",
-        "../../mizar_lite/js/context/SkyContext",
-        "../../mizar_lite/js/layer/LayerManager",
-        "../../mizar_lite/js/Utils",
-        "gui/ImageManagerCore",
-        "../../mizar_lite/js/gui/dialog/AboutDialog",
-        "../../mizar_lite/js/gui/dialog/ErrorDialog",
+        "context/PlanetContext",
+        "context/SkyContext",
+        "layer/LayerManager",
+        "Utils",
+        "gui_core/ImageManagerCore",
+        "gui_core/dialog/AboutDialog",
+        "gui_core/dialog/ErrorDialog",
 
         // GlobWeb
         "gw/Utils/Event",

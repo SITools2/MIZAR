@@ -51,9 +51,11 @@ require.config({
 
         // Mizar_Gui requirements
         "mizar_gui": "../../mizar_gui/js",
-        "uws_gui": "../../mizar_gui/js/uws",
-
-        //"service_gui" : "service_gui",
+        "uws": "../../mizar_gui/js/uws",
+        "gui": "../../mizar_gui/js/gui",
+        "service_gui" : "../../mizar_gui/js/service_gui",
+        "service_gui2": "../../mizar_gui/js/service",
+        "MizarWidgetGui": "../../mizar_gui/js/MizarWidgetGui",
 
         // Mizar_Lite requirements
         "context": "../../mizar_lite/js/context",
@@ -61,12 +63,14 @@ require.config({
         "provider": "../../mizar_lite/js/provider",
         "service": "../../mizar_lite/js/service",
         "gui_core": "../../mizar_lite/js/gui",
+        "tracker" : "../../mizar_lite/js/gui/tracker",
         "name_resolver": "../../mizar_lite/js/name_resolver",
         "reverse_name_resolver": "../../mizar_lite/js/reverse_name_resolver",
-        "uws": "../../mizar_lite/js/uws",
-        //"mizar_lite" : "./js",
+        "uws_core": "../../mizar_lite/js/uws",
         "templates": "../../mizar_lite/templates",
-        "data": "../data",
+        "data": "../../mizar_lite/data",
+        "Utils" : "../../mizar_lite/js/Utils",
+        "MizarCore" : "../../mizar_lite/js/MizarCore",
     },
     shim: {
         'jquery': {
@@ -164,8 +168,6 @@ require(["./MizarGlobal"], function (MizarGlobal) {
         var marsLayer = mizar.getLayer("Mars");
         mizar.addLayer(atmosMarsLayer, marsLayer);
         mizar.addLayer(coordLayer, marsLayer);
-
-        var marsLayer = mizar.getLayer("Mars");
     }
 
     mizar = new MizarGlobal('#mizarWidget-div', {
@@ -194,7 +196,8 @@ require(["./MizarGlobal"], function (MizarGlobal) {
             jsObject: "./name_resolver/IMCCENameResolver"
         }
         //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
-    }, initGuiAndLayers);
+    });
+    initGuiAndLayers();
 
 
     //

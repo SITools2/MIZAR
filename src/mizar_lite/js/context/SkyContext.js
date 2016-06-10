@@ -23,7 +23,7 @@
  */
 define(["jquery", "underscore-min", "gw/Context/Sky", "gw/Navigation/AstroNavigation", "gw/Utils/Utils",
         "./MizarContext", "../layer/LayerManager", "../provider/StarProvider", "../provider/ConstellationProvider",
-        "../provider/JsonProvider", "../provider/OpenSearchProvider", "../gui/tracker/PositionTracker", "../gui/PickingManagerCore", "jquery.ui"],
+        "../provider/JsonProvider", "../provider/OpenSearchProvider", "tracker/PositionTracker", "gui_core/PickingManagerCore", "jquery.ui"],
     function ($, _, Sky, AstroNavigation, Utils,
               MizarContext, LayerManager, StarProvider, ConstellationProvider,
               JsonProvider, OpenSearchProvider, PositionTracker, PickingManagerCore) {
