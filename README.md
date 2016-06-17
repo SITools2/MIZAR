@@ -30,6 +30,7 @@ It exists different ways to install MIZAR
 ### 3.1 - MIZAR
 
 #### Getting the sources
+
 	$ git clone https://github.com/SITools2/MIZAR.git mizar
   
 #### Getting the submodule [GlobWeb](https://github.com/TPZF/GlobWeb)
@@ -49,8 +50,8 @@ To get the last version of MIZAR checkout the branch dev-refactoring and update 
 
 Configure a new alias in your apache configuration. 
 
-	Alias /mizar/ "<DEPLOY_PATH>/MIZAR/mizar/"
-    <Directory "<DEPLOY_PATH>/MIZAR/mizar/>
+	Alias /mizar/ "<DEPLOY_PATH>/mizar/"
+    <Directory "<DEPLOY_PATH>/mizar/>
 		Options MultiViews FollowSymLinks
 		AllowOverride None
         Require all granted
@@ -58,10 +59,13 @@ Configure a new alias in your apache configuration.
 
 
 #### Copy the directory mizar in your web server
-  	$ cp -R MIZAR <DEPLOY_PATH>
+  	$ cp -R <INSTALL_PATH>/mizar <DEPLOY_PATH>
 
 #### Run the application
-  Go to http://...../mizar/mizar_lite/index.html
+  Go to 
+
+* http://...../mizar/src/mizar_lite/index.html (classic version)
+* http://...../mizar/src/mizar_lite/index-prod.html (optimised version)
 
 In this mode, you will use a SITools2 server, installed somewhere,  that wraps the response coming from pre-defined sources (See wiki)
 
