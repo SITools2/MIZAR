@@ -33,36 +33,35 @@ It exists different ways to install MIZAR
 	$ git clone https://github.com/SITools2/MIZAR.git mizar
   
 #### Getting the submodule [GlobWeb](https://github.com/TPZF/GlobWeb)
-  	$ cd mizar
+  	
+	$ cd mizar
   	$ git submodule init
   	$ git submodule update
+
+#### Getting the last version
+
+To get the last version of MIZAR checkout the branch dev-refactoring and update the submodules
+
+	$ git checkout dev-refactoring
+	$ git submodule update
   	
-#### Getting dependencies
-Download and install [Node.js](https://nodejs.org/en/)
+#### Apache configuration
 
-##### Install bower and get dependencies (optional)
-  	npm install -g bower
-  	bower install
+Configure a new alias in your apache configuration. 
 
-Configure bower to download dependencies to externals directory
+	Alias /mizar/ "<DEPLOY_PATH>/MIZAR/mizar/"
+    <Directory "<DEPLOY_PATH>/MIZAR/mizar/>
+		Options MultiViews FollowSymLinks
+		AllowOverride None
+        Require all granted
+    </Directory>
 
-    cd
-    vi .bowerrc
 
-Create a Bower configuration file .bowerrc in the project root (as opposed to your home directory) with the content:
-
-    {
-      "directory" : "src/mizar_lite/externals/"
-    }
-
-Run bower update again.
-
-  
 #### Copy the directory mizar in your web server
-  	$ cp -R src/mizar <path to your web server>`
+  	$ cp -R MIZAR <DEPLOY_PATH>
 
 #### Run the application
-  Go to http://..../mizar/index.html
+  Go to http://...../mizar/mizar_lite/index.html
 
 In this mode, you will use a SITools2 server, installed somewhere,  that wraps the response coming from pre-defined sources (See wiki)
 
@@ -76,18 +75,36 @@ See [Readme](contrib/SITools2V3_Module/README-Modules-Sitools2-V3.md)
 
 ### 3.4 - Optimization
 To build a minify version, [NodeJS](http://nodejs.org/download/) must be installed
-Once installed, run 
-	$ build/build.bat for Windows users 
-or
- 	$ cd build
-following of 
-	$ node r.js -o buildMizar.js` for Unix. 
-The script will then create a minify file "MizarWidget.min.js" in src/mizar directory.
 
+##### Install nodejs on Ubuntu run :
+
+	// Install nodejs and npm
+	sudo apt-get install nodejs npm
+	// Add 2 symbolic links
+	sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+	sudo ln -s /usr/bin/npm /usr/local/bin/npm
+
+##### Minify the sources
+
+* For windows: 
+
+		$ build/build.bat 
+
+* For Linux:
+
+		$ cd build
+		$ node r.js -o buildMizar.js
+
+ 
+The script will then create a minify file **MizarWidget.min.js**" in **src/mizar_lite** directory.
+
+##### Minify the css files
 To build a minify CSS file, use the following command:
-	$ node r.js -o cssIn=../src/mizar/css/style.css out=../src/mizar/css/style.min.css
 
-Then, you will need to use the generated js and css files in your index.html file instead of the old ones.
+	$ node r.js -o cssIn=../src/mizar_gui/css/style.css out=../src/mizar_gui/css/style.min.css
+
+##### Run the application in optimized mode
+  Go to http://...../mizar/mizar_lite/index-prod.html
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SITools2/mizar/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
