@@ -1,4 +1,4 @@
-![](src/mizar/css/images/mizar.png)
+![](src/mizar_gui/css/images/mizar.png)
 
 # MIZAR
 
