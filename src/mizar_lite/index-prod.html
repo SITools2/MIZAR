@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mizar</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+    <!-- Dev -->
+    <!--<link rel="stylesheet" href="css/style.css"/>-->
+
+    <!-- Prod -->
+    <link rel="stylesheet" href="../mizar_gui/css/style.min.css"/>
+
+    <!-- Dev -->
+    <!--<script type="text/javascript" data-main="js/main" src="./externals/requirejs/require.js"></script>-->
+
+    <!-- Prod -->
+     <script type="text/javascript" charset="UTF-8" src="MizarWidget.min.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function(){
+            function initGuiAndLayers() {
+
+                if (mizar.mode == "sky") {
+                    // Set different GUIs
+                    mizar.setAngleDistanceSkyGui(true);
+                    mizar.setSampGui(true);
+                    mizar.setShortenerUrlGui(true);
+                    mizar.setMollweideMapGui(true);
+                    mizar.setReverseNameResolverGui(true);
+                    mizar.setNameResolverGui(true);
+                    mizar.setCategoryGui(true);
+                    mizar.setCompassGui(true);
+                    mizar.setShowCredits(true);
+                    mizar.setImageViewerGui(true);
+                    mizar.setSwitchTo2D(true);
+                    mizar.setExportGui(true);
+
+                } else {
+                    // Set different GUIs
+                    mizar.setAngleDistanceSkyGui(false);
+                    mizar.setSampGui(false);
+                    mizar.setShortenerUrlGui(false);
+                    mizar.setMollweideMapGui(false);
+                    mizar.setReverseNameResolverGui(true);
+                    mizar.setNameResolverGui(true);
+                    mizar.setCategoryGui(true);
+                    mizar.setCompassGui(false);
+                    mizar.setShowCredits(false);
+                    mizar.setImageViewerGui(true);
+                    mizar.setSwitchTo2D(true);
+                    mizar.setExportGui(false);
+                }
+
+                var atmosMarsLayer = {
+                    "category": "Other",
+                    "type": "atmosphere",
+                    "exposure": 1.4,
+                    "wavelength": [0.56, 0.66, 0.78],
+                    "name": "Atmosphere",
+                    "lightDir": [0, 1, 0],
+                    "visible": true
+                };
+                var coordLayer = {
+                    "category": "Other",
+                    "type": "tileWireframe",
+                    "name": "Coordinates Grid",
+                    "outline": true,
+                    "visible": true
+                };
+
+                var marsLayer = mizar.getLayer("Mars");
+                mizar.addLayer(atmosMarsLayer, marsLayer);
+                mizar.addLayer(coordLayer, marsLayer);
+
+                var marsLayer = mizar.getLayer("Mars");
+            }
+
+            // Creating mizar global object
+            mizar = new MizarGlobal('#mizarWidget-div', {
+                guiActivated: true,
+                mode: "sky",
+                //defaultLayer : "MOLA",
+                debug: false,
+                navigation: {
+                    "initTarget": [0, 0]
+                },
+                positionTracker: {
+                    position: "bottom"
+                },
+                stats: {
+                    visible: true
+                },
+                sitoolsBaseUrl: 'http://sitools.akka.eu:8080',
+                hipsServiceUrl: "http://aladin.unistra.fr/hips/globalhipslist?fmt=json&dataproduct_subtype=color",
+                backgroundSurveysFiles : ["data/backgroundSurveys.json"],
+                additionalLayersFiles : [{
+                    layerName : "Mars",
+                    url : "data/marsLayers.json"
+                }],
+                nameResolver: {
+                    zoomFov: 2,
+                    jsObject: "./name_resolver/IMCCENameResolver"
+                }
+                //"hipsServiceUrl": "http://aladin.unistra.fr/hips/globalhipslist?fmt=json"
+            });
+            initGuiAndLayers();
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+<div id="mizarWidget-div">
+</div>
+
+</body>
+
+</html>
+
