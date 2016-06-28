@@ -342,7 +342,7 @@ define(["jquery", "underscore-min",
                     // Store old view matrix & fov to be able to rollback to sky context
                     this.oldVM = this.scene.renderContext.viewMatrix;
                     this.oldFov = this.scene.renderContext.fov;
-                    this.navigation.globe.isSky = true;
+                    this.navigation.globe.isSky = false;
 
                     //planetContext.globe.publish("baseLayersReady");
                     var defaultLayer = userOptions.defaultLayer || "Viking";
