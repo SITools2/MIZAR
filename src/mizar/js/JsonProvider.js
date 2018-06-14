@@ -38,6 +38,7 @@ function handleJSONFeature( gwLayer, configuration )
 	$.ajax({
 		type: "GET",
 		url: configuration.url,
+		dataType: configuration.type,
 		success: function(response){
 			JsonProcessor.handleFeatureCollection( gwLayer, response );
 			gwLayer.addFeatureCollection( response );
